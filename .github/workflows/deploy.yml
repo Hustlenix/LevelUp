@@ -39,7 +39,7 @@ jobs:
       - name: Build (data pipeline + static export)
         run: npm run build
         env:
-          NEXT_PUBLIC_BASE_PATH: /levelup
+          NEXT_PUBLIC_BASE_PATH: /LevelUp
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
@@ -54,4 +54,4 @@ jobs:
         uses: actions/deploy-pages@v4
 
       - name: Report URL
-        run: echo "Deployed to https://hustlenix.github.io/levelup/"
+        run: echo "Deployed to https://hustlenix.github.io/LevelUp/"

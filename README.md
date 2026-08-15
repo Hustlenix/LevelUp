@@ -9,7 +9,7 @@ pipeline (Node's built-in `node:sqlite`), and client-side MiniSearch.
 
 ## Live site
 
-https://hustlenix.github.io/levelup/
+https://hustlenix.github.io/LevelUp/
 
 ## What's inside
 
@@ -50,8 +50,9 @@ npm run build      # pipeline + static export into out/
 ```
 
 Deployment: GitHub Actions (`.github/workflows/deploy.yml`) builds with
-`NEXT_PUBLIC_BASE_PATH=/levelup` (matches the `hustlenix.github.io/levelup/`
-Pages URL) and publishes `out/` via `actions/deploy-pages`.
+`NEXT_PUBLIC_BASE_PATH=/LevelUp` (matches the `hustlenix.github.io/LevelUp/`
+Pages URL — GitHub Pages serves the repo-name path case-sensitively) and
+publishes `out/` via `actions/deploy-pages`.
 
 ## Content rules
 
