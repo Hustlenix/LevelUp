@@ -103,7 +103,7 @@ function SearchModal({ go, close }: { go: (url: string) => void; close: () => vo
 
   return (
     <div className="fixed inset-0 z-50 no-print" role="dialog" aria-modal="true" aria-label="Search">
-      <div className="absolute inset-0 bg-ink/60 backdrop-blur-sm" onClick={close} />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={close} />
       <div className="absolute left-1/2 top-[12vh] w-[min(640px,92vw)] -translate-x-1/2 rounded-xl border border-line bg-paper shadow-2xl">
         <div className="flex items-center gap-3 border-b border-line px-5 py-4">
           <span className="font-display text-gold">⌕</span>

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useSearch } from "@/components/SearchProvider";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function Nav() {
   const { setOpen } = useSearch();
@@ -43,6 +44,7 @@ export default function Nav() {
           <span className="hidden sm:inline">Search</span>
           <kbd className="hidden rounded border border-line bg-paper px-1.5 text-[10px] text-ink-faint lg:inline">⌘K</kbd>
         </button>
+        <ThemeToggle />
       </div>
       <nav className="flex gap-4 overflow-x-auto border-t border-line px-5 py-2 text-xs text-ink-soft scrollbar-thin md:hidden">
         <Link className="shrink-0 hover:text-gold" href="/chapters/">Chapters</Link>

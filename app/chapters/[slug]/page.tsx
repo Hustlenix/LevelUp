@@ -36,7 +36,7 @@ function PrevNext({ chapter }: { chapter: Chapter }) {
       {prev ? (
         <Link
           href={`/chapters/${prev.slug}/`}
-          className="group rounded-xl border border-line bg-white/40 p-5 transition-colors hover:border-gold"
+          className="group rounded-xl border border-line bg-card p-5 transition-colors hover:border-gold"
         >
           <p className="text-[11px] uppercase tracking-[0.2em] text-ink-faint">Previous — {prev.number}</p>
           <p className="mt-1 font-display font-semibold text-ink group-hover:text-gold">{prev.title}</p>
@@ -47,7 +47,7 @@ function PrevNext({ chapter }: { chapter: Chapter }) {
       {next && (
         <Link
           href={`/chapters/${next.slug}/`}
-          className="group rounded-xl border border-line bg-white/40 p-5 text-right transition-colors hover:border-gold sm:col-start-2"
+          className="group rounded-xl border border-line bg-card p-5 text-right transition-colors hover:border-gold sm:col-start-2"
         >
           <p className="text-[11px] uppercase tracking-[0.2em] text-ink-faint">Next — {next.number}</p>
           <p className="mt-1 font-display font-semibold text-ink group-hover:text-gold">{next.title}</p>
@@ -97,7 +97,7 @@ export default async function ChapterPage({
           <BookMarkdown body={chapter.body} dropCap />
 
           {chapter.keyConcepts.length > 0 && (
-            <div className="mt-10 rounded-xl border border-line bg-white/40 p-5">
+            <div className="mt-10 rounded-xl border border-line bg-card p-5">
               <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">
                 Key concepts
               </p>
@@ -114,7 +114,7 @@ export default async function ChapterPage({
           <StudyList studies={chapter.studies} />
 
           {chapter.protocols.length > 0 && (
-            <div className="mt-6 rounded-xl border border-line bg-white/40 p-5">
+            <div className="mt-6 rounded-xl border border-line bg-card p-5">
               <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">
                 Protocols referenced
               </p>
@@ -164,7 +164,7 @@ export default async function ChapterPage({
                 )}
               </ol>
             </div>
-            <div className="rounded-xl border border-line bg-white/40 p-5">
+            <div className="rounded-xl border border-line bg-card p-5">
               <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">
                 Reading time
               </p>
@@ -173,7 +173,7 @@ export default async function ChapterPage({
                 {chapter.stats.words.toLocaleString()} words · {chapter.stats.sections.length} sections
               </p>
             </div>
-            <div className="rounded-xl border border-line bg-white/40 p-5">
+            <div className="rounded-xl border border-line bg-card p-5">
               <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">
                 Evidence in this chapter
               </p>

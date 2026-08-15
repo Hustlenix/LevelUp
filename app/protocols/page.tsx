@@ -21,7 +21,7 @@ export default function ProtocolsPage() {
         {protocols.map((p) => {
           const anchor = `protocol-${p.num.replace(".", "-")}`;
           return (
-            <section key={p.num} id={anchor} className="rounded-xl border border-line bg-white/40 p-6">
+            <section key={p.num} id={anchor} className="rounded-xl border border-line bg-card p-6">
               <div className="flex flex-wrap items-baseline gap-3">
                 <span className="font-display text-lg font-bold text-gold">{p.num}</span>
                 <h2 className="font-display text-xl font-bold text-ink">{p.title}</h2>

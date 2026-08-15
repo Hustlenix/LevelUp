@@ -32,7 +32,7 @@ export default function RoadmapPage() {
             <div className="absolute left-0 top-1 flex h-10 w-10 items-center justify-center rounded-full border-2 border-gold bg-paper font-display text-lg font-bold text-gold sm:h-14 sm:w-14 sm:text-2xl">
               {phase.phase}
             </div>
-            <div className={`rounded-xl border bg-white/40 p-6 ${PHASE_COLORS[i] ?? "border-line"}`}>
+            <div className={`rounded-xl border bg-card p-6 ${PHASE_COLORS[i] ?? "border-line"}`}>
               <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
                 <h2 className="font-display text-2xl font-bold text-ink">{phase.title}</h2>
                 <span className="text-xs uppercase tracking-[0.2em] text-ink-faint">{phase.days}</span>

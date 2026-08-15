@@ -46,7 +46,7 @@ export function ChapterCard({ chapter }: { chapter: Chapter }) {
   return (
     <Link
       href={`/chapters/${chapter.slug}/`}
-      className="group flex gap-4 rounded-xl border border-line bg-white/40 p-4 transition-all hover:border-gold hover:shadow-md hover:shadow-gold/10"
+      className="group flex gap-4 rounded-xl border border-line bg-card p-4 transition-all hover:border-gold hover:shadow-md hover:shadow-gold/10"
     >
       <div className="flex w-12 shrink-0 flex-col items-center justify-center">
         <span className="font-display text-2xl font-bold text-gold/70 transition-colors group-hover:text-gold">

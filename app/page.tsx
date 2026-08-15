@@ -70,7 +70,7 @@ export default function Home() {
           </div>
 
           <div className="hidden flex-col justify-center lg:flex">
-            <div className="rounded-2xl border-2 border-ink/80 bg-paper shadow-[10px_10px_0_rgba(34,29,22,0.9)]">
+            <div className="rounded-2xl border-2 border-ink/80 bg-paper shadow-[10px_10px_0_rgba(0,0,0,0.35)]">
               <div className="rounded-t-2xl border-b border-ink/80 bg-ink px-6 py-3">
                 <p className="font-display text-sm font-semibold uppercase tracking-[0.25em] text-paper">
                   Contents
@@ -112,7 +112,7 @@ export default function Home() {
               <Link
                 key={p}
                 href={`/chapters/?pillar=${p}`}
-                className={`group rounded-xl border bg-white/40 p-6 transition-all hover:shadow-md ${PILLAR_BORDER[p]}`}
+                className={`group rounded-xl border bg-card p-6 transition-all hover:shadow-md ${PILLAR_BORDER[p]}`}
               >
                 <div className="flex items-baseline justify-between">
                   <h2 className="font-display text-xl font-bold text-ink">{meta.label}</h2>

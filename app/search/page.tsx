@@ -41,7 +41,7 @@ export default function SearchPage() {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Try “identity”, “dopamine”, “protocol 2.9”, “Crum”…"
-        className="mt-6 w-full rounded-xl border border-line bg-white/60 px-5 py-4 text-lg text-ink outline-none transition-colors placeholder:text-ink-faint focus:border-gold"
+        className="mt-6 w-full rounded-xl border border-line bg-card px-5 py-4 text-lg text-ink outline-none transition-colors placeholder:text-ink-faint focus:border-gold"
       />
 
       <div className="mt-6 space-y-3">
@@ -53,7 +53,7 @@ export default function SearchPage() {
           <Link
             key={r.id}
             href={r.url}
-            className="block rounded-xl border border-line bg-white/40 p-4 transition-colors hover:border-gold"
+            className="block rounded-xl border border-line bg-card p-4 transition-colors hover:border-gold"
           >
             <div className="flex items-baseline gap-2">
               <span className="font-display font-semibold text-ink">{r.title}</span>

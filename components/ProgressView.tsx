@@ -20,7 +20,7 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
         themselves complete at 90% scroll; adjust anything below.
       </p>
 
-      <div className="mt-8 rounded-xl border border-line bg-white/40 p-6">
+      <div className="mt-8 rounded-xl border border-line bg-card p-6">
         <div className="flex items-baseline justify-between">
           <span className="font-display text-5xl font-bold text-ink">{stats.pct}%</span>
           <span className="text-sm text-ink-faint">
@@ -40,7 +40,7 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
             <div
               key={c.slug}
               className={`flex items-center gap-4 rounded-xl border p-4 transition-colors ${
-                complete ? "border-emerald-500/40 bg-emerald-50/50" : "border-line bg-white/40"
+                complete ? "border-emerald-500/40 bg-emerald-500/10" : "border-line bg-card"
               }`}
             >
               <span className="w-8 shrink-0 text-right font-display text-sm font-bold text-ink-faint">

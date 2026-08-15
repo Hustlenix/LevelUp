@@ -21,7 +21,7 @@ export default function QuotesPage() {
 
       <div className="grid gap-5 sm:grid-cols-2">
         {quotes.map((q, i) => (
-          <figure key={i} className="flex flex-col rounded-xl border border-line bg-white/40 p-6">
+          <figure key={i} className="flex flex-col rounded-xl border border-line bg-card p-6">
             <blockquote className="flex-1 font-display text-lg italic leading-relaxed text-ink">
               “{q.text}”
             </blockquote>

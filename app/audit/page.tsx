@@ -33,7 +33,7 @@ export default function AuditPage() {
 
       <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-5">
         {gradeOrder.map((g) => (
-          <div key={g} className="flex items-center gap-3 rounded-xl border border-line bg-white/40 px-4 py-3">
+          <div key={g} className="flex items-center gap-3 rounded-xl border border-line bg-card px-4 py-3">
             <GradeBadge grade={g} />
             <div>
               <p className="font-display text-xl font-bold leading-none text-ink">{byGrade[g] ?? 0}</p>
@@ -66,7 +66,7 @@ export default function AuditPage() {
             <details
               key={a.id}
               id={anchor}
-              className="group rounded-xl border border-line bg-white/40 open:border-gold/60"
+              className="group rounded-xl border border-line bg-card open:border-gold/60"
             >
               <summary className="flex cursor-pointer items-start gap-4 p-4 marker:content-none">
                 <span className="mt-0.5 shrink-0">

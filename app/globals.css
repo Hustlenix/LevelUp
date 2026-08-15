@@ -3,6 +3,7 @@
 @theme {
   --color-paper: #f7f2e7;
   --color-paper-deep: #efe6d3;
+  --color-card: #fbf8ef;
   --color-ink: #221d16;
   --color-ink-soft: #5c5345;
   --color-ink-faint: #8a8072;
@@ -17,6 +18,27 @@
   --font-body: var(--font-source);
 }
 
+:root {
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --color-paper: #161310;
+  --color-paper-deep: #201b15;
+  --color-card: #211c15;
+  --color-ink: #ece4d4;
+  --color-ink-soft: #c5b9a4;
+  --color-ink-faint: #8f8371;
+  --color-gold: #c9a94e;
+  --color-gold-soft: #e0c06a;
+  --color-line: #3a332a;
+  --color-health: #5fa37f;
+  --color-wealth: #c9a94e;
+  --color-love: #d0837a;
+  --color-self: #8d7db5;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -26,6 +48,7 @@ body {
   color: var(--color-ink);
   font-family: var(--font-body);
   text-rendering: optimizeLegibility;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 ::selection {
