@@ -5,6 +5,7 @@ import "./globals.css";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import SearchProvider from "@/components/SearchProvider";
+import BackToTop from "@/components/BackToTop";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -41,6 +42,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <main className="flex-1">{children}</main>
           <Footer />
         </SearchProvider>
+        <BackToTop />
       </body>
     </html>
   );
