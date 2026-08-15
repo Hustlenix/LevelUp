@@ -20,6 +20,17 @@
 
 :root {
   color-scheme: light;
+  --reader-scale: 1;
+}
+
+[data-reader-scale="0.85"] {
+  --reader-scale: 0.85;
+}
+[data-reader-scale="1.15"] {
+  --reader-scale: 1.15;
+}
+[data-reader-scale="1.3"] {
+  --reader-scale: 1.3;
 }
 
 [data-theme="dark"] {
@@ -57,7 +68,7 @@ body {
 }
 
 .book-prose {
-  font-size: 1.075rem;
+  font-size: calc(1.075rem * var(--reader-scale));
   line-height: 1.85;
 }
 
@@ -161,4 +172,25 @@ body {
   .no-print {
     display: none !important;
   }
+}
+
+.reader-scale-label::after {
+  content: "100%";
+}
+[data-reader-scale="0.85"] .reader-scale-label::after {
+  content: "85%";
+}
+[data-reader-scale="1.15"] .reader-scale-label::after {
+  content: "115%";
+}
+[data-reader-scale="1.3"] .reader-scale-label::after {
+  content: "130%";
+}
+[data-reader-scale="0.85"] .reader-btn-minus {
+  opacity: 0.4;
+  pointer-events: none;
+}
+[data-reader-scale="1.3"] .reader-btn-plus {
+  opacity: 0.4;
+  pointer-events: none;
 }

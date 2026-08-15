@@ -6,6 +6,8 @@ import { PILLAR_META, type Chapter } from "@/lib/types";
 import { GradeBadge, PillarTag } from "@/components/ui";
 import { BookMarkdown, StudyList } from "@/components/Markdown";
 import { ReadingProgress } from "@/components/ReadingProgress";
+import ReaderControls from "@/components/ReaderControls";
+import ResumeScroll from "@/components/ResumeScroll";
 
 export function generateStaticParams() {
   const { chapters } = getSiteData();
@@ -71,6 +73,7 @@ export default async function ChapterPage({
 
   return (
     <article>
+      <ResumeScroll slug={chapter.slug} />
       <div className="border-b border-line bg-paper-deep/40">
         <div className="mx-auto max-w-3xl px-5 py-12">
           <div className="flex flex-wrap items-center gap-3">
@@ -86,8 +89,11 @@ export default async function ChapterPage({
           <p className="mt-4 font-display text-lg italic leading-relaxed text-ink-soft">
             {chapter.teaser}
           </p>
-          <div className="mt-6 max-w-sm">
-            <ReadingProgress slug={chapter.slug} />
+          <div className="mt-6 flex flex-wrap items-end justify-between gap-4">
+            <div className="max-w-sm">
+              <ReadingProgress slug={chapter.slug} />
+            </div>
+            <ReaderControls />
           </div>
         </div>
       </div>
