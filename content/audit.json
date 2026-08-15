@@ -1,0 +1,272 @@
+[
+  {
+    "id": "3.1",
+    "category": "Belief & placebo",
+    "claim": "Hotel housekeepers told their work was exercise lost weight, lowered blood pressure, and improved body composition.",
+    "grade": "A",
+    "verdict": "Verified science",
+    "detail": "Crum & Langer (2007) told 84 female hotel room attendants their work met the Surgeon General's definition of exercise. Four weeks later, with no objective behaviour change, they showed significant drops in weight, BMI, waist-to-hip ratio and blood pressure; perceived exercise rose from ~39.4% to ~79.4%. The effect is real, modest, and runs through expectation, effort and stress — a modulator, not magic.",
+    "citation": "Crum, A. J., & Langer, E. J. (2007). Mind-set matters: Exercise and the placebo effect. Psychological Science, 18(2), 165–171."
+  },
+  {
+    "id": "3.2",
+    "category": "Belief & placebo",
+    "claim": "The same milkshake labeled 'indulgent' produced a stronger hormonal response than the same shake labeled 'sensible'.",
+    "grade": "A",
+    "verdict": "Verified science",
+    "detail": "Crum et al. (2011) gave 46 people an identical 380-calorie shake under two labels. The 'indulgent' label (claimed 620 cal) produced a steeper decline in ghrelin — the hunger hormone — than the 'sensible' label (claimed 140 cal). Mindset measurably shapes physiology.",
+    "citation": "Crum, A. J., Corbin, W. R., Brownell, K. D., & Salovey, P. (2011). Mind over milkshakes. Health Psychology, 30(4), 424–429."
+  },
+  {
+    "id": "3.3",
+    "category": "Belief & placebo",
+    "claim": "Placebo pills work even when you know they are placebos.",
+    "grade": "A",
+    "verdict": "Verified science",
+    "detail": "Kaptchuk et al. (2010) gave IBS patients placebo pills openly labeled as inactive; they improved versus no treatment. Replicated in chronic low back pain (Carvalho et al., 2016) and in a 2021 meta-analysis. Expectation, ritual and meaning carry a large share of placebo — deception is not required.",
+    "citation": "Kaptchuk, T. J., et al. (2010). Placebos without deception. PLoS ONE, 5(12), e15591."
+  },
+  {
+    "id": "3.4",
+    "category": "Belief & placebo",
+    "claim": "Two minutes of a power pose changes hormones and risk behavior.",
+    "grade": "D (physiology) / B (felt state)",
+    "verdict": "Not replicated for biology; true for felt state",
+    "detail": "The original 2010 study reported testosterone +20% and cortisol −25%, but a 200-person replication (Ranehill et al., 2015) found no hormone or risk-taking effects — only self-reported feelings of power — and the original author later disavowed the strong claims. Posture shifts how powerful you feel, briefly; it does not measurably change your biology.",
+    "citation": "Carney, Cuddy & Yap (2010); Ranehill et al. (2015). Psychological Science."
+  },
+  {
+    "id": "3.5",
+    "category": "Belief & placebo",
+    "claim": "The RAS processes 11 million bits per second while conscious attention handles only 50.",
+    "grade": "D (numbers) / B (filter)",
+    "verdict": "The numbers are folklore; the filter is real",
+    "detail": "The figures come from Tor Norretranders' popular book The User Illusion (1998) — estimates of sensory throughput versus the conscious fraction, never a measured finding. The RAS is a real brainstem structure, and attention filtering is a replicated phenomenon (see 3.6). Drop the numerology; keep the gorilla.",
+    "citation": "Norretranders, T. (1998). The User Illusion. Viking."
+  },
+  {
+    "id": "3.6",
+    "category": "Belief & placebo",
+    "claim": "You can miss a gorilla while counting basketball passes.",
+    "grade": "A",
+    "verdict": "Verified science",
+    "detail": "Simons & Chabris (1999): roughly half of observers failed to notice a person in a gorilla suit while counting passes. Inattentional blindness is among the most replicated findings in psychology and is the legitimate basis for 'what you focus on, you find'.",
+    "citation": "Simons, D. J., & Chabris, C. F. (1999). Gorillas in our midst. Perception, 28(9), 1059–1074."
+  },
+  {
+    "id": "3.7",
+    "category": "Belief & placebo",
+    "claim": "The mind wanders ~47% of the time, and thinking about the future makes you happier.",
+    "grade": "A (data) / D (inference)",
+    "verdict": "The data are real; the inference inverts them",
+    "detail": "Killingsworth & Gilbert (2010), ~250,000 iPhone samples from ~2,250 adults: minds wandered 46.9% of the time, and wandering predicted unhappiness whether the drift was toward past or future. The claim 'future-thinking makes you happy' misreads the finding. Keep 'train your attention'; drop 'fantasize about the future'.",
+    "citation": "Killingsworth, M. A., & Gilbert, D. T. (2010). A wandering mind is an unhappy mind. Science, 330(6006), 932."
+  },
+  {
+    "id": "3.8",
+    "category": "Practice, habit & energy",
+    "claim": "Cleveland Clinic: mental training produced 35% of physical training's 53% strength gain.",
+    "grade": "A (accurate, domain-limited)",
+    "verdict": "Verified — for strength, not life outcomes",
+    "detail": "Ranganathan et al. (2004): after 12 weeks, subjects who only imagined abducting their pinky finger gained 35% strength versus 53% for physical training; the founding study (Yue & Cole, 1992) found 22% versus 30%. Motor imagery recruits much of the same cortex as execution. It trains skill and strength; it does not attract wealth.",
+    "citation": "Ranganathan, V. K., et al. (2004). From mental power to muscle power. Neuropsychologia, 42(7), 944–956."
+  },
+  {
+    "id": "3.9",
+    "category": "Practice, habit & energy",
+    "claim": "Process visualization beats outcome visualization (the 'Stanford study').",
+    "grade": "A (in spirit) / C (attribution)",
+    "verdict": "The finding is real; it was UCLA, not Stanford",
+    "detail": "Pham & Taylor (1999) showed students who mentally simulated the process of studying — planning, scheduling, executing — studied more and earned better grades than outcome simulators. The study is UCLA (not Stanford) and has nothing to do with NLP. The process-versus-outcome distinction is one of the most useful findings in the corpus.",
+    "citation": "Pham, L. B., & Taylor, S. E. (1999). From thought to action. Personality and Social Psychology Bulletin, 25(2), 250–260."
+  },
+  {
+    "id": "3.10",
+    "category": "Practice, habit & energy",
+    "claim": "Bannister's four-minute mile broke a psychological barrier.",
+    "grade": "B",
+    "verdict": "Real story; 'psychological barrier' is one part of it",
+    "detail": "Verified: May 6, 1954 — Bannister ran 3:59.4 at Oxford; Gunder Hägg's 4:01.4 (1945) had stood nine years; John Landy broke four minutes 46 days later. The barrier interpretation is fair, but training, pacing strategy and pacesetters improved simultaneously. Barriers fall when preparation meets opportunity, not when belief alone changes.",
+    "citation": "Historical record, 1954 (Bannister; Landy)."
+  },
+  {
+    "id": "3.11",
+    "category": "Practice, habit & energy",
+    "claim": "10,000 hours of deliberate practice produces expertise.",
+    "grade": "B (framework) / C (the number)",
+    "verdict": "Deliberate practice is real; the number is a heuristic",
+    "detail": "Meta-analysis (Macnamara, Hambrick & Oswald, 2014): practice explains ~26% of variance in games, 21% in music, 18% in sports, 4% in education, <1% in professions. '10,000 hours' is not a threshold; talent, timing and opportunity matter too. Practice is necessary and powerful, not sufficient.",
+    "citation": "Macnamara, B. N., Hambrick, D. Z., & Oswald, F. L. (2014). Psychological Science, 25(8), 1608–1618."
+  },
+  {
+    "id": "3.12",
+    "category": "Practice, habit & energy",
+    "claim": "The Marine Corps teaches the 70% rule.",
+    "grade": "A",
+    "verdict": "Verified doctrine",
+    "detail": "The 70% solution is genuine USMC doctrine for decision-making under uncertainty, taught at The Basic School and popularized in David Freedman's Corps Business (2000); Jeff Bezos expresses the same logic ('70% of the information'). Acting at 70% rather than waiting for certainty is faithful to the source.",
+    "citation": "USMC Basic School doctrine; Freedman, D. H. (2000). Corps Business."
+  },
+  {
+    "id": "3.13",
+    "category": "Practice, habit & energy",
+    "claim": "No zero days: always take one action toward your goal.",
+    "grade": "B",
+    "verdict": "Real origin; zero research pedigree",
+    "detail": "The phrase originates from a 2013 Reddit post in r/getdisciplined by user ryans01 — not a study or book. As a behavioral rule it aligns with habit formation and behavioral activation. Real origin, real utility.",
+    "citation": "ryans01 (2013). r/getdisciplined, Reddit."
+  },
+  {
+    "id": "3.14",
+    "category": "Practice, habit & energy",
+    "claim": "Act first, mood follows (behavioral activation).",
+    "grade": "A",
+    "verdict": "Verified — among the best-supported ideas in the corpus",
+    "detail": "Dimidjian et al. (2006) randomized 241 adults with major depression: behavioral activation — scheduling and doing meaningful activities — was comparable to antidepressant medication and outperformed cognitive therapy in severe depression. Note: the training said 'JAMA'; the journal was JCCP. The COBRA trial (2016) confirmed non-inferiority to CBT; the severity-moderator result is contested.",
+    "citation": "Dimidjian, S., et al. (2006). Journal of Consulting and Clinical Psychology, 74(4), 658–670."
+  },
+  {
+    "id": "3.15",
+    "category": "Practice, habit & energy",
+    "claim": "Believing ability can grow unlocks achievement (growth mindset).",
+    "grade": "B",
+    "verdict": "Real but modest — a small lever",
+    "detail": "Sisk et al. (2018), two meta-analyses: mindset–achievement correlation r ≈ .10; intervention effects d ≈ .08 overall and d ≈ .19 for high-risk students. Growth mindset helps, especially for struggling students, but it has been oversold relative to its effect sizes.",
+    "citation": "Sisk, V. F., et al. (2018). Psychological Science, 29(4), 549–571."
+  },
+  {
+    "id": "3.16",
+    "category": "Practice, habit & energy",
+    "claim": "Willpower is a limited resource that depletes (ego depletion).",
+    "grade": "D (model) / B (experience)",
+    "verdict": "The model failed replication; the experience is real",
+    "detail": "The flagship effect failed a 23-lab preregistered replication (Hagger et al., 2016; n=2,141; d=0.04). Mental fatigue and decision strain are real, and beliefs about willpower predict the experience (Job & Dweck), but 'limited fuel tank' is not the mechanism. Don't use 'I'm depleted' as a license to quit early.",
+    "citation": "Hagger, M. S., et al. (2016). Perspectives on Psychological Science, 11(4), 546–573."
+  },
+  {
+    "id": "3.17",
+    "category": "Practice, habit & energy",
+    "claim": "Parole judges grant parole 65% early and ~0% before meals (decision fatigue).",
+    "grade": "B/C",
+    "verdict": "Real pattern; confounded and overstated",
+    "detail": "Danziger et al. (2011): 1,112 parole decisions by eight Israeli judges; favorable rulings fell from ~65% to near zero across sessions, rebounding after breaks. But case order was not random (Weinshall-Margel & Shapard, 2011), simulations suggest the magnitude was overstated (Glöckner, 2016), and a 2025 registered report found no effect in physicians. 'Decision quality degrades over long sessions' survives; the headline numbers do not.",
+    "citation": "Danziger, S., Levav, J., & Avnaim-Pesso, L. (2011). PNAS, 108(17), 6889–6892."
+  },
+  {
+    "id": "3.18",
+    "category": "Practice, habit & energy",
+    "claim": "Under 7 hours of sleep and you are as impaired as a drunk driver.",
+    "grade": "B (direction) / C (framing)",
+    "verdict": "Right direction, overstated framing",
+    "detail": "Dawson & Reid (1997, Nature): 17 hours of sustained wakefulness impairs performance like ~0.05% BAC; ~24 hours like ~0.10%. Williamson & Feyer (2000) found similar. The claim is about sustained wakefulness — not ordinary 6-hour nights — so '7 hours = drunk' overstates it, but the direction (sleep loss degrades cognition, mood, self-control) is solid.",
+    "citation": "Dawson, D., & Reid, K. (1997). Nature, 388(6639), 235."
+  },
+  {
+    "id": "3.19",
+    "category": "Practice, habit & energy",
+    "claim": "Interruptions cost 23 minutes 15 seconds of refocus time.",
+    "grade": "B/C",
+    "verdict": "Interruptions are costly; the exact number is journalistic",
+    "detail": "Gloria Mark et al. (2008, CHI) documented real costs of workplace interruption — interrupted workers compensate by working faster, with more stress and frustration. The famous '23 minutes 15 seconds' figure comes from Mark's follow-up interviews, not the 2008 paper. Protect focus blocks; drop the exact number.",
+    "citation": "Mark, G., Gudith, D., & Klocke, U. (2008). The cost of interrupted work. CHI '08."
+  },
+  {
+    "id": "3.20",
+    "category": "Practice, habit & energy",
+    "claim": "Dopamine detox resets your dopamine receptors.",
+    "grade": "D (mechanism) / B (behavior)",
+    "verdict": "Real protocol; unsupported neuro-story",
+    "detail": "The protocol derives from UCSF psychiatrist Cameron Sepah's CBT approach (stimulus control + exposure-response prevention) for compulsive tech use — legitimate. But no evidence shows fasting changes receptors or baseline dopamine. Lembke's Dopamine Nation (2021) is the reputable version: homeostasis and pleasure–pain balance. Keep the behavior; drop the story.",
+    "citation": "Sepah, S. C. (2019), UCSF; Lembke, A. (2021). Dopamine Nation. Dutton."
+  },
+  {
+    "id": "3.21",
+    "category": "Practice, habit & energy",
+    "claim": "Flow makes you 5x more productive (a 'McKinsey study').",
+    "grade": "D (claim) / B (flow)",
+    "verdict": "Flow is real; the 5x figure is unverifiable folklore",
+    "detail": "The 5x claim traces to Steven Kotler's The Rise of Superman (2014), citing a ten-year McKinsey study that has never been published or located. Flow is a well-documented psychological state (Csikszentmihalyi) and challenge–skill balance genuinely improves engagement — but never quote the 5x.",
+    "citation": "Kotler, S. (2014). The Rise of Superman. New Harvest."
+  },
+  {
+    "id": "3.22",
+    "category": "Practice, habit & energy",
+    "claim": "Zeigarnik effect: you remember unfinished tasks ~90% better.",
+    "grade": "D (memory claim) / B (motivational claim)",
+    "verdict": "The memory claim failed replication; the pull is real",
+    "detail": "Zeigarnik's 1927 finding has replicated poorly: her own students found fewer than a third of 44 attempts succeeded; van Bergen's 1968 exact replication failed; a 2025 meta-analysis (Ghibellini & Meier) found no memory advantage. What replicates: the pull to resume interrupted tasks (Ovsiankina) and unfulfilled goals intruding until discharged or planned (Masicampo & Baumeister, 2011).",
+    "citation": "Masicampo, E. J., & Baumeister, R. F. (2011). JPSP, 100(5), 810–826."
+  },
+  {
+    "id": "3.23",
+    "category": "Motivation, business & metaphysics",
+    "claim": "Buffett: read 500 pages a day; knowledge compounds like interest.",
+    "grade": "C (number) / B (habit)",
+    "verdict": "The habit is real; the number is embellished",
+    "detail": "The '500 pages a day' quote traces to Todd Combs's 2013 recollection of Buffett's advice to Columbia students; a 2010 WSJ profile described 500 pages a week, and Quote Investigator could not verify the daily figure. Verified: Buffett reports 5–6 hours of reading daily and frames knowledge as compounding — the principle is sound.",
+    "citation": "Quote Investigator (2018); WSJ (2010)."
+  },
+  {
+    "id": "3.24",
+    "category": "Motivation, business & metaphysics",
+    "claim": "Pat Flynn made $8,000 in his first month online.",
+    "grade": "B",
+    "verdict": "Accurate with context — it hid two years of groundwork",
+    "detail": "Flynn's own income reports confirm ~$7,900–8,000 in October 2008 — his first month monetizing a blog that had existed for almost two years, not his first month online. First-year total ~$200,000, documented publicly. The 'overnight' framing hides the unpaid groundwork, which is itself the lesson.",
+    "citation": "Flynn, P. Smart Passive Income income reports (2008–present)."
+  },
+  {
+    "id": "3.25",
+    "category": "Motivation, business & metaphysics",
+    "claim": "Negative self-talk is 40–50x more powerful than positive.",
+    "grade": "C (direction) / D (the ratio)",
+    "verdict": "The negativity bias is real; the ratio is invented",
+    "detail": "Baumeister et al. (2001) reviewed 200+ studies showing bad events, feedback and emotions outweigh good ones of equal magnitude; Ito et al. (1998) found larger brain responses to negative images. But no study supports a 40–50x ratio — the number is stage-talk with no primary source. Gottman's 5:1 applies only to marriage; the 3:1 positivity ratio was retracted.",
+    "citation": "Baumeister, R. F., et al. (2001). Review of General Psychology, 5(4), 323–370."
+  },
+  {
+    "id": "3.26",
+    "category": "Motivation, business & metaphysics",
+    "claim": "The mind defaults to adding, so the master skill is subtracting.",
+    "grade": "A",
+    "verdict": "Verified — one of the most robust findings in the corpus",
+    "detail": "Adams, Converse, Hales & Klotz (2021, Nature): across eight experiments, people overwhelmingly add elements when improving a system, even when subtracting is better. Leidy Klotz's Subtract (2021) is the practitioner translation. (The training's 'Leidy cloths' is a garbled transcription of 'Leidy Klotz'.)",
+    "citation": "Adams, G. S., et al. (2021). Nature, 592(7853), 258–261."
+  },
+  {
+    "id": "3.27",
+    "category": "Motivation, business & metaphysics",
+    "claim": "High theta = high suggestibility, especially in childhood.",
+    "grade": "B/C",
+    "verdict": "Direction supported; developmental claims unverified",
+    "detail": "Sabourin et al. (1990) found highly hypnotizable subjects showed greater theta power, and theta increased during hypnosis. The claims about 'programming before age 7' and theta as a direct gateway go beyond the evidence. Direction: supported. Magnitude and age claims: unverified.",
+    "citation": "Sabourin, M. E., et al. (1990). International Journal of Psychophysiology, 10(2), 125–147."
+  },
+  {
+    "id": "3.28",
+    "category": "Motivation, business & metaphysics",
+    "claim": "The vacuum: want nothing and the universe delivers.",
+    "grade": "D (as physics) / B (as psychology)",
+    "verdict": "No cosmology; real psychology underneath",
+    "detail": "There is no mechanism by which an empty space attracts outcomes. The useful residue is well supported: non-attachment to outcomes improves decision quality and reduces desperate behavior (scarcity degrades judgment — Mullainathan & Shafir), and goals direct attention. Use the psychology; discard the cosmology.",
+    "citation": "Mullainathan, S., & Shafir, E. (2013). Scarcity."
+  },
+  {
+    "id": "3.29",
+    "category": "Motivation, business & metaphysics",
+    "claim": "Everything reflects your state; balance is a lie; the lag explains delayed results.",
+    "grade": "B (lag) / C (balance) / C (mirror)",
+    "verdict": "The lag is real; the mirror is confirmation bias in costume",
+    "detail": "The lag is standard in compounding processes — skill, audience and wealth show delayed visible returns; the J-curve is real anti-quitting medicine. 'Balance is a lie' is a strategy claim (depth beats hedging), a values judgment, not a finding. The 'mirror' is your filter: the mind admits evidence matching belief, so the world appears to reflect your state.",
+    "citation": "Compounding & expertise literature; Crum & Langer (2007); Simons & Chabris (1999)."
+  },
+  {
+    "id": "3.30",
+    "category": "Motivation, business & metaphysics",
+    "claim": "Hate your life: use current misery as fuel.",
+    "grade": "B (action) / D (framing)",
+    "verdict": "The action core is right; self-attack is wrong",
+    "detail": "The evidence-compatible core is behavioral activation: act first, let mood follow. The self-attacking framing is unnecessary and contrary to the evidence — self-attack is a documented risk factor, not a fuel. Correct framing: treat your situation as unacceptable and act accordingly.",
+    "citation": "Dimidjian, S., et al. (2006). JCCP, 74(4), 658–670."
+  }
+]

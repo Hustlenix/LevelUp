@@ -1,0 +1,49 @@
+{
+  "phases": [
+    {
+      "phase": 1,
+      "title": "Foundation",
+      "days": "Days 1–30",
+      "focus": "Attention, sleep, loops",
+      "items": [
+        "Adopt Morning Calibration (2.3) and The Perfect Week (2.13) immediately.",
+        "Run The Boredom Tolerance Ladder (2.8) week by week; keep the daily 30-minute block.",
+        "One-Task Rule (2.6) every workday; paper next-actions for every interruption.",
+        "Sleep: guard the 7.5–8-hour window for the full 30 days before judging any other intervention. Track it; if you average under 7, nothing else gets credit.",
+        "Weekly 20-minute review; log inputs daily, outputs weekly."
+      ],
+      "milestone": "By day 30, a stable week skeleton exists and attention blocks are non-negotiable. Exit criteria: 25/30 days with calibration done and no zero days."
+    },
+    {
+      "phase": 2,
+      "title": "Identity and Intensity",
+      "days": "Days 31–60",
+      "focus": "The stack and the block",
+      "items": [
+        "Add The Identity Stack (2.4) and The God-Mode Protocol (2.9) to the skeleton.",
+        "Add The Flow Alignment Loop (2.5) and The Discovery Protocol (2.7) for the one goal that matters most.",
+        "Run the first Belief Audit (2.1) this month; pick one belief to test.",
+        "Log every God-Mode block; adjust the 70% targets upward once."
+      ],
+      "milestone": "3–4 God-Mode blocks delivered with logged outputs; identity floor met 25/30 days."
+    },
+    {
+      "phase": 3,
+      "title": "Subtraction and Expansion",
+      "days": "Days 61–90",
+      "focus": "Simplify, then scale",
+      "items": [
+        "Run The Equation Check (2.2) on any new claim you're about to adopt; audit your environment for drains and remove one trigger per week (2.12).",
+        "Run The Vacuum Protocol (2.10) and The Lag Reframe (2.11) to convert desire into non-attached action.",
+        "Quarterly: re-run the Belief Audit, one dopamine-reset day (2.12), and the full Sunday review (2.13)."
+      ],
+      "milestone": "Two consecutive months of floor-consistent behavior, one tested belief completed with objective data, and a written list of what you subtracted — and what it did."
+    }
+  ],
+  "rules": [
+    "Start nothing new while something existing is slipping.",
+    "One protocol at a time, 70% scale, zero-day floor.",
+    "When results lag, review inputs (2.11), not the plan.",
+    "When a claim sounds too good, run the equation check (2.2) — and when it fails, keep the behavior if it works, and drop the story either way."
+  ]
+}

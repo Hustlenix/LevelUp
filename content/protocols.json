@@ -1,0 +1,182 @@
+[
+  {
+    "num": "2.1",
+    "title": "The Belief Audit",
+    "duration": "15 minutes, quarterly",
+    "purpose": "Replace 'change your belief and reality changes' with its testable core: your interpretation of effort and circumstances modulates outcomes.",
+    "evidence": ["Crum & Langer (2007)", "Crum et al. (2011)", "Kaptchuk et al. (2010)"],
+    "steps": [
+      "Write down three areas where you believe something about yourself that you have never tested — 'I'm not a morning person', 'I can't do sales', 'my work doesn't matter'.",
+      "For each, ask: what would someone who believed the opposite do differently this week? Write the behaviors.",
+      "Choose one belief to test. Do the behaviors for 30 days. Track an objective outcome — weight, calls made, revenue, mood scores — not just how you feel.",
+      "At day 30, compare. If the behaviors produced results, the belief was the bottleneck. If not, discard the belief and the behavior.",
+      "Repeat quarterly with the next belief."
+    ]
+  },
+  {
+    "num": "2.2",
+    "title": "The Equation Check",
+    "duration": "5 minutes, as needed",
+    "purpose": "Catch the moment a famous claim leaks into decision-making as a false law.",
+    "evidence": ["The claim audit in Part 3 of the research (30 claims)"],
+    "steps": [
+      "Whenever you catch yourself reasoning from a famous claim — 'studies show…', 'research proves…' — write it as an equation: X causes Y, at magnitude M, in population P.",
+      "Ask three questions: Is the study real? Does it apply to my situation? Is the magnitude in the original study close to what I'm assuming?",
+      "If any answer is no, downgrade the claim to 'plausible but unverified' and act on it with smaller stakes until you have your own data."
+    ]
+  },
+  {
+    "num": "2.3",
+    "title": "Morning Calibration",
+    "duration": "10 minutes, daily",
+    "purpose": "Set attention and expectation deliberately — the evidence-compatible replacement for 'program the RAS'.",
+    "evidence": ["Intention-superiority (Goschke & Kuhl, 1993)", "Plan-making (Masicampo & Baumeister, 2011)", "Process simulation (Pham & Taylor, 1999)"],
+    "steps": [
+      "Before opening any device, name the one outcome that would make today count. Write it on paper.",
+      "Ask: what is the next physical action toward it, and when exactly will I do it? Write both — plan-making discharges goal intrusion.",
+      "State the interpretation you are choosing for today's likely difficulties: obstacles as information, not verdicts.",
+      "Optional but potent: two minutes of deliberate breathing before the first decision of the day."
+    ]
+  },
+  {
+    "num": "2.4",
+    "title": "The Identity Stack",
+    "duration": "20 minutes, once; reviewed weekly",
+    "purpose": "Identity-based change, built bottom-up.",
+    "evidence": ["70% rule (USMC doctrine)", "No-zero-days rule (ryans01, 2013)", "Behavioral activation (Dimidjian et al., 2006)", "Self-perception research"],
+    "steps": [
+      "Define the target identity in verbs, not nouns. 'I am a writer' is a noun; 'I write 500 words before breakfast' is a behavior. Write three behaviors the identity performs weekly.",
+      "Run the 70% check: can you start each behavior at 70% of the ideal version today? If yes, schedule it. If no, shrink it until the answer is yes.",
+      "Set the zero-day floor: the minimum version of each behavior — one page, one call, one push-up — that still counts. Below that floor, no day is ever zero.",
+      "Do, then tell: perform the behavior before you announce the identity. Self-concept follows behavior, not the reverse.",
+      "Weekly review: check the floor was met every day; adjust the 70% target upward; note which day felt like the identity and why."
+    ]
+  },
+  {
+    "num": "2.5",
+    "title": "The Flow Alignment Loop",
+    "duration": "10 minutes, daily",
+    "purpose": "Maximize engaged, high-quality work time without citing the unverifiable 5x figure.",
+    "evidence": ["Flow construct (Csikszentmihalyi)", "Challenge–skill balance", "Interruption costs (Mark et al., 2008)"],
+    "steps": [
+      "Each evening, list tomorrow's tasks with a difficulty rating (1–10) and your current skill rating (1–10) for each.",
+      "Match: task difficulty should sit about one point above skill. Too hard (gap 3+) → break the task down. Too easy → add constraints: tighter deadline, higher standard.",
+      "Schedule the matched task in your freshest block — for most people, the first 90 minutes. Protect it from notifications.",
+      "During work, use one visible progress marker — a checklist, a counter — so the loop stays closed and the win is banked.",
+      "At day's end, log the one task you lost track of time on. That is your flow signature; schedule more of it."
+    ]
+  },
+  {
+    "num": "2.6",
+    "title": "The One-Task Rule and the Winner's Loop",
+    "duration": "Daily, all day",
+    "purpose": "Rebuild single-tasking and finish what you start.",
+    "evidence": ["Plan-making discharges goal intrusion (Masicampo & Baumeister, 2011)", "Interruption costs (Mark et al., 2008)", "Completion as release", "Email batching (Kushlev & Dunn)"],
+    "steps": [
+      "Pick the day's one critical task before anything else. Everything else is secondary.",
+      "Work in blocks of 25–50 minutes, one task per block, no tab-hoarding, no phone in reach.",
+      "The winner's loop: before each block, write the block's specific output — 'finish section 2 draft', not 'work on book'. Close the loop by checking it off and saying the outcome aloud.",
+      "When interrupted — and you will be — write the next action for the interrupted task on paper before handling the interruption.",
+      "Batch all email, messaging and administration into two 25-minute windows per day."
+    ]
+  },
+  {
+    "num": "2.7",
+    "title": "The Discovery Protocol",
+    "duration": "30 minutes",
+    "purpose": "Replace outcome fantasy with process simulation: imagine the steps and execute them.",
+    "evidence": ["Process vs outcome simulation (Pham & Taylor, 1999)", "70% rule", "Plan specificity"],
+    "steps": [
+      "Write the goal. Then delete every sentence about how it will feel to have it.",
+      "Write the process: the first 20 concrete steps, in order, with a date on each. If you cannot name step 7, the goal is not yet a plan.",
+      "Simulate the process daily in your mind for two minutes: see yourself doing step by step, including the boring and hard moments.",
+      "Schedule the first step for today, at 70% scale.",
+      "Weekly: update the step list from reality. The plan is a hypothesis, not a promise."
+    ]
+  },
+  {
+    "num": "2.8",
+    "title": "The Boredom Tolerance Ladder",
+    "duration": "3 weeks, daily",
+    "purpose": "Restore the ability to sit with stimulation-free experience — the defensible core of 'dopamine detox'.",
+    "evidence": ["Sepah's CBT protocol", "Lembke's homeostasis model", "Exposure-response prevention (clinical literature)"],
+    "steps": [
+      "Week 1: identify your three highest-frequency compulsive triggers — phone checks, social feeds, snack browsing. Keep them, but add a 10-second pause before each: state what you are about to do and why.",
+      "Week 2: choose one daily 30-minute no-stimulation block: no screens, no audio, no food. Walk, commute, or sit. When the urge rises, notice it and stay.",
+      "Week 3: replace one daily compulsion with a deliberate boredom-tolerant activity: reading a physical book, journaling, single-tasking a chore.",
+      "After each block, rate (1–10) how uncomfortable you were and how fine you were after 10 minutes. Expect the second number to exceed the first by week 2.",
+      "Maintain: one daily 30-minute block indefinitely, and one annual 24-hour digital fast as a reset."
+    ]
+  },
+  {
+    "num": "2.9",
+    "title": "The God-Mode Protocol",
+    "duration": "Weekly, 45 minutes + 60–90 minute block",
+    "purpose": "A scheduled, deliberate peak-performance block that bundles several verified mechanisms into one ritual.",
+    "evidence": ["Process simulation (Pham & Taylor, 1999)", "Plan-making (Masicampo & Baumeister, 2011)", "Sleep (Dawson & Reid, 1997)", "Single-tasking & interruptions (Mark et al., 2008)"],
+    "steps": [
+      "Prepare (Sunday, 10 min): pick one hard, meaningful task for the week's God-Mode block. Set the difficulty one notch above current skill. Remove all temptations from reach. Sleep well the night before.",
+      "Enter (block day, 5 min): two minutes of slow breathing; write the block's specific output; state your chosen interpretation — 'this is training, not a test'.",
+      "Execute (60–90 min): single task, no interruptions, visible progress marker. If attention wanders, return without self-punishment — the skill is returning.",
+      "Close (5 min): check off the output, write the next action for anything unfinished, log a one-line win.",
+      "Review (weekly, 10 min): track the four weeks' outputs. This is your personal evidence base for what intensity plus consistency produces."
+    ]
+  },
+  {
+    "num": "2.10",
+    "title": "The Vacuum Protocol",
+    "duration": "Weekly",
+    "purpose": "Harness the useful core of 'wanting nothing': act on desire without attachment to outcome.",
+    "evidence": ["Goal activation research", "Scarcity effects (Mullainathan & Shafir)", "Subtraction bias (Adams et al., 2021)"],
+    "steps": [
+      "Write what you want, specifically and vividly. Desire directs attention and goal activation — keep it.",
+      "Next to it, write what you will do about it this week, independent of any guarantee of success.",
+      "Write what you will stop doing — the scarcity-driven behaviors: checking results hourly, renegotiating the plan when nothing visible happens, comparing yourself to others' timelines.",
+      "Adopt the lag reframe (2.11) so the absence of visible results does not read as failure.",
+      "Weekly, audit: if a behavior is driven by fear of loss rather than pursuit of the goal, remove it. This is the subtraction skill applied to behavior."
+    ]
+  },
+  {
+    "num": "2.11",
+    "title": "The Lag Reframe",
+    "duration": "One-time, revisited monthly",
+    "purpose": "Inoculate against quitting during the invisible-growth phase of any compounding process.",
+    "evidence": ["Compounding in skill, finance and knowledge", "Delayed returns in expertise research", "Practitioner-tested utility"],
+    "steps": [
+      "Write the area where you feel 'nothing is working' — business, fitness, skill, relationships.",
+      "Draw the compound curve for that domain: flat early, steep later. Mark where you estimate you are on it. Assume you are earlier than feels fair.",
+      "Write three leading indicators (inputs you control: reps, pages, calls, days logged) and one lagging indicator (output: revenue, weight, rank). Track inputs daily, outputs monthly.",
+      "When the monthly output disappoints, review the inputs, not the output. If inputs are on track, the lag is doing its job; the J-curve does not announce itself.",
+      "Re-read the curve whenever you are tempted to change strategy for the third time in a quarter."
+    ]
+  },
+  {
+    "num": "2.12",
+    "title": "The Dopamine Detox, Correctly",
+    "duration": "1 day, quarterly + the daily ladder",
+    "purpose": "The honest version: a behavioral reset, not a neurochemical one.",
+    "evidence": ["Sepah's CBT protocol", "Lembke's homeostasis model", "Exposure-response prevention"],
+    "steps": [
+      "Pick a day (quarterly) with no screens beyond essential work, no social media, no streaming, no snacks-as-entertainment. Plan the day's substitutes in advance: reading, walking, one long task, one conversation, sleep.",
+      "Expect discomfort in the first hours. Log it; do not fight it — the craving system habituates faster when you observe it without acting.",
+      "Use the day to identify which 'needs' were actually habits: note every time you reach for a device and what triggered it — boredom, anxiety, habit.",
+      "Return with two rules: the daily 30-minute block from 2.8, and one trigger removed per month — delete the app, move the charger, change the default.",
+      "Reject the claim that this 'resets your dopamine receptors'. Keep the behavior, drop the story."
+    ]
+  },
+  {
+    "num": "2.13",
+    "title": "The Perfect Week",
+    "duration": "1 hour, every Sunday",
+    "purpose": "The scheduling backbone that makes every other protocol stick — environment design over willpower.",
+    "evidence": ["Sleep (Dawson & Reid, 1997)", "Interruption costs (Mark et al., 2008)", "Decision timing research", "Planning specificity"],
+    "steps": [
+      "Block the non-negotiables first: sleep windows (7.5–8 hours; guard them like meetings), exercise (3x), and one relationship hour.",
+      "Block one God-Mode block (2.9), three flow-aligned work blocks (2.5), and two admin windows (2.6).",
+      "Block the daily 10-minute calibration (2.3) and the daily 30-minute boredom block (2.8).",
+      "Schedule the week's one hard conversation or scary action early in the week — put the important thing first.",
+      "Leave 20% of the week deliberately unstructured. Overflow, recovery and spontaneity are part of the system, not failures of it.",
+      "Sunday review (20 min): check floors (2.4), review inputs vs outputs (2.11), adjust one thing, then plan next week."
+    ]
+  }
+]

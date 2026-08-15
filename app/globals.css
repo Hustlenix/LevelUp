@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #f7f2e7;
+  --color-paper-deep: #efe6d3;
+  --color-ink: #221d16;
+  --color-ink-soft: #5c5345;
+  --color-ink-faint: #8a8072;
+  --color-gold: #96772c;
+  --color-gold-soft: #c9a94e;
+  --color-line: #ddd2ba;
+  --color-health: #2f6b4f;
+  --color-wealth: #96772c;
+  --color-love: #a4574f;
+  --color-self: #5b4b7a;
+  --font-display: var(--font-fraunces);
+  --font-body: var(--font-source);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-gold-soft);
+  color: var(--color-ink);
+}
+
+.book-prose {
+  font-size: 1.075rem;
+  line-height: 1.85;
+}
+
+.book-prose p {
+  margin-bottom: 1.35em;
+}
+
+.book-prose h3 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin: 1.8em 0 0.7em;
+}
+
+.book-prose strong {
+  color: var(--color-ink);
+  font-weight: 700;
+}
+
+.book-prose ul,
+.book-prose ol {
+  margin: 0 0 1.35em 1.4em;
+  list-style: none;
+}
+
+.book-prose ul li,
+.book-prose ol li {
+  position: relative;
+  padding-left: 1.4em;
+  margin-bottom: 0.55em;
+}
+
+.book-prose ul li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.72em;
+  width: 7px;
+  height: 7px;
+  background: var(--color-gold);
+  transform: rotate(45deg);
+}
+
+.book-prose ol {
+  counter-reset: step;
+}
+
+.book-prose ol li {
+  counter-increment: step;
+}
+
+.book-prose ol li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0.05em;
+  font-family: var(--font-display);
+  font-size: 0.85em;
+  color: var(--color-gold);
+  font-weight: 600;
+}
+
+.book-prose blockquote {
+  margin: 1.8em 0;
+  padding: 1.1em 1.4em 1.1em 1.6em;
+  border-left: 3px solid var(--color-gold);
+  background: var(--color-paper-deep);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.12rem;
+  color: var(--color-ink);
+  border-radius: 0 8px 8px 0;
+}
+
+.book-prose blockquote p {
+  margin: 0;
+}
+
+.drop-cap::first-letter {
+  font-family: var(--font-display);
+  font-weight: 700;
+  float: left;
+  font-size: 3.4em;
+  line-height: 0.82;
+  padding-right: 0.09em;
+  padding-top: 0.04em;
+  color: var(--color-gold);
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: var(--color-line);
+  border-radius: 3px;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
