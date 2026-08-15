@@ -41,41 +41,74 @@ export function GradeBadge({ grade }: { grade: string }) {
   );
 }
 
-export function ChapterCard({ chapter }: { chapter: Chapter }) {
+interface ChapterCardProps {
+  chapter: Chapter;
+  completed?: boolean;
+  bookmarked?: boolean;
+  onToggleBookmark?: () => void;
+}
+
+export function ChapterCard({ chapter, completed, bookmarked, onToggleBookmark }: ChapterCardProps) {
   const num = String(chapter.number).padStart(2, "0");
   return (
-    <Link
-      href={`/chapters/${chapter.slug}/`}
-      className="group flex gap-4 rounded-xl border border-line bg-card p-4 transition-all hover:border-gold hover:shadow-md hover:shadow-gold/10"
-    >
-      <div className="flex w-12 shrink-0 flex-col items-center justify-center">
-        <span className="font-display text-2xl font-bold text-gold/70 transition-colors group-hover:text-gold">
-          {num}
-        </span>
-      </div>
-      <div className="min-w-0">
-        <div className="flex flex-wrap items-center gap-2">
-          <h3 className="font-display text-lg font-semibold leading-snug text-ink">
-            {chapter.title}
-          </h3>
-          <PillarTag pillar={chapter.pillar} />
+    <div className="relative">
+      <Link
+        href={`/chapters/${chapter.slug}/`}
+        className={`group flex gap-4 rounded-xl border bg-card p-4 pr-12 transition-all hover:border-gold hover:shadow-md hover:shadow-gold/10 ${
+          completed ? "border-gold/60" : "border-line"
+        }`}
+      >
+        <div className="flex w-12 shrink-0 flex-col items-center justify-center">
+          <span className="font-display text-2xl font-bold text-gold/70 transition-colors group-hover:text-gold">
+            {num}
+          </span>
         </div>
-        <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-ink-soft">
-          {chapter.teaser}
-        </p>
-        <div className="mt-2 flex items-center gap-3 text-[11px] uppercase tracking-wider text-ink-faint">
-          <span>~{chapter.duration}</span>
-          <span>·</span>
-          <span>{chapter.keyConcepts.length} concepts</span>
-          {chapter.studies.length > 0 && (
-            <>
-              <span>·</span>
-              <span>{chapter.studies.length} study {chapter.studies.length === 1 ? "claim" : "claims"}</span>
-            </>
-          )}
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 className="font-display text-lg font-semibold leading-snug text-ink">
+              {chapter.title}
+            </h2>
+            {completed && (
+              <span aria-label="Completed" title="Completed" className="font-display text-gold">
+                ✓
+              </span>
+            )}
+            <PillarTag pillar={chapter.pillar} />
+          </div>
+          <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-ink-soft">
+            {chapter.teaser}
+          </p>
+          <div className="mt-2 flex items-center gap-3 text-[11px] uppercase tracking-wider text-ink-faint">
+            <span>~{chapter.duration} read</span>
+            <span>·</span>
+            <span>{chapter.keyConcepts.length} concepts</span>
+            {chapter.studies.length > 0 && (
+              <>
+                <span>·</span>
+                <span>{chapter.studies.length} study {chapter.studies.length === 1 ? "claim" : "claims"}</span>
+              </>
+            )}
+            <span className="ml-auto text-gold opacity-0 transition-opacity group-hover:opacity-100" aria-hidden="true">
+              →
+            </span>
+          </div>
         </div>
-      </div>
-    </Link>
+      </Link>
+      {onToggleBookmark && (
+        <button
+          type="button"
+          onClick={onToggleBookmark}
+          aria-pressed={bookmarked}
+          aria-label={`Bookmark ${chapter.title}`}
+          title="Bookmark this chapter"
+          className={`absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full text-base no-print transition-colors ${
+            bookmarked ? "text-gold" : "text-ink-faint hover:text-gold"
+          }`}
+        >
+          {bookmarked ? "★" : "☆"}
+        </button>
+      )}
+    </div>
   );
 }
 
