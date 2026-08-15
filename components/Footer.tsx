@@ -31,6 +31,9 @@ export default function Footer() {
       <div className="border-t border-line/60 py-4 text-center text-[11px] text-ink-faint">
         Grades are honest, claims are sourced, protocols are testable. Read, verify, apply.
       </div>
+      <div className="pb-4 text-center text-[11px] text-ink-faint">
+        Built by Hustlenix · © 2026 · CC BY-NC 4.0
+      </div>
     </footer>
   );
 }
