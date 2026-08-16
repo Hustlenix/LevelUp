@@ -4,8 +4,10 @@ import Link from "next/link";
 import { useSearch } from "@/components/SearchProvider";
 import ThemeToggle from "@/components/ThemeToggle";
 import ContinueReading from "@/components/ContinueReading";
+import ChaptersMenu from "@/components/ChaptersMenu";
+import type { Chapter } from "@/lib/types";
 
-export default function Nav() {
+export default function Nav({ chapters }: { chapters: Chapter[] }) {
   const { setOpen } = useSearch();
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur no-print">
@@ -17,9 +19,7 @@ export default function Nav() {
           </span>
         </Link>
         <nav className="ml-auto hidden items-center gap-5 text-sm text-ink-soft md:flex">
-          <Link className="transition-colors hover:text-gold" href="/chapters/">
-            Chapters
-          </Link>
+          <ChaptersMenu chapters={chapters} />
           <Link className="transition-colors hover:text-gold" href="/audit/">
             Verification
           </Link>
@@ -48,8 +48,10 @@ export default function Nav() {
         <ContinueReading />
         <ThemeToggle />
       </div>
+      <div className="border-t border-line px-5 py-2 md:hidden">
+        <ChaptersMenu chapters={chapters} mobile />
+      </div>
       <nav className="flex gap-4 overflow-x-auto border-t border-line px-5 py-2 text-xs text-ink-soft scrollbar-thin md:hidden">
-        <Link className="shrink-0 hover:text-gold" href="/chapters/">Chapters</Link>
         <Link className="shrink-0 hover:text-gold" href="/audit/">Verification</Link>
         <Link className="shrink-0 hover:text-gold" href="/protocols/">Protocols</Link>
         <Link className="shrink-0 hover:text-gold" href="/glossary/">Glossary</Link>

@@ -6,10 +6,11 @@ import { PageShell, SectionHeading, ChapterCard } from "@/components/ui";
 import { canonical } from "@/lib/site";
 import ChapterList from "@/components/ChapterList";
 import type { Chapter } from "@/lib/types";
+import { BOOK_GROUPS } from "@/lib/groups";
 
 export const metadata: Metadata = {
   title: "Table of Contents",
-  description: "All 28 chapters of The Level Up Manual, grouped by pillar.",
+  description: "All 28 chapters of The Level Up Manual, grouped into four parts.",
   alternates: { canonical: canonical("/chapters/") },
 };
 
@@ -18,10 +19,28 @@ function ChapterListFallback({ chapters }: { chapters: Chapter[] }) {
     <>
       <div aria-hidden="true" className="mb-4 h-10" />
       <div aria-hidden="true" className="mb-6 h-10" />
-      <div className="grid gap-4">
-        {chapters.map((c) => (
-          <ChapterCard key={c.slug} chapter={c} />
-        ))}
+      <div className="space-y-10">
+        {BOOK_GROUPS.map((g) => {
+          const groupChapters = chapters.filter(
+            (c) => c.number >= g.start && c.number <= g.end
+          );
+          return (
+            <section key={g.name} aria-label={g.name}>
+              <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2 border-b border-line pb-2">
+                <h2 className="font-display text-xl font-bold text-ink">{g.name}</h2>
+                <span className="text-[11px] uppercase tracking-wider text-ink-faint">
+                  Chapters {g.start}–{g.end}
+                </span>
+              </div>
+              <p className="mb-4 font-display text-sm italic text-ink-faint">{g.message}</p>
+              <div className="grid gap-4">
+                {groupChapters.map((c) => (
+                  <ChapterCard key={c.slug} chapter={c} />
+                ))}
+              </div>
+            </section>
+          );
+        })}
       </div>
     </>
   );

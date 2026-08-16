@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import SearchProvider from "@/components/SearchProvider";
 import BackToTop from "@/components/BackToTop";
 import JsonLd from "@/components/JsonLd";
+import { getSiteData } from "@/lib/content";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_AUTHOR } from "@/lib/site";
 
 const fraunces = Fraunces({
@@ -89,7 +90,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to content
         </a>
         <SearchProvider>
-          <Nav />
+          <Nav chapters={getSiteData().chapters} />
           <main id="main" className="flex-1">{children}</main>
           <Footer />
         </SearchProvider>

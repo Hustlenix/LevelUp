@@ -6,6 +6,7 @@ import { useState } from "react";
 import type { Chapter, Pillar } from "@/lib/types";
 import { ChapterCard } from "@/components/ui";
 import { PILLAR_META } from "@/lib/types";
+import { BOOK_GROUPS } from "@/lib/groups";
 import { useProgressStore } from "@/lib/progress";
 import { useBookmarksStore, toggleBookmark } from "@/lib/bookmarks";
 
@@ -106,6 +107,35 @@ export default function ChapterList({ chapters }: { chapters: Chapter[] }) {
     : list;
 
   const bookmarkCount = chapters.filter((c) => bookmarks.has(c.slug)).length;
+
+  const grouped =
+    !pillar && !onlyBookmarked && !sortByTime && !query.trim();
+
+  const renderList = (list: Chapter[]) =>
+    compact ? (
+      <div className="flex flex-col gap-2">
+        {list.map((c) => (
+          <ChapterRow
+            key={c.slug}
+            chapter={c}
+            completed={progress[c.slug]?.complete ?? false}
+            bookmarked={bookmarks.has(c.slug)}
+          />
+        ))}
+      </div>
+    ) : (
+      <div className="grid gap-4">
+        {list.map((c) => (
+          <ChapterCard
+            key={c.slug}
+            chapter={c}
+            completed={progress[c.slug]?.complete ?? false}
+            bookmarked={bookmarks.has(c.slug)}
+            onToggleBookmark={() => toggleBookmark(c.slug)}
+          />
+        ))}
+      </div>
+    );
 
   return (
     <>
@@ -211,7 +241,29 @@ export default function ChapterList({ chapters }: { chapters: Chapter[] }) {
         </p>
       )}
 
-      {compact ? (
+      {grouped ? (
+        <div className="space-y-10">
+          {BOOK_GROUPS.map((g) => {
+            const groupChapters = chapters.filter(
+              (c) => c.number >= g.start && c.number <= g.end
+            );
+            return (
+              <section key={g.name} aria-label={g.name}>
+                <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2 border-b border-line pb-2">
+                  <h2 className="font-display text-xl font-bold text-ink">{g.name}</h2>
+                  <span className="text-[11px] uppercase tracking-wider text-ink-faint">
+                    Chapters {g.start}–{g.end}
+                  </span>
+                </div>
+                <p className="mb-4 font-display text-sm italic text-ink-faint">
+                  {g.message}
+                </p>
+                {renderList(groupChapters)}
+              </section>
+            );
+          })}
+        </div>
+      ) : compact ? (
         <div className="flex flex-col gap-2">
           {shown.map((c) => (
             <ChapterRow

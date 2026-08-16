@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getSiteData } from "@/lib/content";
 import { PILLAR_META, type Chapter } from "@/lib/types";
+import { BOOK_GROUPS } from "@/lib/groups";
 import { GradeBadge, PillarTag } from "@/components/ui";
 import { BookMarkdown, StudyList } from "@/components/Markdown";
 import { ReadingProgress } from "@/components/ReadingProgress";
@@ -91,6 +92,8 @@ export default async function ChapterPage({
 
   const meta = PILLAR_META[chapter.pillar];
   const num = String(chapter.number).padStart(2, "0");
+  const group = BOOK_GROUPS.find((g) => chapter.number >= g.start && chapter.number <= g.end);
+  const groupIndex = group ? BOOK_GROUPS.indexOf(group) + 1 : 0;
 
   return (
     <article>
@@ -113,6 +116,16 @@ export default async function ChapterPage({
       <ResumeScroll slug={chapter.slug} />
       <div className="border-b border-line bg-paper-deep/40">
         <div className="mx-auto max-w-3xl px-5 py-12">
+          {group && (
+            <p className="mb-4 no-print text-xs uppercase tracking-wider text-ink-faint">
+              <Link
+                href="/chapters/"
+                className="transition-colors hover:text-gold"
+              >
+                Group {groupIndex} · {group.name} · Chapters {group.start}–{group.end}
+              </Link>
+            </p>
+          )}
           <div className="flex flex-wrap items-center gap-3">
             <span className="font-display text-sm font-bold text-gold">Chapter {num}</span>
             <span className="h-1 w-1 rounded-full bg-line" />

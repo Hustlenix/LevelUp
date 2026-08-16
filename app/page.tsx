@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { getSiteData } from "@/lib/content";
 import { PILLAR_META, type Pillar } from "@/lib/types";
-import { GradeBadge } from "@/components/ui";
 import JsonLd from "@/components/JsonLd";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_AUTHOR, PUBLISHED_DATE } from "@/lib/site";
 
@@ -17,11 +16,6 @@ const PILLAR_BORDER: Record<Pillar, string> = {
 export default function Home() {
   const data = getSiteData();
   const totalWords = data.chapters.reduce((s, c) => s + c.stats.words, 0);
-  const gradeCounts = data.audit.reduce<Record<string, number>>((acc, a) => {
-    acc[a.grade] = (acc[a.grade] ?? 0) + 1;
-    return acc;
-  }, {});
-  const aCount = gradeCounts.A ?? 0;
 
   return (
     <div>
@@ -40,7 +34,7 @@ export default function Home() {
         }}
       />
       <section className="border-b border-line bg-paper-deep/50">
-        <div className="mx-auto grid max-w-5xl gap-10 px-5 py-16 sm:py-24 lg:grid-cols-[1.2fr_1fr]">
+        <div className="mx-auto max-w-5xl px-5 py-16 sm:py-24">
           <div>
             <p className="font-display text-xs font-semibold uppercase tracking-[0.3em] text-gold">
               A book of twenty-eight lessons · verified against the evidence
@@ -83,35 +77,6 @@ export default function Home() {
                 </div>
               ))}
             </dl>
-          </div>
-
-          <div className="hidden flex-col justify-center lg:flex">
-            <div className="rounded-2xl border-2 border-ink/80 bg-paper shadow-[10px_10px_0_rgba(0,0,0,0.35)]">
-              <div className="rounded-t-2xl border-b border-ink/80 bg-ink px-6 py-3">
-                <p className="font-display text-sm font-semibold uppercase tracking-[0.25em] text-paper">
-                  Contents
-                </p>
-              </div>
-              <ol className="space-y-1 px-6 py-5">
-                {data.chapters.slice(0, 12).map((c) => (
-                  <li key={c.slug} className="flex items-baseline gap-3 text-sm">
-                    <span className="w-6 shrink-0 text-right font-display text-xs font-bold text-gold">
-                      {c.number}
-                    </span>
-                    <span className="truncate text-ink">{c.title}</span>
-                  </li>
-                ))}
-                <li className="flex items-baseline gap-3 pt-1 text-sm italic text-ink-faint">
-                  <span className="w-6 shrink-0 text-right font-display text-xs font-bold text-gold">
-                    …
-                  </span>
-                  <span>and {data.chapters.length - 12} more</span>
-                </li>
-              </ol>
-            </div>
-            <p className="mt-6 text-center text-xs text-ink-faint">
-              <GradeBadge grade="A" /> {aCount} of {data.audit.length} claims graded A — solid evidence.
-            </p>
           </div>
         </div>
       </section>
