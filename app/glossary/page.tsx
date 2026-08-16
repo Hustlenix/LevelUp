@@ -24,7 +24,7 @@ export default function GlossaryPage() {
       <SectionHeading
         eyebrow="Glossary"
         title="The vocabulary of the manual"
-        lede="Sixty-five terms — the language the trainings share: filters, stacks, loops, states, and laws. Definitions are the book's own, written to survive contact with the research."
+        lede="Sixty-five terms — the language the trainings share: filters, stacks, loops, states, and laws. Definitions are the book's own, checked against the research."
       />
 
       <div className="mb-8 flex flex-wrap gap-1.5 no-print">

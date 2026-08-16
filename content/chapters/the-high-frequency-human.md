@@ -18,11 +18,11 @@ quotes:
 
 ## Overview
 
-The trainings speak of "high frequency" as if you were a radio you could tune. It is not a vibration — there is no physics in it, and pretending otherwise turns a practical idea into mysticism. What the phrase actually describes is an energy account: a running balance of what fills you and what drains you, and the tone your days carry because of that balance. This chapter translates the metaphor into something you can audit, fund, and manage. The promise is deliberately modest: you cannot think your way to more energy, but you can make your baseline reliable — and a reliable baseline changes what you attempt.
+The trainings speak of "high frequency" as if you were a radio you could tune. It is not a vibration — there is no physics in it, and pretending otherwise turns a practical idea into mysticism. What the phrase actually describes is an energy account: a running balance of what fills you and what drains you, and the tone your days carry because of that balance. This chapter turns the metaphor into something you can audit, fund, and manage. The promise is deliberately modest: you cannot think your way to more energy, but you can make your baseline reliable — and a reliable baseline changes what you attempt.
 
 ## 01 — The Frequency Claim, Translated
 
-Strip the language and the claim is three variables you can actually inspect: baseline energy, mood tone, and attention quality. That is a more useful sentence than "raise your vibration," because each variable has levers. The evidence behind it is directional rather than precise. Sleep loss degrades cognition, mood, and self-control — the direction is solid, even when the framing is oversold. Bad inputs genuinely outweigh good ones of equal size — the direction is solid, even though the popular ratios are invented. Neither study hands you a formula, which is exactly the point: "raising your frequency" is two jobs — funding the account and trimming the drains — and both jobs are observable.
+Strip the language, and the claim becomes three things you can actually inspect: baseline energy, mood tone, and attention quality. That is a more useful sentence than "raise your vibration," because each variable has levers. The evidence behind it is directional rather than precise. Sleep loss degrades cognition, mood, and self-control — the direction is solid, even when the framing is oversold. Bad inputs genuinely outweigh good ones of equal size — the direction is solid, even though the popular ratios are invented. Neither study hands you a formula, which is exactly the point: "raising your frequency" is two jobs — funding the account and trimming the drains — and both jobs are observable.
 
 ## 02 — The Builders
 
@@ -34,7 +34,7 @@ The first hour matters most because it sets the baseline tone for everything aft
 
 ## 03 — The Drains
 
-Stimulation exhaustion is the largest modern drain: every loop of urgent gratification raises the base need, so the content that once charged you now only holds you level. The honest frame is homeostatic — a pleasure–pain balance, not a receptor reset; the boredom chapter develops this properly. The input diet is the second drain. News and comparison are negative inputs, and the negativity bias is real: bad inputs weigh more than equal good ones, which is exactly why they feel so heavy. Fragmentation is the third: interruptions genuinely derail work, and the research shows interrupted workers compensate by working faster, with more stress and frustration. Notice the shape of these drains: all three are subtractable. Subtraction is the master skill this book keeps returning to, and it applies here before anywhere else.
+Stimulation exhaustion is the largest modern drain: every loop of urgent gratification raises the base need, so the content that once charged you now only holds you level. The honest frame is homeostatic — a pleasure–pain balance, not a receptor reset. The boredom chapter develops this properly. The input diet is the second drain. News and comparison are negative inputs, and the negativity bias is real: bad inputs weigh more than equal good ones, which is exactly why they feel so heavy. Fragmentation is the third: interruptions genuinely derail work, and the research shows interrupted workers compensate by working faster, with more stress and frustration. Notice the shape of these drains: all three are subtractable. Subtraction is the master skill this book keeps returning to, and it applies here before anywhere else.
 
 ## 04 — Tone Engineering over the Week
 

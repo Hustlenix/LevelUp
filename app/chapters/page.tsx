@@ -42,11 +42,11 @@ export default async function ChaptersPage() {
       <SectionHeading
         eyebrow="Table of Contents"
         title="Twenty-eight lessons, one manual"
-        lede="Read in order — each chapter assumes the ones before it. Filter by pillar to focus on what you need now."
+        lede="Read in order — each chapter builds on the ones before it. Filter by pillar to focus on what you need now."
       />
       <p className="-mt-4 mb-8 text-sm text-ink-soft">
         ≈ {totalText} of reading across {chapters.length} chapters. Every claim is graded A–D
-        against the research — see the <Link className="underline decoration-gold/60 underline-offset-2 hover:text-gold" href="/audit/">Verification Audit</Link>.
+        against the research. See the <Link className="underline decoration-gold/60 underline-offset-2 hover:text-gold" href="/audit/">Verification Audit</Link>.
       </p>
       <Suspense fallback={<ChapterListFallback chapters={chapters} />}>
         <ChapterList chapters={chapters} />

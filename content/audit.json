@@ -5,7 +5,7 @@
     "claim": "Hotel housekeepers told their work was exercise lost weight, lowered blood pressure, and improved body composition.",
     "grade": "A",
     "verdict": "Verified science",
-    "detail": "Crum & Langer (2007) told 84 female hotel room attendants their work met the Surgeon General's definition of exercise. Four weeks later, with no objective behaviour change, they showed significant drops in weight, BMI, waist-to-hip ratio and blood pressure; perceived exercise rose from ~39.4% to ~79.4%. The effect is real, modest, and runs through expectation, effort and stress — a modulator, not magic.",
+    "detail": "Crum & Langer (2007) told 84 female hotel room attendants that their work met the Surgeon General's definition of exercise. Four weeks later, with no real change in what they did, the women weighed less and showed lower BMI, waist-to-hip ratio and blood pressure. Perceived exercise rose from ~39.4% to ~79.4%. The effect is real but modest. It runs through expectation, effort and stress — a modulator, not magic.",
     "citation": "Crum, A. J., & Langer, E. J. (2007). Mind-set matters: Exercise and the placebo effect. Psychological Science, 18(2), 165–171."
   },
   {
@@ -14,7 +14,7 @@
     "claim": "The same milkshake labeled 'indulgent' produced a stronger hormonal response than the same shake labeled 'sensible'.",
     "grade": "A",
     "verdict": "Verified science",
-    "detail": "Crum et al. (2011) gave 46 people an identical 380-calorie shake under two labels. The 'indulgent' label (claimed 620 cal) produced a steeper decline in ghrelin — the hunger hormone — than the 'sensible' label (claimed 140 cal). Mindset measurably shapes physiology.",
+    "detail": "Crum et al. (2011) gave 46 people an identical 380-calorie shake under two labels. The 'indulgent' label (claimed 620 cal) caused a steeper drop in ghrelin, the hunger hormone, than the 'sensible' label (claimed 140 cal). Mindset measurably shapes the body.",
     "citation": "Crum, A. J., Corbin, W. R., Brownell, K. D., & Salovey, P. (2011). Mind over milkshakes. Health Psychology, 30(4), 424–429."
   },
   {
@@ -23,7 +23,7 @@
     "claim": "Placebo pills work even when you know they are placebos.",
     "grade": "A",
     "verdict": "Verified science",
-    "detail": "Kaptchuk et al. (2010) gave IBS patients placebo pills openly labeled as inactive; they improved versus no treatment. Replicated in chronic low back pain (Carvalho et al., 2016) and in a 2021 meta-analysis. Expectation, ritual and meaning carry a large share of placebo — deception is not required.",
+    "detail": "Kaptchuk et al. (2010) gave IBS patients placebo pills clearly labeled as inactive; they improved versus no treatment. Replicated in chronic low back pain (Carvalho et al., 2016) and in a 2021 meta-analysis. Expectation, ritual and meaning carry much of the placebo effect — deception is not required.",
     "citation": "Kaptchuk, T. J., et al. (2010). Placebos without deception. PLoS ONE, 5(12), e15591."
   },
   {
@@ -32,7 +32,7 @@
     "claim": "Two minutes of a power pose changes hormones and risk behavior.",
     "grade": "D (physiology) / B (felt state)",
     "verdict": "Not replicated for biology; true for felt state",
-    "detail": "The original 2010 study reported testosterone +20% and cortisol −25%, but a 200-person replication (Ranehill et al., 2015) found no hormone or risk-taking effects — only self-reported feelings of power — and the original author later disavowed the strong claims. Posture shifts how powerful you feel, briefly; it does not measurably change your biology.",
+    "detail": "The original 2010 study reported testosterone +20% and cortisol −25%. A 200-person replication (Ranehill et al., 2015) found no hormone or risk-taking effects — only self-reported feelings of power. The original author later disavowed the strong claims. Posture briefly changes how powerful you feel; it does not measurably change your biology.",
     "citation": "Carney, Cuddy & Yap (2010); Ranehill et al. (2015). Psychological Science."
   },
   {
@@ -41,7 +41,7 @@
     "claim": "The RAS processes 11 million bits per second while conscious attention handles only 50.",
     "grade": "D (numbers) / B (filter)",
     "verdict": "The numbers are folklore; the filter is real",
-    "detail": "The figures come from Tor Norretranders' popular book The User Illusion (1998) — estimates of sensory throughput versus the conscious fraction, never a measured finding. The RAS is a real brainstem structure, and attention filtering is a replicated phenomenon (see 3.6). Drop the numerology; keep the gorilla.",
+    "detail": "The figures come from Tor Norretranders' popular book The User Illusion (1998). They are estimates of sensory throughput versus the conscious fraction — never a measured finding. The RAS is a real brainstem structure, and attention filtering is a replicated phenomenon (see 3.6). Drop the numerology; keep the gorilla.",
     "citation": "Norretranders, T. (1998). The User Illusion. Viking."
   },
   {
@@ -50,7 +50,7 @@
     "claim": "You can miss a gorilla while counting basketball passes.",
     "grade": "A",
     "verdict": "Verified science",
-    "detail": "Simons & Chabris (1999): roughly half of observers failed to notice a person in a gorilla suit while counting passes. Inattentional blindness is among the most replicated findings in psychology and is the legitimate basis for 'what you focus on, you find'.",
+    "detail": "Simons & Chabris (1999): roughly half of observers failed to notice a person in a gorilla suit while counting passes. Inattentional blindness is among the most replicated findings in psychology, and it is the legitimate basis for 'what you focus on, you find'.",
     "citation": "Simons, D. J., & Chabris, C. F. (1999). Gorillas in our midst. Perception, 28(9), 1059–1074."
   },
   {
@@ -59,7 +59,7 @@
     "claim": "The mind wanders ~47% of the time, and thinking about the future makes you happier.",
     "grade": "A (data) / D (inference)",
     "verdict": "The data are real; the inference inverts them",
-    "detail": "Killingsworth & Gilbert (2010), ~250,000 iPhone samples from ~2,250 adults: minds wandered 46.9% of the time, and wandering predicted unhappiness whether the drift was toward past or future. The claim 'future-thinking makes you happy' misreads the finding. Keep 'train your attention'; drop 'fantasize about the future'.",
+    "detail": "Killingsworth & Gilbert (2010): ~250,000 iPhone samples from ~2,250 adults. Minds wandered 46.9% of the time, and wandering predicted unhappiness whether the drift ran toward the past or the future. The claim that 'future-thinking makes you happy' misreads the finding. Keep 'train your attention'; drop 'fantasize about the future'.",
     "citation": "Killingsworth, M. A., & Gilbert, D. T. (2010). A wandering mind is an unhappy mind. Science, 330(6006), 932."
   },
   {
@@ -77,7 +77,7 @@
     "claim": "Process visualization beats outcome visualization (the 'Stanford study').",
     "grade": "A (in spirit) / C (attribution)",
     "verdict": "The finding is real; it was UCLA, not Stanford",
-    "detail": "Pham & Taylor (1999) showed students who mentally simulated the process of studying — planning, scheduling, executing — studied more and earned better grades than outcome simulators. The study is UCLA (not Stanford) and has nothing to do with NLP. The process-versus-outcome distinction is one of the most useful findings in the corpus.",
+    "detail": "Pham & Taylor (1999) showed that students who mentally simulated the process of studying — planning, scheduling, executing — studied more and earned better grades than students who simulated the outcome. The study is UCLA (not Stanford) and has nothing to do with NLP. The process-versus-outcome distinction is one of the most useful findings in the corpus.",
     "citation": "Pham, L. B., & Taylor, S. E. (1999). From thought to action. Personality and Social Psychology Bulletin, 25(2), 250–260."
   },
   {
@@ -86,7 +86,7 @@
     "claim": "Bannister's four-minute mile broke a psychological barrier.",
     "grade": "B",
     "verdict": "Real story; 'psychological barrier' is one part of it",
-    "detail": "Verified: May 6, 1954 — Bannister ran 3:59.4 at Oxford; Gunder Hägg's 4:01.4 (1945) had stood nine years; John Landy broke four minutes 46 days later. The barrier interpretation is fair, but training, pacing strategy and pacesetters improved simultaneously. Barriers fall when preparation meets opportunity, not when belief alone changes.",
+    "detail": "Verified: May 6, 1954 — Bannister ran 3:59.4 at Oxford; Gunder Hägg's 4:01.4 (1945) had stood nine years; John Landy broke four minutes 46 days later. The barrier interpretation is fair, but training, pacing strategy and pacesetters improved at the same time. Barriers fall when preparation meets opportunity, not when belief alone changes.",
     "citation": "Historical record, 1954 (Bannister; Landy)."
   },
   {
@@ -104,7 +104,7 @@
     "claim": "The Marine Corps teaches the 70% rule.",
     "grade": "A",
     "verdict": "Verified doctrine",
-    "detail": "The 70% solution is genuine USMC doctrine for decision-making under uncertainty, taught at The Basic School and popularized in David Freedman's Corps Business (2000); Jeff Bezos expresses the same logic ('70% of the information'). Acting at 70% rather than waiting for certainty is faithful to the source.",
+    "detail": "The 70% solution is genuine USMC doctrine for decision-making under uncertainty, taught at The Basic School and popularized in David Freedman's Corps Business (2000). Jeff Bezos expresses the same logic ('70% of the information'). Acting at 70% rather than waiting for certainty is faithful to the source.",
     "citation": "USMC Basic School doctrine; Freedman, D. H. (2000). Corps Business."
   },
   {

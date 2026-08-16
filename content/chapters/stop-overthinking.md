@@ -32,7 +32,7 @@ The Marine Corps teaches officers to make decisions under uncertainty at around 
 
 ## 03 — Decision Drift and the Long Session
 
-There is a well-known study of Israeli parole judges in which favorable rulings declined across long sessions and rebounded after breaks. Read it honestly: the case order was not random, the effect size is contested, and a later registered study of physicians found nothing. What survives scrutiny is the direction: decision quality degrades over long sessions — a pattern that shows up across domains, not because the brain is a fuel tank with a limited supply, but because sustained mental work degrades judgment. The practical translation is unglamorous. Do your big decisions early in the day. Take breaks. Remove trivial choice loads from decision-heavy days. Never quote the headline percentages; they are the part of the story that did not replicate.
+There is a well-known study of Israeli parole judges in which favorable rulings declined across long sessions and rebounded after breaks. Read it honestly: the case order was not random, the effect size is contested, and a later registered study of physicians found nothing. What survives a close look is the direction: decision quality degrades over long sessions. The pattern shows up across domains — not because the brain is a fuel tank with a limited supply, but because sustained mental work degrades judgment. The practical translation is unglamorous. Do your big decisions early in the day. Take breaks. Remove trivial choice loads from decision-heavy days. Never quote the headline percentages; they are the part of the story that did not replicate.
 
 ## 04 — The Decision Protocols
 

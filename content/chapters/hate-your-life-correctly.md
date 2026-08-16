@@ -18,9 +18,9 @@ quotes:
 
 ## Overview
 
-The title is a provocation, and this chapter will take it apart. The original teaching was blunt: hate your life, and use the hatred as fuel — let the contempt for where you are power the work of getting out. It sounded like momentum. It was, many people discovered, mostly self-harm with an exercise plan attached.
+The title is a provocation. This chapter takes it apart. The original teaching was blunt: hate your life, and use the hatred as fuel — let the contempt for where you are power the work of getting out. It sounded like momentum. It was, many people discovered, mostly self-harm with an exercise plan attached.
 
-The repair is honest and it keeps everything that was useful: discontent is information. Your dissatisfaction with a situation is a signal that something is misaligned — and the productive response is not self-loathing but a verdict: this is unacceptable, and I act accordingly.
+The fix is honest and keeps everything that was useful: discontent is information. Your dissatisfaction with a situation is a signal that something is misaligned — and the productive response is not self-loathing but a verdict: this is unacceptable, and I act accordingly.
 
 > You don't need more motivation; you need more respect for your own standards.
 
@@ -30,23 +30,23 @@ Contempt aimed at circumstances moves mountains. Contempt aimed at yourself move
 
 The observation that started the teaching is real. Many people carry a high threshold for action: I'll change when it hurts enough. The problem with that threshold is that discomfort escalates slowly and the threshold escalates with it — each new level of tolerable pain becomes the new normal, and the change deadline recedes. The suffering grows while the switch stays off.
 
-The insight that survives inspection is this: thresholds are not fixed. They respond to reframing, which means they can be lowered deliberately. Start by mapping yours. List the problems you have accepted in your own life, then ask how you would rule on each one if it belonged to a friend. The gap between the two verdicts is your threshold made visible — and it is nearly always wider than you think.
+The insight that survives a close look is this: thresholds are not fixed. They respond to reframing, which means they can be lowered on purpose. Start by mapping yours. List the problems you have accepted in your own life, then ask how you would rule on each one if it belonged to a friend. The gap between the two verdicts is your threshold made visible — and it is nearly always wider than you think.
 
 ## 02 — Discontent Is Data, Not Instruction
 
 Dissatisfaction is the attention filter of Chapter 1 doing its job: it flags the gap between what you believe about your life and what you want from it. That is what a signal is. The error is in what the trainings make you do with the signal — aim the dissatisfaction inward and call it motivation.
 
-Self-attack is not a motivational device. It is a documented risk factor — the opposite of the fuel it was sold as — and it produces a very specific failure: a person who spends their energy punishing themselves for having the problem instead of solving it. The mirror must be aimed at the circumstance, never at the person in it. When the dissatisfaction arrives, the question is not "what's wrong with me" but "what is wrong with this situation, and what is the first move that changes it".
+Self-attack is not a motivational device. It is a documented risk factor — the opposite of the fuel it was sold as — and it produces a very specific failure: a person who spends their energy punishing themselves for having the problem instead of solving it. The mirror must be aimed at the circumstance, never at the person in it. When the dissatisfaction arrives, the question is not "what's wrong with me". It is "what is wrong with this situation, and what is the first move that changes it".
 
 ## 03 — Action Before Feeling
 
-The evidence-backed engine underneath this whole chapter is behavioural activation. Scheduling meaningful action comes first, and the mood that makes action easier follows the action — the exact reverse of waiting until you feel like it. This is the best-supported idea in the corpus: action precedes and generates motivation.
+The evidence-backed engine under this whole chapter is behavioural activation. Scheduling meaningful action comes first, and the mood that makes action easier follows the action — the exact reverse of waiting until you feel like it. This is the best-supported idea in the corpus: action precedes and generates motivation.
 
 So the old "hate as fuel" works only through the bridge of Chapter 5. The energy has to become a behaviour: anger becomes an outline, the outline becomes a draft, the draft becomes a call. Pointed at a problem, the energy becomes a work order. Pointed at yourself, it becomes a loop with no output. The reframe keeps the intensity; it simply changes the direction of fire.
 
 ## 04 — The Upper Limit Problem
 
-There is a second, subtler ceiling you will meet the moment the action starts working. Gay Hendricks called it the upper limit problem: people unconsciously cap their results at the level their self-image considers acceptable — a thermostat set to a personal setting, not a cosmic one. The cap shows up precisely when things go right: the offer you don't send, the win you quietly sabotage, the satisfied plateau after a breakthrough.
+There is a second, subtler ceiling you will meet as soon as the action starts working. Gay Hendricks called it the upper limit problem: people unconsciously cap their results at the level their self-image considers acceptable — a thermostat set to a personal setting, not a cosmic one. The cap shows up precisely when things go right: the offer you don't send, the win you quietly sabotage, the satisfied plateau after a breakthrough.
 
 Raising the thermostat is rehearsal, not pep talk. You rehearse ownership — the technique of Chapter 7 applied to the larger result: running through the process of having, deciding, and acting like the person at the next level, in first person, until the cap reads the new setting. To be honest: this is a framework, not a finding. The thermostat metaphor is useful psychology, not a verified mechanism — but as a warning about where self-sabotage hides, it has earned its place.
 

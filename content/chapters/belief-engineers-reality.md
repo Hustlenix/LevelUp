@@ -20,41 +20,41 @@ quotes:
 
 ## Overview
 
-Earl Nightingale, a first voice of this genre, said we become what we think about. That sentence is the operating system of this series and the machine's boot point — not because thought is magic, but because it sits at the top of a loop that runs your life: belief feeds expectation, expectation feeds behaviour, behaviour feeds outcome, and the outcome confirms the belief. Every chapter after this one builds on those mechanics.
+Earl Nightingale, one of the first voices of this genre, said we become what we think about. That sentence is the operating system of this series. It is the machine's boot point. Not because thought is magic. Because thought sits at the top of a loop that runs your life: belief feeds expectation, expectation feeds behaviour, behaviour feeds outcome, and the outcome confirms the belief. Every chapter after this one builds on those mechanics.
 
-This chapter makes its promise carefully. Belief does not change the facts of the world; it changes what you see, what you attempt and how long you persist — and those three changes are where outcomes are made. By the end you will have met the filter that decides what your attention admits, watched the loop run through a student's maths career, and seen expectation measured in a laboratory. The source material frames it bluntly: everything in your life is either working for you or against you. This chapter is about which side your beliefs are on.
+This chapter makes its promise carefully. Belief does not change the facts of the world. It changes what you see, what you attempt, and how long you persist. Those three changes are where outcomes are made. By the end you will have met the filter that decides what your attention admits. You will have watched the loop run through a student's maths career. And you will have seen expectation measured in a laboratory. The source material frames it bluntly: everything in your life is either working for you or against you. This chapter is about which side your beliefs are on.
 
 ## 01 — The Filter You Never Chose
 
-You do not see the world; you see the fraction of it your attention admits. The brain takes in far more each moment than awareness can handle — estimates, never measured, run to millions of bits a second — and only a sliver reaches consciousness. That sliver is chosen by a filter, and the filter is not neutral: it is tuned by what you believe.
+You do not see the world. You see the fraction of it your attention admits. The brain takes in far more each moment than awareness can handle — estimates, never measured, run to millions of bits a second — and only a sliver reaches consciousness. That sliver is chosen by a filter. And the filter is not neutral: it is tuned by what you believe.
 
-The most famous demonstration is the invisible gorilla. In a 1999 experiment by Simons and Chabris, roughly half of the viewers asked to count basketball passes missed a person in a gorilla suit walking through the scene. The gorilla was in the footage, never in the counted frame of mind. Inattentional blindness is among the most replicated findings in psychology — the true basis of the saying that you find what you focus on.
+The most famous demonstration is the invisible gorilla. In a 1999 experiment by Simons and Chabris, roughly half of the viewers asked to count basketball passes missed a person in a gorilla suit walking through the scene. The gorilla was in the footage. It was never in the counted frame of mind. Inattentional blindness is among the most replicated findings in psychology. It is the true basis of the saying that you find what you focus on.
 
-You are not fighting the world; you are fighting your filter. The structure that routes your attention — sometimes called the reticular activating system, though the name matters less than the function — admits evidence that matches your operating beliefs and shelves the rest. Believe you live in a hostile world and your filter hands it to you, daily, as fresh proof.
+You are not fighting the world; you are fighting your filter. The structure that routes your attention — sometimes called the reticular activating system, though the name matters less than the function — admits evidence that matches your operating beliefs and shelves the rest. Believe you live in a hostile world, and your filter hands it to you, daily, as fresh proof.
 
 ## 02 — The Self-Fulfilling Loop
 
 With the filter in place, the loop can run. Belief creates expectation. Expectation drives behaviour. Behaviour produces outcome. Outcome, filtered, confirms the belief. Round it goes, quietly, for years.
 
-Consider the student who decides she is bad at maths. The belief produces an expectation — every problem will fight her — so she stops attempting the problems that would teach her most, rushes the homework, crams the night before the test. The poor grade that follows confirms the belief. Nothing in the story had to be true; she may have been perfectly capable, and the belief simply made the wrong behaviour feel rational.
+Consider the student who decides she is bad at maths. The belief creates an expectation — every problem will fight her. So she stops attempting the problems that would teach her most. She rushes the homework. She crams the night before the test. The poor grade that follows confirms the belief. Nothing in the story had to be true. She may have been perfectly capable. The belief simply made the wrong behaviour feel rational.
 
-The loop runs in both directions. Left alone, it digs you deeper into wherever you started; engineered deliberately, the same mechanics compound upward. You cannot opt out, because opting out is itself a belief — you only choose whether you drive it or it drives you.
+The loop runs in both directions. Left alone, it digs you deeper into wherever you started. Engineered deliberately, the same mechanics compound upward. You cannot opt out, because opting out is itself a belief. You only choose whether you drive it or it drives you.
 
 ## 03 — The Body Believes
 
-Your body is not an impartial referee; it listens to the interpretation your mind places on events and responds. In 2007, Crum and Langer told eighty-four hotel room attendants that the work they already did — making beds, hauling linen, vacuuming — met the Surgeon General's definition of exercise. Four weeks later, with no objective change in behaviour, the women had lost weight and lowered their BMI, waist-to-hip ratio and blood pressure. The share who perceived their work as exercise nearly doubled, from 39 to 79 per cent. Same work, same bodies — one different interpretation, and the body delivered different results.
+Your body is not an impartial referee. It listens to the interpretation your mind places on events, and it responds. In 2007, Crum and Langer told eighty-four hotel room attendants that the work they already did — making beds, hauling linen, vacuuming — met the Surgeon General's definition of exercise. Four weeks later, with no objective change in behaviour, the women had lost weight and lowered their BMI, waist-to-hip ratio and blood pressure. The share who perceived their work as exercise nearly doubled, from 39 to 79 per cent. Same work, same bodies. One different interpretation, and the body delivered different results.
 
-A 2011 study by Crum and colleagues gave people an identical 380-calorie milkshake under two labels: one promised an indulgent 620 calories, the other a virtuous 140. The label mattered more than the drink: those who believed the indulgent label showed a steeper ghrelin decline — the hormone that signals hunger. Mindset produced measurable physiology.
+A 2011 study by Crum and colleagues gave people an identical 380-calorie milkshake under two labels: one promised an indulgent 620 calories, the other a virtuous 140. The label mattered more than the drink. Those who believed the indulgent label showed a steeper ghrelin decline — the hormone that signals hunger. Mindset produced measurable physiology.
 
-Most striking: deception is not required. Kaptchuk and colleagues gave patients with irritable bowel syndrome placebo pills openly labelled as placebo — no secret, no trick — and they still improved compared with no treatment; the finding has replicated in chronic low back pain. Expectation, ritual and meaning carry much of the placebo effect. None of this is medical advice; it is simply what the evidence shows.
+Most striking: deception is not required. Kaptchuk and colleagues gave patients with irritable bowel syndrome placebo pills openly labelled as placebo. No secret, no trick. They still improved compared with no treatment. The finding has replicated in chronic low back pain. Expectation, ritual and meaning carry much of the placebo effect. None of this is medical advice; it is simply what the evidence shows.
 
 ## 04 — What Belief Cannot Do
 
-Now the boundary; the whole series rests on it. The source material puts it simply: a belief is a thought you have thought so many times it became a fact to your brain. Notice the careful wording — a fact to your brain, not a fact to the world.
+Now the boundary. The whole series rests on it. The source material puts it simply: a belief is a thought you have thought so many times it became a fact to your brain. Notice the careful wording. A fact to your brain, not a fact to the world.
 
-Belief is a modulator, not a creator. It does not burn fat; it changes the behaviour that burns fat. Eating less and moving more change everything; conviction alone changes nothing — belief is what makes those behaviours feel possible and worth repeating past the first miserable week. The studies here show real, bounded physiological effects; nobody has shown that a dose of conviction rearranges physics.
+Belief is a modulator, not a creator. It does not burn fat. It changes the behaviour that burns fat. Eating less and moving more change everything. Conviction alone changes nothing. Belief is what makes those behaviours feel possible and worth repeating past the first miserable week. The studies here show real, bounded physiological effects. Nobody has shown that a dose of conviction rearranges physics.
 
-The language of "programming" your brain, while we are here, is a metaphor; the brain is not a computer, and treating the metaphor as hardware is how people talk themselves into magic. Keep the metaphor — you are programming behaviour, not hardware — and remember the loop is a tool you have been running all your life without reading the manual.
+The language of "programming" your brain, while we are here, is a metaphor. The brain is not a computer. Treating the metaphor as hardware is how people talk themselves into magic. Keep the metaphor — you are programming behaviour, not hardware — and remember the loop is a tool you have been running all your life without reading the manual.
 
 ## Key Ideas
 

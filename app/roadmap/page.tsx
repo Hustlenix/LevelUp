@@ -24,7 +24,7 @@ export default function RoadmapPage() {
       <SectionHeading
         eyebrow="The 90-Day Roadmap"
         title="How the manual becomes a life"
-        lede="Ninety days, three phases, thirteen protocols. The roadmap sequences them so each practice has settled before the next begins — one protocol at a time, at 70% scale, with a zero-day floor."
+        lede="Ninety days, three phases, thirteen protocols. The roadmap orders them so each practice settles before the next begins — one at a time, at 70% scale, with a zero-day floor."
       />
 
       <div className="relative space-y-10">

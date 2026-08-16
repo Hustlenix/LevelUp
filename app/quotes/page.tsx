@@ -18,7 +18,7 @@ export default function QuotesPage() {
       <SectionHeading
         eyebrow="Quote Library"
         title="Lines worth keeping"
-        lede="From the trainings themselves and the thinkers the trainings lean on. Attribution is honest: a quote attributed to a person is verified; a training line is the creator's own."
+        lede="From the trainings themselves and the thinkers they lean on. Attribution is honest: a quote tied to a person is verified; a training line is the creator's own."
       />
 
       <div className="grid gap-5 sm:grid-cols-2">

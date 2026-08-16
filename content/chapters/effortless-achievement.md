@@ -22,7 +22,7 @@ quotes:
 
 Watch water on its way down a hillside. Where the channel narrows, it turns white — turbulent, chaotic, throwing energy in every direction against its own banks. Where the channel is wide and clear, it runs laminar: smooth, directed, silent, and it is the laminar river that reaches the sea. Work does the same thing.
 
-Most people spend their careers in white water. Emails, open tabs, fragmented afternoons — fuel burned in every direction, project barely moving. Then there is the work that flows: ninety minutes in which the whole project visibly moves. This chapter is about engineering the second kind.
+Most people spend their careers in white water. Emails, open tabs, fragmented afternoons — fuel burned in every direction, project barely moving. Then there is the work that flows: ninety minutes in which the whole project visibly moves. This chapter is about building the second kind.
 
 > Effortless doesn't mean effort-free; it means friction-free.
 
@@ -38,17 +38,17 @@ The middle move carries the evidence. The core finding of decades of flow resear
 
 Flow is one of psychology's most documented states: deep absorption, merged action and awareness, a distorted sense of time, work that feels like it is doing itself. None of that is in dispute. What is in dispute is how it gets sold.
 
-The famous claim that executives are five times more productive in flow is folklore. It is attributed to a McKinsey study that has never been published, located, or produced — it surfaces in a popular book about high performance, and it dies on inspection. Say it plainly: the five-times number is not evidence, and this chapter will not use it. A real phenomenon deserves honest praise, not invented arithmetic. The invented number does harm, because it makes people wait for a magical state instead of engineering the conditions that produce it.
+The famous claim that executives are five times more productive in flow is folklore. It is attributed to a McKinsey study that has never been published, located, or produced — it surfaces in a popular book about high performance, and it falls apart when you look for it. Say it plainly: the five-times number is not evidence, and this chapter will not use it. A real phenomenon deserves honest praise, not invented arithmetic. The invented number does harm, because it makes people wait for a magical state instead of engineering the conditions that produce it.
 
 ## 03 — Engineering the Conditions
 
 Flow is scheduled, not awaited, and the environment does the engineering. One task, written before the block begins. A clear objective for the block — the output, not the activity. Immediate feedback on progress: the numbers, the words, the reps that tell you it is working while it works. And, critically, no interruption sources.
 
-The evidence on interruption is honest and pointed. Gloria Mark's studies of real office work found that interruptions genuinely derail tasks — and that interrupted workers compensate by working faster, with measurably more stress and frustration. The famous "twenty-three minutes to refocus" figure comes from follow-up interviews, not from the study itself, so drop the number; keep the direction, which is strong. The notification is not a one-second cost. It is the end of the laminar block.
+The evidence on interruption is honest and sharp. Gloria Mark's studies of real office work found that interruptions genuinely derail tasks — and that interrupted workers compensate by working faster, with measurably more stress and frustration. The famous "twenty-three minutes to refocus" figure comes from follow-up interviews, not from the study itself, so drop the number; keep the direction, which is strong. The notification is not a one-second cost. It is the end of the laminar block.
 
 ## 04 — The Wandering Mind at the Door
 
-There is an honest reason why absorption feels so good, and it is worth stating because it is so rarely stated. Killingsworth and Gilbert's large-scale sampling found that the mind wanders from the present roughly 46.9 per cent of the time — and that wandering predicts unhappiness, whether the drift is toward the past or toward the future. The default state of the human mind is a mind that has left the room.
+There is an honest reason why absorption feels so good, and it is rarely stated. Killingsworth and Gilbert's large-scale sampling found that the mind wanders from the present roughly 46.9 per cent of the time — and that wandering predicts unhappiness, whether the drift is toward the past or toward the future. The default state of the human mind is a mind that has left the room.
 
 Flow is therefore not euphoria. It is attention, finally parked. The pleasure of the laminar block is partly the relief of a mind that has stopped fidgeting — the difference between being somewhere else and being exactly where you are. This is not a romantic description; it is the reason the state is worth protecting.
 

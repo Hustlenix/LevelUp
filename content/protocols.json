@@ -3,7 +3,7 @@
     "num": "2.1",
     "title": "The Belief Audit",
     "duration": "15 minutes, quarterly",
-    "purpose": "Replace 'change your belief and reality changes' with its testable core: your interpretation of effort and circumstances modulates outcomes.",
+    "purpose": "Replaces 'change your belief and reality changes' with its testable core: how you interpret effort and circumstances changes outcomes.",
     "evidence": ["Crum & Langer (2007)", "Crum et al. (2011)", "Kaptchuk et al. (2010)"],
     "steps": [
       "Write down three areas where you believe something about yourself that you have never tested — 'I'm not a morning person', 'I can't do sales', 'my work doesn't matter'.",
@@ -17,7 +17,7 @@
     "num": "2.2",
     "title": "The Equation Check",
     "duration": "5 minutes, as needed",
-    "purpose": "Catch the moment a famous claim leaks into decision-making as a false law.",
+    "purpose": "Catches the moment a famous claim slips into your decisions as a false law.",
     "evidence": ["The claim audit in Part 3 of the research (30 claims)"],
     "steps": [
       "Whenever you catch yourself reasoning from a famous claim — 'studies show…', 'research proves…' — write it as an equation: X causes Y, at magnitude M, in population P.",
@@ -29,7 +29,7 @@
     "num": "2.3",
     "title": "Morning Calibration",
     "duration": "10 minutes, daily",
-    "purpose": "Set attention and expectation deliberately — the evidence-compatible replacement for 'program the RAS'.",
+    "purpose": "Sets attention and expectation on purpose — the evidence-compatible replacement for 'program the RAS'.",
     "evidence": ["Intention-superiority (Goschke & Kuhl, 1993)", "Plan-making (Masicampo & Baumeister, 2011)", "Process simulation (Pham & Taylor, 1999)"],
     "steps": [
       "Before opening any device, name the one outcome that would make today count. Write it on paper.",
@@ -42,7 +42,7 @@
     "num": "2.4",
     "title": "The Identity Stack",
     "duration": "20 minutes, once; reviewed weekly",
-    "purpose": "Identity-based change, built bottom-up.",
+    "purpose": "Identity-based change, built from the bottom up.",
     "evidence": ["70% rule (USMC doctrine)", "No-zero-days rule (ryans01, 2013)", "Behavioral activation (Dimidjian et al., 2006)", "Self-perception research"],
     "steps": [
       "Define the target identity in verbs, not nouns. 'I am a writer' is a noun; 'I write 500 words before breakfast' is a behavior. Write three behaviors the identity performs weekly.",
@@ -56,7 +56,7 @@
     "num": "2.5",
     "title": "The Flow Alignment Loop",
     "duration": "10 minutes, daily",
-    "purpose": "Maximize engaged, high-quality work time without citing the unverifiable 5x figure.",
+    "purpose": "Maximizes engaged, high-quality work time without citing the unverifiable 5x figure.",
     "evidence": ["Flow construct (Csikszentmihalyi)", "Challenge–skill balance", "Interruption costs (Mark et al., 2008)"],
     "steps": [
       "Each evening, list tomorrow's tasks with a difficulty rating (1–10) and your current skill rating (1–10) for each.",
@@ -70,7 +70,7 @@
     "num": "2.6",
     "title": "The One-Task Rule and the Winner's Loop",
     "duration": "Daily, all day",
-    "purpose": "Rebuild single-tasking and finish what you start.",
+    "purpose": "Rebuilds single-tasking and finishes what you start.",
     "evidence": ["Plan-making discharges goal intrusion (Masicampo & Baumeister, 2011)", "Interruption costs (Mark et al., 2008)", "Completion as release", "Email batching (Kushlev & Dunn)"],
     "steps": [
       "Pick the day's one critical task before anything else. Everything else is secondary.",
@@ -84,7 +84,7 @@
     "num": "2.7",
     "title": "The Discovery Protocol",
     "duration": "30 minutes",
-    "purpose": "Replace outcome fantasy with process simulation: imagine the steps and execute them.",
+    "purpose": "Replaces outcome fantasy with process simulation: imagine the steps and execute them.",
     "evidence": ["Process vs outcome simulation (Pham & Taylor, 1999)", "70% rule", "Plan specificity"],
     "steps": [
       "Write the goal. Then delete every sentence about how it will feel to have it.",
@@ -98,7 +98,7 @@
     "num": "2.8",
     "title": "The Boredom Tolerance Ladder",
     "duration": "3 weeks, daily",
-    "purpose": "Restore the ability to sit with stimulation-free experience — the defensible core of 'dopamine detox'.",
+    "purpose": "Restores the ability to sit with stimulation-free experience — the defensible core of 'dopamine detox'.",
     "evidence": ["Sepah's CBT protocol", "Lembke's homeostasis model", "Exposure-response prevention (clinical literature)"],
     "steps": [
       "Week 1: identify your three highest-frequency compulsive triggers — phone checks, social feeds, snack browsing. Keep them, but add a 10-second pause before each: state what you are about to do and why.",
@@ -126,7 +126,7 @@
     "num": "2.10",
     "title": "The Vacuum Protocol",
     "duration": "Weekly",
-    "purpose": "Harness the useful core of 'wanting nothing': act on desire without attachment to outcome.",
+    "purpose": "Harnesses the useful core of 'wanting nothing': act on desire without attachment to outcome.",
     "evidence": ["Goal activation research", "Scarcity effects (Mullainathan & Shafir)", "Subtraction bias (Adams et al., 2021)"],
     "steps": [
       "Write what you want, specifically and vividly. Desire directs attention and goal activation — keep it.",
@@ -140,7 +140,7 @@
     "num": "2.11",
     "title": "The Lag Reframe",
     "duration": "One-time, revisited monthly",
-    "purpose": "Inoculate against quitting during the invisible-growth phase of any compounding process.",
+    "purpose": "Inoculates against quitting during the invisible-growth phase of any compounding process.",
     "evidence": ["Compounding in skill, finance and knowledge", "Delayed returns in expertise research", "Practitioner-tested utility"],
     "steps": [
       "Write the area where you feel 'nothing is working' — business, fitness, skill, relationships.",

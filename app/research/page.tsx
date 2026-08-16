@@ -23,7 +23,7 @@ export default function ResearchPage() {
       <SectionHeading
         eyebrow="Research Notes"
         title="The source document"
-        lede={`This is the full working document behind the site: every one of the ${claimCount} claims in the audit, the thirteen protocols, the roadmap, and the source list — as originally written, without editing. It is the raw material; the site is its distillation.`}
+        lede={`This is the full working document behind the site: every one of the ${claimCount} claims in the audit, the thirteen protocols, the roadmap, and the source list, with full citations. It is the raw material; the site is its distillation.`}
       />
       <div className="rounded-xl border border-line bg-card p-6 sm:p-10">
         <BookMarkdown body={body} />

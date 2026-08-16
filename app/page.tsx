@@ -51,10 +51,10 @@ export default function Home() {
               <span className="italic text-gold">Manual</span>
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-soft">
-              Belief engineering, identity, focus, discipline, and the one-person
-              business — distilled from {data.chapters.length} trainings into a single
-              book-like manual. Every notable claim is graded against the research that
-              supports it.
+              Belief, identity, focus, discipline, and the one-person
+              business — distilled from {data.chapters.length} trainings into one
+              book-like manual. Every notable claim is graded against the research
+              behind it.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
@@ -153,15 +153,15 @@ export default function Home() {
             {[
               {
                 t: "Read in order",
-                d: "Chapters 1–11 build the belief engine; 12–15 shift to doing; 16–20 train the body and mind; 21–28 build the business. The stack compounds.",
+                d: "Chapters 1–11 build the belief engine. Chapters 12–15 move you to action. Chapters 16–20 train body and mind. Chapters 21–28 build the business. Each step builds on the last.",
               },
               {
                 t: "Trust, then verify",
-                d: "Every chapter lists its evidence with letter grades. A = strong science, B = good support, C = plausible but mixed, D = weak. No claim is graded higher than it deserves.",
+                d: "Every chapter shows its evidence with letter grades. A = strong science, B = good support, C = plausible but mixed, D = weak. No claim gets a grade higher than the evidence allows.",
               },
               {
                 t: "Apply with protocols",
-                d: "Thirteen named protocols (2.1–2.13) turn each idea into a testable daily practice. Run them at 70% scale, one at a time, and log the inputs.",
+                d: "Thirteen named protocols (2.1–2.13) turn each idea into a testable daily practice. Run one at a time, at 70% scale, and log the inputs.",
               },
             ].map((b) => (
               <div key={b.t} className="rounded-xl border border-line bg-paper p-5">

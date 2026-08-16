@@ -30,7 +30,7 @@ export default function AuditPage() {
       <SectionHeading
         eyebrow="Verification Audit"
         title="Every claim, graded"
-        lede="The trainings make roughly thirty notable empirical claims. Each one below is graded against the actual research, not the training's description of it. A grade is a statement about the evidence, not about whether the practice is useful."
+        lede="The trainings make roughly thirty notable claims about evidence. Each one is graded against the actual research, not the training's description of it. A grade describes the evidence — not whether the practice is useful."
       />
 
       <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-5">
@@ -55,9 +55,9 @@ export default function AuditPage() {
           </p>
         ))}
         <p className="mt-3 border-t border-line pt-3 text-xs text-ink-faint">
-          Grades are assigned per claim by a careful reading of the cited source. Where the
-          training misquotes or overstates a source, the verdict says so plainly — the
-          practice can still be worth keeping, but the story should not be.
+          Each grade comes from a careful reading of the cited source. Where the
+          training misquotes or overstates a source, the verdict says so plainly. The
+          practice may still be worth keeping — the story is not.
         </p>
       </div>
 
@@ -103,8 +103,7 @@ export default function AuditPage() {
       </div>
 
       <p className="mt-8 text-sm text-ink-faint">
-        Cross-reference: {chapters.length} chapters cite these claims; the full research
-        notes are on the <a className="text-gold underline-offset-2 hover:underline" href="/research/">Research</a> page.
+        All {chapters.length} chapters cite these claims. Full research notes are on the <a className="text-gold underline-offset-2 hover:underline" href="/research/">Research</a> page.
       </p>
     </PageShell>
   );
