@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getSiteData } from "@/lib/content";
 import { PageShell, SectionHeading } from "@/components/ui";
+import { canonical } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Quote Library",
   description: "Lines from the trainings and the sources behind them.",
+  alternates: { canonical: canonical("/quotes/") },
 };
 
 export default function QuotesPage() {

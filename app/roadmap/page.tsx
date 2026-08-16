@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { getSiteData } from "@/lib/content";
 import { PageShell, SectionHeading } from "@/components/ui";
+import { canonical } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "The 90-Day Roadmap",
   description: "Three phases — Foundation, Identity and Intensity, Subtraction and Expansion — that sequence the 13 protocols.",
+  alternates: { canonical: canonical("/roadmap/") },
 };
 
 const PHASE_COLORS = [

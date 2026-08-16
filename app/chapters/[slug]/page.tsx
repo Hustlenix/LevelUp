@@ -8,6 +8,8 @@ import { BookMarkdown, StudyList } from "@/components/Markdown";
 import { ReadingProgress } from "@/components/ReadingProgress";
 import ReaderControls from "@/components/ReaderControls";
 import ResumeScroll from "@/components/ResumeScroll";
+import JsonLd from "@/components/JsonLd";
+import { SITE_URL, SITE_NAME, SITE_AUTHOR, PUBLISHED_DATE, canonical } from "@/lib/site";
 
 export function generateStaticParams() {
   const { chapters } = getSiteData();
@@ -22,9 +24,28 @@ export async function generateMetadata({
   const { slug } = await params;
   const chapter = getSiteData().chapters.find((c) => c.slug === slug);
   if (!chapter) return {};
+  const url = canonical(`/chapters/${chapter.slug}/`);
   return {
     title: `Chapter ${chapter.number} — ${chapter.title}`,
     description: chapter.teaser,
+    alternates: { canonical: url },
+    openGraph: {
+      type: "article",
+      title: `Chapter ${chapter.number} — ${chapter.title}`,
+      description: chapter.teaser,
+      url,
+      siteName: SITE_NAME,
+      locale: "en_US",
+      publishedTime: PUBLISHED_DATE,
+      authors: [SITE_AUTHOR],
+      images: [{ url: `${SITE_URL}/og-image.png`, width: 1200, height: 630, alt: SITE_NAME }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `Chapter ${chapter.number} — ${chapter.title}`,
+      description: chapter.teaser,
+      images: [`${SITE_URL}/og-image.png`],
+    },
   };
 }
 
@@ -73,6 +94,22 @@ export default async function ChapterPage({
 
   return (
     <article>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: `Chapter ${chapter.number} — ${chapter.title}`,
+          description: chapter.teaser,
+          url: canonical(`/chapters/${chapter.slug}/`),
+          inLanguage: "en",
+          author: { "@type": "Organization", name: SITE_AUTHOR },
+          publisher: { "@type": "Organization", name: SITE_AUTHOR },
+          datePublished: PUBLISHED_DATE,
+          dateModified: PUBLISHED_DATE,
+          articleSection: meta.label,
+          wordCount: chapter.stats.words,
+        }}
+      />
       <ResumeScroll slug={chapter.slug} />
       <div className="border-b border-line bg-paper-deep/40">
         <div className="mx-auto max-w-3xl px-5 py-12">

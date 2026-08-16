@@ -2,6 +2,8 @@ import Link from "next/link";
 import { getSiteData } from "@/lib/content";
 import { PILLAR_META, type Pillar } from "@/lib/types";
 import { GradeBadge } from "@/components/ui";
+import JsonLd from "@/components/JsonLd";
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_AUTHOR, PUBLISHED_DATE } from "@/lib/site";
 
 const PILLAR_ORDER: Pillar[] = ["self", "wealth", "health", "love"];
 
@@ -23,6 +25,20 @@ export default function Home() {
 
   return (
     <div>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Book",
+          name: SITE_NAME,
+          url: SITE_URL,
+          description: SITE_DESCRIPTION,
+          inLanguage: "en",
+          author: { "@type": "Organization", name: SITE_AUTHOR },
+          datePublished: PUBLISHED_DATE,
+          numberOfPages: data.chapters.length,
+          about: ["self-improvement", "belief", "identity", "discipline", "one-person business"],
+        }}
+      />
       <section className="border-b border-line bg-paper-deep/50">
         <div className="mx-auto grid max-w-5xl gap-10 px-5 py-16 sm:py-24 lg:grid-cols-[1.2fr_1fr]">
           <div>

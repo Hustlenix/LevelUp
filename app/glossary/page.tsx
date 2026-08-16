@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getSiteData } from "@/lib/content";
 import { PageShell, SectionHeading } from "@/components/ui";
+import { canonical } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Glossary",
   description: "Every framework, term, and acronym used in the manual, defined.",
+  alternates: { canonical: canonical("/glossary/") },
 };
 
 export default function GlossaryPage() {

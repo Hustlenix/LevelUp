@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { getSiteData } from "@/lib/content";
 import { PageShell, SectionHeading } from "@/components/ui";
+import { canonical } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "The 13 Protocols",
   description: "Thirteen named, testable protocols distilled from the 28 trainings.",
+  alternates: { canonical: canonical("/protocols/") },
 };
 
 export default function ProtocolsPage() {

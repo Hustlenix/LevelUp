@@ -6,6 +6,8 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import SearchProvider from "@/components/SearchProvider";
 import BackToTop from "@/components/BackToTop";
+import JsonLd from "@/components/JsonLd";
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_AUTHOR } from "@/lib/site";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -20,12 +22,37 @@ const source = Source_Serif_4({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "The Level Up Manual — Belief, Identity & the Science of Getting Better",
-    template: "%s — The Level Up Manual",
+    default: `${SITE_NAME} — Belief, Identity & the Science of Getting Better`,
+    template: `%s — ${SITE_NAME}`,
   },
-  description:
-    "A book-like distillation of twenty-eight self-development trainings: belief engineering, identity, focus, discipline and the one-person business — with every claim verified against the research.",
+  description: SITE_DESCRIPTION,
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    title: `${SITE_NAME} — Belief, Identity & the Science of Getting Better`,
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
+    locale: "en_US",
+    images: [
+      {
+        url: `${SITE_URL}/og-image.png`,
+        width: 1200,
+        height: 630,
+        alt: `${SITE_NAME} — 28 verified chapters`,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE_NAME} — Belief, Identity & the Science of Getting Better`,
+    description: SITE_DESCRIPTION,
+    images: [`${SITE_URL}/og-image.png`],
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -37,6 +64,24 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </Script>
       </head>
       <body className="min-h-full flex flex-col">
+        <JsonLd
+          data={[
+            {
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: SITE_NAME,
+              url: SITE_URL,
+              description: SITE_DESCRIPTION,
+              inLanguage: "en",
+            },
+            {
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: SITE_AUTHOR,
+              url: SITE_URL,
+            },
+          ]}
+        />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:border focus:border-gold focus:bg-paper-deep focus:px-4 focus:py-2 focus:text-sm focus:text-ink"

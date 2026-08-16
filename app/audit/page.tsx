@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { getSiteData } from "@/lib/content";
 import { GradeBadge, PageShell, SectionHeading } from "@/components/ui";
+import { canonical } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Verification Audit",
   description: "Every notable claim from the 28 trainings, graded against the research.",
+  alternates: { canonical: canonical("/audit/") },
 };
 
 const GRADE_LABEL: Record<string, string> = {

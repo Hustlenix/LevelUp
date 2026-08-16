@@ -2,13 +2,30 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { getSiteData } from "@/lib/content";
-import { PageShell, SectionHeading } from "@/components/ui";
+import { PageShell, SectionHeading, ChapterCard } from "@/components/ui";
+import { canonical } from "@/lib/site";
 import ChapterList from "@/components/ChapterList";
+import type { Chapter } from "@/lib/types";
 
 export const metadata: Metadata = {
   title: "Table of Contents",
   description: "All 28 chapters of The Level Up Manual, grouped by pillar.",
+  alternates: { canonical: canonical("/chapters/") },
 };
+
+function ChapterListFallback({ chapters }: { chapters: Chapter[] }) {
+  return (
+    <>
+      <div aria-hidden="true" className="mb-4 h-10" />
+      <div aria-hidden="true" className="mb-6 h-10" />
+      <div className="grid gap-4">
+        {chapters.map((c) => (
+          <ChapterCard key={c.slug} chapter={c} />
+        ))}
+      </div>
+    </>
+  );
+}
 
 export default async function ChaptersPage() {
   const { chapters } = getSiteData();
@@ -31,7 +48,7 @@ export default async function ChaptersPage() {
         ≈ {totalText} of reading across {chapters.length} chapters. Every claim is graded A–D
         against the research — see the <Link className="underline decoration-gold/60 underline-offset-2 hover:text-gold" href="/audit/">Verification Audit</Link>.
       </p>
-      <Suspense>
+      <Suspense fallback={<ChapterListFallback chapters={chapters} />}>
         <ChapterList chapters={chapters} />
       </Suspense>
     </PageShell>

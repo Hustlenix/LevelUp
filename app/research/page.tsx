@@ -4,10 +4,12 @@ import { join } from "node:path";
 import { getSiteData } from "@/lib/content";
 import { PageShell, SectionHeading } from "@/components/ui";
 import { BookMarkdown } from "@/components/Markdown";
+import { canonical } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Research Notes",
   description: "The full verification document behind every grade on this site.",
+  alternates: { canonical: canonical("/research/") },
 };
 
 export default function ResearchPage() {
