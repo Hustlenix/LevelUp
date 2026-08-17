@@ -3,18 +3,15 @@
 import { useSyncExternalStore } from "react";
 import type { HighlightEntry } from "@/lib/highlights";
 import type { QuizScore } from "@/lib/types";
+import { advanceStreak, type StreakState } from "@/lib/gamification";
+
+export type { StreakState };
 
 function localDate(d: Date): string {
   const y = d.getFullYear();
   const m = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
   return `${y}-${m}-${day}`;
-}
-
-export interface StreakState {
-  current: number;
-  best: number;
-  last: string;
 }
 
 const HIGHLIGHTS_KEY = "levelup-highlights-v1";
@@ -143,11 +140,7 @@ export function useStreakStore(): StreakState {
 
 export function recordActivity(now: Date = new Date()) {
   const today = localDate(now);
-  const cur = getStreakSnapshot();
-  if (cur.last === today) return;
-  const yesterday = localDate(new Date(now.getTime() - 86400000));
-  const current = cur.last === yesterday ? cur.current + 1 : 1;
-  const next: StreakState = { current, best: Math.max(cur.best, current), last: today };
+  const next = advanceStreak(getStreakSnapshot(), today);
   streakCache = next;
   writeJson(STREAK_KEY, next);
 }

@@ -17,6 +17,7 @@ import {
 } from "@/lib/activity";
 import { buildBackup, validateBackup, type BackupState } from "@/lib/backup";
 import { PillarTag } from "@/components/ui";
+import GamificationPanel from "@/components/GamificationPanel";
 
 const THEME_KEY = "levelup-theme";
 const SCALE_KEY = "levelup-reader-scale";
@@ -117,6 +118,8 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
           <div className="h-full rounded-full bg-gold transition-all" style={{ width: `${stats.pct}%` }} />
         </div>
       </div>
+
+      <GamificationPanel />
 
       <div className="mt-8 space-y-2">
         {chapters.map((c) => {

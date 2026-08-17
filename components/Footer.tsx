@@ -19,6 +19,7 @@ export default function Footer() {
           <Link className="hover:text-gold" href="/protocols/">13 Protocols</Link>
           <Link className="hover:text-gold" href="/roadmap/">90-Day Roadmap</Link>
           <Link className="hover:text-gold" href="/research/">Research Notes</Link>
+          <Link className="hover:text-gold" href="/devlog/">Devlog</Link>
         </div>
         <div className="flex flex-col gap-2 text-xs">
           <span className="font-display uppercase tracking-[0.2em] text-gold">Read</span>

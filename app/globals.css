@@ -50,6 +50,40 @@
   --color-self: #8d7db5;
 }
 
+[data-theme="deepwork"] {
+  color-scheme: light;
+  --color-paper: #f5efdf;
+  --color-paper-deep: #e9dfc6;
+  --color-card: #f9f4e4;
+  --color-ink: #3a3123;
+  --color-ink-soft: #6d5f47;
+  --color-ink-faint: #7a6b50;
+  --color-gold: #8a6d2a;
+  --color-gold-soft: #b5903f;
+  --color-line: #d9cbac;
+  --color-health: #2e5f45;
+  --color-wealth: #8a6d2a;
+  --color-love: #96493f;
+  --color-self: #51436e;
+}
+
+[data-theme="cyberpunk"] {
+  color-scheme: dark;
+  --color-paper: #0a0a12;
+  --color-paper-deep: #12121e;
+  --color-card: #14141f;
+  --color-ink: #e8eaf6;
+  --color-ink-soft: #b0b6d4;
+  --color-ink-faint: #8288a8;
+  --color-gold: #c9a94e;
+  --color-gold-soft: #e0c06a;
+  --color-line: #2a2a40;
+  --color-health: #22d3ee;
+  --color-wealth: #c9a94e;
+  --color-love: #f472b6;
+  --color-self: #a78bfa;
+}
+
 html {
   scroll-behavior: smooth;
 }

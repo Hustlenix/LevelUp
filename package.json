@@ -7,7 +7,7 @@
     "build": "node scripts/build-data.mjs && next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node scripts/build-data.mjs && node --test tests/data.test.mjs tests/features.test.mjs"
+    "test": "node scripts/build-data.mjs && node --test tests/data.test.mjs tests/features.test.mjs tests/gamification.test.mjs"
   },
   "dependencies": {
     "minisearch": "^7.2.0",

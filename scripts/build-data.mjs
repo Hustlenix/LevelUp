@@ -93,6 +93,30 @@ function seedDatabase(db, chapters, audit, protocols, glossary, quotes, roadmap)
   };
 }
 
+function parseDevlog(file) {
+  const raw = readFileSync(file, "utf8");
+  const m = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
+  if (!m) throw new Error(`Bad frontmatter in ${file}`);
+  const meta = parse(m[1]);
+  const body = m[2].trim();
+  if (!meta.slug || !meta.date || !meta.title) {
+    throw new Error(`Incomplete frontmatter in ${file}`);
+  }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(meta.date))) {
+    throw new Error(`Bad date '${meta.date}' in ${file}`);
+  }
+  return { slug: meta.slug, date: String(meta.date), title: meta.title, body };
+}
+
+function loadDevlog() {
+  const dir = join(contentDir, "devlog");
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir)
+    .filter((f) => f.endsWith(".md"))
+    .map((f) => parseDevlog(join(dir, f)))
+    .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+}
+
 function emitJson(db, parsedChapters, quizzes) {
   mkdirSync(publicDataDir, { recursive: true });
   const chapters = parsedChapters.map((c) => ({ ...c })).sort((a, b) => a.number - b.number);
@@ -103,10 +127,12 @@ function emitJson(db, parsedChapters, quizzes) {
   const roadmap = { phases: db.prepare(`SELECT data FROM roadmap ORDER BY phase`).all().map((r) => JSON.parse(r.data)), rules: roadmapJson.rules };
   writeFileSync(join(publicDataDir, "site.json"), JSON.stringify({ chapters, audit, protocols, glossary, quotes, quizzes, roadmap }));
   writeFileSync(join(publicDataDir, "quizzes.json"), JSON.stringify(quizzes));
+  const devlog = loadDevlog();
+  writeFileSync(join(publicDataDir, "devlog.json"), JSON.stringify(devlog));
   for (const c of chapters) {
     writeFileSync(join(publicDataDir, `chapter-${c.slug}.json`), JSON.stringify(c));
   }
-  return { chapters: chapters.length, audit: audit.length, protocols: protocols.length, glossary: glossary.length, quotes: quotes.length, quizzes: quizzes.length };
+  return { chapters: chapters.length, audit: audit.length, protocols: protocols.length, glossary: glossary.length, quotes: quotes.length, quizzes: quizzes.length, devlog: loadDevlog().length };
 }
 
 function buildSearchIndex(chapters, audit, protocols, glossary, quotes) {
