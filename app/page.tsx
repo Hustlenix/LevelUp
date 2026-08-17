@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getSiteData } from "@/lib/content";
 import { PILLAR_META, type Pillar } from "@/lib/types";
 import JsonLd from "@/components/JsonLd";
+import QuoteCard from "@/components/QuoteCard";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_AUTHOR, PUBLISHED_DATE } from "@/lib/site";
 
 const PILLAR_ORDER: Pillar[] = ["self", "wealth", "health", "love"];
@@ -50,6 +51,7 @@ export default function Home() {
               book-like manual. Every notable claim is graded against the research
               behind it.
             </p>
+            <QuoteCard />
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="/chapters/"
