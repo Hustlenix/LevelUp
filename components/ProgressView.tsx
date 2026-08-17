@@ -1,13 +1,99 @@
 "use client";
 
 import Link from "next/link";
+import { useRef, useState } from "react";
 import type { Chapter } from "@/lib/types";
-import { markComplete, overallStats, resetProgress, useProgressStore } from "@/lib/progress";
+import { markComplete, overallStats, resetProgress, useProgressStore, getProgressSnapshot, restoreProgress } from "@/lib/progress";
+import { getBookmarksSnapshot, restoreBookmarks } from "@/lib/bookmarks";
+import {
+  getHighlightsSnapshot,
+  getQuizSnapshot,
+  getReflectionsSnapshot,
+  getStreakSnapshot,
+  restoreHighlights,
+  restoreQuiz,
+  restoreReflections,
+  restoreStreak,
+} from "@/lib/activity";
+import { buildBackup, validateBackup, type BackupState } from "@/lib/backup";
 import { PillarTag } from "@/components/ui";
+
+const THEME_KEY = "levelup-theme";
+const SCALE_KEY = "levelup-reader-scale";
 
 export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
   const map = useProgressStore();
   const stats = overallStats(map, chapters.length);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [importError, setImportError] = useState<string | null>(null);
+  const [imported, setImported] = useState(false);
+
+  const onExport = () => {
+    const state: BackupState = {
+      theme: document.documentElement.getAttribute("data-theme"),
+      readerScale: document.documentElement.getAttribute("data-reader-scale"),
+      progress: getProgressSnapshot(),
+      bookmarks: [...getBookmarksSnapshot()],
+      highlights: getHighlightsSnapshot(),
+      quiz: getQuizSnapshot(),
+      reflections: getReflectionsSnapshot(),
+      streak: getStreakSnapshot(),
+    };
+    const blob = new Blob([JSON.stringify(buildBackup(state), null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `levelup-backup-v1-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const onImportFile = (file: File) => {
+    setImportError(null);
+    setImported(false);
+    const reader = new FileReader();
+    reader.onload = () => {
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(String(reader.result));
+      } catch {
+        setImportError("That file is not valid JSON.");
+        return;
+      }
+      const res = validateBackup(parsed);
+      if (!res.ok || !res.data) {
+        setImportError(res.errors.join(" "));
+        return;
+      }
+      const d = res.data;
+      restoreProgress(d.progress);
+      restoreBookmarks(d.bookmarks);
+      restoreHighlights(d.highlights);
+      restoreQuiz(d.quiz);
+      restoreReflections(d.reflections);
+      if (d.streak) restoreStreak(d.streak);
+      if (d.theme) {
+        document.documentElement.setAttribute("data-theme", d.theme);
+        try {
+          window.localStorage.setItem(THEME_KEY, d.theme);
+        } catch {
+          /* storage unavailable */
+        }
+      }
+      if (d.readerScale) {
+        document.documentElement.setAttribute("data-reader-scale", d.readerScale);
+        try {
+          window.localStorage.setItem(SCALE_KEY, d.readerScale);
+        } catch {
+          /* storage unavailable */
+        }
+      }
+      setImported(true);
+    };
+    reader.readAsText(file);
+  };
 
   return (
     <div className="mx-auto max-w-3xl px-5 py-12">
@@ -76,6 +162,54 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
             </div>
           );
         })}
+      </div>
+
+      <div className="mt-8 rounded-xl border border-line bg-card p-6">
+        <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">
+          Backup &amp; restore
+        </p>
+        <p className="mt-2 text-sm text-ink-soft">
+          Your progress, highlights, quiz scores, reflections and settings live only in
+          this browser. Export a JSON backup to keep them, or import one to move them to
+          another device.
+        </p>
+        <div className="mt-4 flex flex-wrap gap-3">
+          <button
+            type="button"
+            onClick={onExport}
+            className="rounded-full bg-ink px-5 py-2 text-sm font-semibold text-paper transition-colors hover:bg-gold"
+          >
+            Export backup
+          </button>
+          <button
+            type="button"
+            onClick={() => fileRef.current?.click()}
+            className="rounded-full border border-line bg-paper px-5 py-2 text-sm font-semibold text-ink transition-colors hover:border-gold hover:text-gold"
+          >
+            Import backup
+          </button>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="application/json,.json"
+            className="sr-only"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) onImportFile(f);
+              e.target.value = "";
+            }}
+          />
+        </div>
+        {importError && (
+          <p role="alert" className="mt-3 text-sm text-rose-600">
+            {importError}
+          </p>
+        )}
+        {imported && (
+          <p role="status" className="mt-3 text-sm text-emerald-600">
+            Backup imported — refresh the page to see it everywhere.
+          </p>
+        )}
       </div>
 
       <div className="mt-8 flex justify-between">

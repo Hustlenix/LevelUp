@@ -69,6 +69,10 @@ export function resetProgress() {
   write({});
 }
 
+export function restoreProgress(map: ProgressMap) {
+  write(map);
+}
+
 export function overallStats(map: ProgressMap, total: number) {
   const done = Object.values(map).filter((p) => p.complete).length;
   const avgScroll = Object.values(map).length

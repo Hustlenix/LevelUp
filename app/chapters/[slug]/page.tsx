@@ -9,6 +9,10 @@ import { BookMarkdown, StudyList } from "@/components/Markdown";
 import { ReadingProgress } from "@/components/ReadingProgress";
 import ReaderControls from "@/components/ReaderControls";
 import ResumeScroll from "@/components/ResumeScroll";
+import HighlightLayer from "@/components/HighlightLayer";
+import ChapterQuiz from "@/components/ChapterQuiz";
+import ChapterToc from "@/components/ChapterToc";
+import ChapterKeys from "@/components/ChapterKeys";
 import JsonLd from "@/components/JsonLd";
 import { SITE_URL, SITE_NAME, SITE_AUTHOR, PUBLISHED_DATE, canonical } from "@/lib/site";
 
@@ -94,6 +98,11 @@ export default async function ChapterPage({
   const num = String(chapter.number).padStart(2, "0");
   const group = BOOK_GROUPS.find((g) => chapter.number >= g.start && chapter.number <= g.end);
   const groupIndex = group ? BOOK_GROUPS.indexOf(group) + 1 : 0;
+  const quiz = getSiteData().quizzes.find((q) => q.slug === chapter.slug);
+  const { chapters } = getSiteData();
+  const idx = chapters.findIndex((c) => c.slug === chapter.slug);
+  const prevHref = idx > 0 ? `/chapters/${chapters[idx - 1].slug}/` : undefined;
+  const nextHref = idx < chapters.length - 1 ? `/chapters/${chapters[idx + 1].slug}/` : undefined;
 
   return (
     <article>
@@ -114,8 +123,26 @@ export default async function ChapterPage({
         }}
       />
       <ResumeScroll slug={chapter.slug} />
+      <ChapterKeys prevHref={prevHref} nextHref={nextHref} />
       <div className="border-b border-line bg-paper-deep/40">
         <div className="mx-auto max-w-3xl px-5 py-12">
+          {group && chapter.number === group.start && (
+            <div className="mb-6 rounded-xl border border-gold/40 bg-card p-5 no-print">
+              <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">
+                Group {groupIndex} of 4 — {group.name}
+              </p>
+              <p className="mt-2 text-sm text-ink-soft">
+                {group.message} These chapters run {group.start}–{group.end}; read them in
+                order.
+              </p>
+              <Link
+                href="/chapters/"
+                className="mt-3 inline-block text-xs font-medium text-gold underline-offset-2 hover:underline"
+              >
+                Back to contents
+              </Link>
+            </div>
+          )}
           {group && (
             <p className="mb-4 no-print text-xs uppercase tracking-wider text-ink-faint">
               <Link
@@ -150,7 +177,13 @@ export default async function ChapterPage({
 
       <div className="mx-auto grid max-w-5xl gap-10 px-5 py-12 lg:grid-cols-[1fr_280px]">
         <div className="min-w-0">
-          <BookMarkdown body={chapter.body} dropCap />
+          <HighlightLayer slug={chapter.slug}>
+            <BookMarkdown body={chapter.body} dropCap />
+          </HighlightLayer>
+
+          {quiz && quiz.questions.length > 0 && (
+            <ChapterQuiz quiz={quiz} />
+          )}
 
           {chapter.keyConcepts.length > 0 && (
             <div className="mt-10 rounded-xl border border-line bg-card p-5">
@@ -192,34 +225,7 @@ export default async function ChapterPage({
 
         <aside className="hidden lg:block no-print">
           <div className="sticky top-24 space-y-5">
-            <div className="rounded-xl border border-line bg-paper-deep/50 p-5">
-              <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">
-                In this chapter
-              </p>
-              <ol className="mt-3 space-y-2 text-sm">
-                {chapter.stats.sections.map((s) => (
-                  <li key={s.num} className="flex gap-2 text-ink-soft">
-                    <span className="font-display text-xs font-bold text-gold">{s.num}</span>
-                    <span>{s.title}</span>
-                  </li>
-                ))}
-                {chapter.stats.keyIdeas && (
-                  <li className="flex gap-2 text-ink-soft">
-                    <span className="font-display text-xs font-bold text-gold">✦</span>Key Ideas
-                  </li>
-                )}
-                {chapter.stats.applyToday && (
-                  <li className="flex gap-2 text-ink-soft">
-                    <span className="font-display text-xs font-bold text-gold">✦</span>Apply Today
-                  </li>
-                )}
-                {chapter.stats.theScience && (
-                  <li className="flex gap-2 text-ink-soft">
-                    <span className="font-display text-xs font-bold text-gold">✦</span>The Science
-                  </li>
-                )}
-              </ol>
-            </div>
+            <ChapterToc chapter={chapter} />
             <div className="rounded-xl border border-line bg-card p-5">
               <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">
                 Reading time

@@ -2,9 +2,34 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Link from "next/link";
 import type { Components } from "react-markdown";
+import type { Element } from "hast";
 import { GradeBadge } from "@/components/ui";
 
+function headingId(node: Element): string | undefined {
+  const text: string[] = [];
+  const walk = (n: Element["children"][number]) => {
+    if (n.type === "text") text.push(n.value);
+    else if (n.type === "element") n.children.forEach(walk);
+  };
+  node.children.forEach(walk);
+  const s = text.join("").trim();
+  const numbered = /^(\d+)\s*—/.exec(s);
+  if (numbered) return `sec-${parseInt(numbered[1], 10)}`;
+  if (s === "Key Ideas") return "sec-keyideas";
+  if (s === "Apply Today") return "sec-apply";
+  if (s === "The Science") return "sec-science";
+  return undefined;
+}
+
 const components: Components = {
+  h2: ({ node, children }) => {
+    const id = node ? headingId(node) : undefined;
+    return (
+      <h2 id={id} className="scroll-mt-28">
+        {children}
+      </h2>
+    );
+  },
   a: ({ href, children, ...props }) => {
     if (href?.startsWith("/")) {
       return (

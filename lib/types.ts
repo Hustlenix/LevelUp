@@ -64,12 +64,37 @@ export interface SearchDoc {
   text: string;
 }
 
+export interface QuizOption {
+  t: string;
+  correct: boolean;
+}
+
+export interface QuizQuestion {
+  q: string;
+  options: QuizOption[];
+  explanation?: string;
+}
+
+export interface ChapterQuiz {
+  slug: string;
+  title: string;
+  questions: QuizQuestion[];
+  reflection: string;
+}
+
+export interface QuizScore {
+  score: number;
+  total: number;
+  ts: number;
+}
+
 export interface SiteData {
   chapters: Chapter[];
   audit: AuditClaim[];
   protocols: Protocol[];
   glossary: GlossaryTerm[];
   quotes: Quote[];
+  quizzes: ChapterQuiz[];
   roadmap: {
     phases: {
       phase: number;

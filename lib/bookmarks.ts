@@ -55,3 +55,7 @@ export function toggleBookmark(slug: string) {
   }
   write([...next]);
 }
+
+export function restoreBookmarks(slugs: string[]) {
+  write(slugs);
+}

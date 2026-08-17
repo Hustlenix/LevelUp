@@ -93,7 +93,7 @@ function seedDatabase(db, chapters, audit, protocols, glossary, quotes, roadmap)
   };
 }
 
-function emitJson(db, parsedChapters) {
+function emitJson(db, parsedChapters, quizzes) {
   mkdirSync(publicDataDir, { recursive: true });
   const chapters = parsedChapters.map((c) => ({ ...c })).sort((a, b) => a.number - b.number);
   const audit = db.prepare(`SELECT id, category, claim, grade, verdict, detail, citation FROM audit ORDER BY id`).all();
@@ -101,11 +101,12 @@ function emitJson(db, parsedChapters) {
   const glossary = db.prepare(`SELECT term, definition FROM glossary ORDER BY term`).all();
   const quotes = db.prepare(`SELECT text, source, chapter FROM quotes`).all();
   const roadmap = { phases: db.prepare(`SELECT data FROM roadmap ORDER BY phase`).all().map((r) => JSON.parse(r.data)), rules: roadmapJson.rules };
-  writeFileSync(join(publicDataDir, "site.json"), JSON.stringify({ chapters, audit, protocols, glossary, quotes, roadmap }));
+  writeFileSync(join(publicDataDir, "site.json"), JSON.stringify({ chapters, audit, protocols, glossary, quotes, quizzes, roadmap }));
+  writeFileSync(join(publicDataDir, "quizzes.json"), JSON.stringify(quizzes));
   for (const c of chapters) {
     writeFileSync(join(publicDataDir, `chapter-${c.slug}.json`), JSON.stringify(c));
   }
-  return { chapters: chapters.length, audit: audit.length, protocols: protocols.length, glossary: glossary.length, quotes: quotes.length };
+  return { chapters: chapters.length, audit: audit.length, protocols: protocols.length, glossary: glossary.length, quotes: quotes.length, quizzes: quizzes.length };
 }
 
 function buildSearchIndex(chapters, audit, protocols, glossary, quotes) {
@@ -128,6 +129,84 @@ function buildSearchIndex(chapters, audit, protocols, glossary, quotes) {
   mkdirSync(publicDataDir, { recursive: true });
   writeFileSync(join(publicDataDir, "search-index.json"), JSON.stringify(docs));
   return docs.length;
+}
+
+function pickDistractors(pool, correct, count) {
+  const uniq = [...new Set(pool.filter((x) => x !== correct))];
+  const out = [];
+  for (let i = 0; i < uniq.length && out.length < count; i++) {
+    if (uniq[i] && !out.includes(uniq[i])) out.push(uniq[i]);
+  }
+  return out;
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildQuizzes(chapters) {
+  const allConcepts = chapters.flatMap((c) => c.keyConcepts);
+  const allProtocols = [...new Set(chapters.flatMap((c) => c.protocols))];
+  const grades = ["A", "B", "C", "D", "U"];
+  return chapters
+    .sort((a, b) => a.number - b.number)
+    .map((c) => {
+      const questions = [];
+      const concept = c.keyConcepts[0];
+      if (concept) {
+        const distractors = pickDistractors(allConcepts, concept, 3);
+        if (distractors.length >= 3) {
+          questions.push({
+            q: "Which of these is a key concept of this chapter?",
+            options: shuffle([
+              { t: concept, correct: true },
+              ...distractors.map((d) => ({ t: d, correct: false })),
+            ]),
+            explanation: `"${concept}" is listed in this chapter's key concepts.`,
+          });
+        }
+      }
+      const study = c.studies[0];
+      if (study) {
+        const primary = study.grade.toUpperCase().trim().split(" ")[0].split("/")[0][0] || "U";
+        const distractors = pickDistractors(grades, primary, 3);
+        if (distractors.length >= 3) {
+          questions.push({
+            q: `What evidence grade does "${study.name}" receive in this chapter?`,
+            options: shuffle([
+              { t: primary, correct: true },
+              ...distractors.map((d) => ({ t: d, correct: false })),
+            ]),
+            explanation: `The evidence review grades ${study.name} ${study.grade}.`,
+          });
+        }
+      }
+      const protocol = c.protocols[0];
+      if (protocol) {
+        const distractors = pickDistractors(allProtocols, protocol, 3);
+        if (distractors.length >= 3) {
+          questions.push({
+            q: "Which protocol belongs to this chapter?",
+            options: shuffle([
+              { t: protocol, correct: true },
+              ...distractors.map((d) => ({ t: d, correct: false })),
+            ]),
+            explanation: `This chapter references the protocol "${protocol}".`,
+          });
+        }
+      }
+      return {
+        slug: c.slug,
+        title: c.title,
+        questions,
+        reflection: "Choose one idea from this chapter and try it today. What will you do, and what input will you log?",
+      };
+    });
 }
 
 const chaptersDir = join(contentDir, "chapters");
@@ -167,7 +246,7 @@ mkdirSync(dirname(dbPath), { recursive: true });
 const db = new DatabaseSync(dbPath);
 const counts = seedDatabase(db, chapters, audit, protocolsJson, glossary, quotesJson, roadmapJson);
 console.log("Seeded SQLite:", counts);
-const emitted = emitJson(db, chapters);
+const emitted = emitJson(db, chapters, buildQuizzes(chapters));
 console.log("Emitted JSON:", emitted);
 const idx = buildSearchIndex(chapters, audit, protocolsJson, glossary, quotesJson);
 console.log("Search index docs:", idx);
