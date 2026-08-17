@@ -3,7 +3,13 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-function shuffleArray(array) {
+interface QuoteEntry {
+  text: string;
+  source: string;
+  chapter: string;
+}
+
+function shuffleArray(array: QuoteEntry[]): QuoteEntry[] {
   const copy = [...array];
   for (let i = copy.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -13,13 +19,13 @@ function shuffleArray(array) {
 }
 
 function QuoteCard() {
-  const [quote, setQuote] = useState(null);
+  const [quote, setQuote] = useState<QuoteEntry | null>(null);
 
   useEffect(() => {
     fetch("/data/quotes.json")
       .then((r) => r.json())
       .then((data) => {
-        const entries = data.quotes || [];
+        const entries: QuoteEntry[] = (data as { quotes: QuoteEntry[] }).quotes || [];
         if (!entries.length) return;
         const shuffled = shuffleArray(entries);
         const choice = shuffled[0];
