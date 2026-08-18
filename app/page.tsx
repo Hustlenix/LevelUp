@@ -2,7 +2,8 @@ import Link from "next/link";
 import { getSiteData } from "@/lib/content";
 import { PILLAR_META, type Pillar } from "@/lib/types";
 import JsonLd from "@/components/JsonLd";
-import QuoteCard from "@/components/QuoteCard";
+import PrivacyBadge from "@/components/PrivacyBadge";
+import ThemeTimeShift from "@/components/ThemeTimeShift";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_AUTHOR, PUBLISHED_DATE } from "@/lib/site";
 
 const PILLAR_ORDER: Pillar[] = ["self", "wealth", "health", "love"];
@@ -45,13 +46,14 @@ export default function Home() {
               <br />
               <span className="italic text-gold">Manual</span>
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-soft">
+<p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-soft">
               Belief, identity, focus, discipline, and the one-person
               business — distilled from {data.chapters.length} trainings into one
               book-like manual. Every notable claim is graded against the research
               behind it.
             </p>
-            <QuoteCard />
+<PrivacyBadge />
+            <ThemeTimeShift />
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="/chapters/"

@@ -1,7 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 "use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+
+interface QuoteEntry {
+  text: string;
+  source: string;
+  chapter: string;
+}
 
 function shuffleArray(array) {
   const copy = [...array];
@@ -10,12 +18,6 @@ function shuffleArray(array) {
     [copy[i], copy[j]] = [copy[j], copy[i]];
   }
   return copy;
-}
-
-interface QuoteEntry {
-  text: string;
-  source: string;
-  chapter: string;
 }
 
 function QuoteCard() {

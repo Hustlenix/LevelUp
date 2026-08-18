@@ -21,6 +21,10 @@
 :root {
   color-scheme: light;
   --reader-scale: 1;
+  --hue: 200;
+  --bg-base: var(--color-paper);
+  --bg-elegant: rgb(247, 242, 231);
+  --text-on-base: var(--color-ink);
 }
 
 [data-reader-scale="0.85"] {
