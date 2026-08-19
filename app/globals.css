@@ -107,7 +107,8 @@ body {
 
 .book-prose {
   font-size: calc(1.075rem * var(--reader-scale));
-  line-height: 1.85;
+  line-height: var(--reader-lineheight, 1.85);
+  font-family: var(--reader-font-family, var(--font-body));
 }
 
 .book-prose p {
@@ -231,4 +232,23 @@ body {
 [data-reader-scale="1.3"] .reader-btn-plus {
   opacity: 0.4;
   pointer-events: none;
+}
+
+/* ---- new reader controls vars ---- */
+[data-reader-lh="tight"] { --reader-lineheight: tight; }
+[data-reader-lh="normal"] { --reader-lineheight: normal; }
+[data-reader-lh="airy"] { --reader-lineheight: airy; }
+
+/* font family vars */
+[data-reader-font="serif"] { --reader-font-family: serif; }
+[data-reader-font="source"] { --reader-font-family: source; }
+
+/* high-contrast mode */
+[data-contrast="high"] {
+  --color-ink: #1a1a1a;
+  --color-ink-soft: #3a3a3a;
+  --color-ink-faint: #5a5a5a;
+  --color-line: #4a4a4a;
+  --color-gold: #d4a500;
+  --color-gold-soft: #eab300;
 }
