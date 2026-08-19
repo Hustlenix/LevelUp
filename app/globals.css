@@ -234,21 +234,21 @@ body {
   pointer-events: none;
 }
 
-/* ---- new reader controls vars ---- */
-[data-reader-lh="tight"] { --reader-lineheight: tight; }
-[data-reader-lh="normal"] { --reader-lineheight: normal; }
-[data-reader-lh="airy"] { --reader-lineheight: airy; }
+/* ---- reader line-height presets ---- */
+[data-reader-lh="tight"] { --reader-lineheight: 1.6; }
+[data-reader-lh="normal"] { --reader-lineheight: 1.85; }
+[data-reader-lh="airy"] { --reader-lineheight: 2.1; }
 
-/* font family vars */
-[data-reader-font="serif"] { --reader-font-family: serif; }
-[data-reader-font="source"] { --reader-font-family: source; }
+/* ---- reader font family presets ---- */
+[data-reader-font="source"] { --reader-font-family: var(--font-body); }
+[data-reader-font="serif"] {
+  --reader-font-family: Georgia, "Times New Roman", Times, serif;
+}
 
-/* high-contrast mode */
+/* high-contrast mode: pull soft/faint text and hairlines up to full ink.
+   Theme-safe: resolves against the active theme's --color-ink. */
 [data-contrast="high"] {
-  --color-ink: #1a1a1a;
-  --color-ink-soft: #3a3a3a;
-  --color-ink-faint: #5a5a5a;
-  --color-line: #4a4a4a;
-  --color-gold: #d4a500;
-  --color-gold-soft: #eab300;
+  --color-ink-soft: var(--color-ink);
+  --color-ink-faint: var(--color-ink);
+  --color-line: var(--color-ink);
 }
