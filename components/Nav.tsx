@@ -11,34 +11,21 @@ export default function Nav({ chapters }: { chapters: Chapter[] }) {
   const { setOpen } = useSearch();
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur no-print">
-      <div className="mx-auto flex h-14 max-w-5xl items-center gap-6 px-5">
-        <Link href="/" className="flex items-baseline gap-2 font-display">
-          <span className="text-lg font-bold tracking-tight text-ink">The Level Up Manual</span>
-          <span className="hidden text-[11px] uppercase tracking-[0.2em] text-gold sm:inline">
+      <div className="mx-auto flex h-14 max-w-5xl items-center gap-4 px-5">
+        <Link
+          href="/"
+          className="flex shrink-0 items-baseline gap-2 whitespace-nowrap font-display"
+        >
+          <span className="text-lg font-bold tracking-tight text-ink">
+            The Level Up Manual
+          </span>
+          <span className="hidden text-[11px] uppercase tracking-[0.2em] text-gold sm:inline md:hidden lg:inline">
             vol. i — 28 lessons
           </span>
         </Link>
-        <nav className="ml-auto hidden items-center gap-5 text-sm text-ink-soft md:flex">
-          <ChaptersMenu chapters={chapters} />
-          <Link className="transition-colors hover:text-gold" href="/audit/">
-            Verification
-          </Link>
-          <Link className="transition-colors hover:text-gold" href="/protocols/">
-            Protocols
-          </Link>
-          <Link className="transition-colors hover:text-gold" href="/glossary/">
-            Glossary
-          </Link>
-          <Link className="transition-colors hover:text-gold" href="/quotes/">
-            Quotes
-          </Link>
-          <Link className="transition-colors hover:text-gold" href="/progress/">
-            Progress
-          </Link>
-        </nav>
         <button
           onClick={() => setOpen(true)}
-          className="ml-auto flex items-center gap-2 rounded-full border border-line bg-paper-deep px-3 py-1.5 text-sm text-ink-soft transition-colors hover:border-gold hover:text-gold md:ml-0"
+          className="ml-auto flex shrink-0 items-center gap-2 rounded-full border border-line bg-paper-deep px-3 py-1.5 text-sm text-ink-soft transition-colors hover:border-gold hover:text-gold"
           aria-label="Search (⌘K)"
         >
           <span className="text-gold">⌕</span>
@@ -48,6 +35,24 @@ export default function Nav({ chapters }: { chapters: Chapter[] }) {
         <ContinueReading />
         <ThemeToggle />
       </div>
+      <nav className="hidden items-center gap-5 overflow-x-auto border-t border-line px-5 py-2 text-sm text-ink-soft scrollbar-thin md:flex">
+        <ChaptersMenu chapters={chapters} />
+        <Link className="shrink-0 whitespace-nowrap transition-colors hover:text-gold" href="/audit/">
+          Verification
+        </Link>
+        <Link className="shrink-0 whitespace-nowrap transition-colors hover:text-gold" href="/protocols/">
+          Protocols
+        </Link>
+        <Link className="shrink-0 whitespace-nowrap transition-colors hover:text-gold" href="/glossary/">
+          Glossary
+        </Link>
+        <Link className="shrink-0 whitespace-nowrap transition-colors hover:text-gold" href="/quotes/">
+          Quotes
+        </Link>
+        <Link className="shrink-0 whitespace-nowrap transition-colors hover:text-gold" href="/progress/">
+          Progress
+        </Link>
+      </nav>
       <div className="border-t border-line px-5 py-2 md:hidden">
         <ChaptersMenu chapters={chapters} mobile />
       </div>
