@@ -42,16 +42,16 @@ jobs:
           NEXT_PUBLIC_BASE_PATH: /LevelUp
 
       - name: Configure Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: out
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
 
       - name: Report URL
         run: echo "Deployed to https://hustlenix.github.io/LevelUp/"
