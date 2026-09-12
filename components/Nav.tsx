@@ -17,10 +17,10 @@ export default function Nav({ chapters }: { chapters: Chapter[] }) {
           className="flex shrink-0 items-baseline gap-2 whitespace-nowrap font-display"
         >
           <span className="text-lg font-bold tracking-tight text-ink">
-            The Level Up Manual
+            Level Up <span className="text-gold">LifeOS</span>
           </span>
-          <span className="hidden text-[11px] uppercase tracking-[0.2em] text-gold sm:inline md:hidden lg:inline">
-            vol. i — 28 lessons
+          <span className="hidden text-[11px] uppercase tracking-[0.2em] text-ink-faint sm:inline md:hidden lg:inline">
+            Evidence-Audited Operating System
           </span>
         </Link>
         <button
@@ -36,12 +36,19 @@ export default function Nav({ chapters }: { chapters: Chapter[] }) {
         <ThemeToggle />
       </div>
       <nav className="hidden items-center gap-5 overflow-x-auto border-t border-line px-5 py-2 text-sm text-ink-soft scrollbar-thin md:flex">
-        <ChaptersMenu chapters={chapters} />
-        <Link className="shrink-0 whitespace-nowrap transition-colors hover:text-gold" href="/audit/">
-          Verification
+        <Link className="shrink-0 whitespace-nowrap font-bold text-ink transition-colors hover:text-gold" href="/">
+          Dashboard
+        </Link>
+        <Link className="shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 font-semibold text-gold transition-colors hover:text-gold-soft" href="/action/">
+          <span className="flex h-2 w-2 rounded-full bg-gold animate-pulse" />
+          Daily Action
         </Link>
         <Link className="shrink-0 whitespace-nowrap transition-colors hover:text-gold" href="/protocols/">
           Protocols
+        </Link>
+        <ChaptersMenu chapters={chapters} />
+        <Link className="shrink-0 whitespace-nowrap transition-colors hover:text-gold" href="/audit/">
+          Verification
         </Link>
         <Link className="shrink-0 whitespace-nowrap transition-colors hover:text-gold" href="/glossary/">
           Glossary
@@ -50,18 +57,21 @@ export default function Nav({ chapters }: { chapters: Chapter[] }) {
           Quotes
         </Link>
         <Link className="shrink-0 whitespace-nowrap transition-colors hover:text-gold" href="/progress/">
-          Progress
+          Analytics
         </Link>
       </nav>
       <div className="border-t border-line px-5 py-2 md:hidden">
         <ChaptersMenu chapters={chapters} mobile />
       </div>
       <nav className="flex gap-4 overflow-x-auto border-t border-line px-5 py-2 text-xs text-ink-soft scrollbar-thin md:hidden">
-        <Link className="shrink-0 hover:text-gold" href="/audit/">Verification</Link>
+        <Link className="shrink-0 font-bold text-ink" href="/">Dashboard</Link>
+        <Link className="shrink-0 font-bold text-gold inline-flex items-center gap-1" href="/action/">
+          <span className="h-1.5 w-1.5 rounded-full bg-gold animate-pulse" />
+          Daily Action
+        </Link>
         <Link className="shrink-0 hover:text-gold" href="/protocols/">Protocols</Link>
-        <Link className="shrink-0 hover:text-gold" href="/glossary/">Glossary</Link>
-        <Link className="shrink-0 hover:text-gold" href="/quotes/">Quotes</Link>
-        <Link className="shrink-0 hover:text-gold" href="/progress/">Progress</Link>
+        <Link className="shrink-0 hover:text-gold" href="/audit/">Verification</Link>
+        <Link className="shrink-0 hover:text-gold" href="/progress/">Analytics</Link>
       </nav>
     </header>
   );

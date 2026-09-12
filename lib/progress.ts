@@ -35,8 +35,12 @@ export function getProgressSnapshot(): ProgressMap {
   return cache;
 }
 
+const SERVER_EMPTY_PROGRESS: ProgressMap = Object.freeze({});
+
+const getServerProgress = () => SERVER_EMPTY_PROGRESS;
+
 export function useProgressStore(): ProgressMap {
-  return useSyncExternalStore(subscribeProgress, getProgressSnapshot, () => ({}));
+  return useSyncExternalStore(subscribeProgress, getProgressSnapshot, getServerProgress);
 }
 
 function write(map: ProgressMap) {

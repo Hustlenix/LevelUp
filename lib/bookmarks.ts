@@ -31,8 +31,12 @@ export function getBookmarksSnapshot(): Set<string> {
   return cache;
 }
 
+const SERVER_EMPTY_BOOKMARKS: Set<string> = Object.freeze(new Set<string>());
+
+const getServerBookmarks = () => SERVER_EMPTY_BOOKMARKS;
+
 export function useBookmarksStore(): Set<string> {
-  return useSyncExternalStore(subscribeBookmarks, getBookmarksSnapshot, () => new Set());
+  return useSyncExternalStore(subscribeBookmarks, getBookmarksSnapshot, getServerBookmarks);
 }
 
 function write(slugs: string[]) {

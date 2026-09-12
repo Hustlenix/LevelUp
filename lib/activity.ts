@@ -43,6 +43,16 @@ function writeJson(key: string, value: unknown) {
   emit();
 }
 
+const SERVER_EMPTY_HIGHLIGHTS: readonly HighlightEntry[] = Object.freeze([]);
+const SERVER_EMPTY_QUIZ: Record<string, QuizScore> = Object.freeze({});
+const SERVER_EMPTY_REFLECTIONS: Record<string, string> = Object.freeze({});
+const SERVER_STREAK: StreakState = Object.freeze({ current: 0, best: 0, last: "" });
+
+const getServerHighlights = () => SERVER_EMPTY_HIGHLIGHTS as HighlightEntry[];
+const getServerQuiz = () => SERVER_EMPTY_QUIZ;
+const getServerReflections = () => SERVER_EMPTY_REFLECTIONS;
+const getServerStreak = () => SERVER_STREAK;
+
 let highlightsCache: HighlightEntry[] | null = null;
 
 export function getHighlightsSnapshot(): HighlightEntry[] {
@@ -56,7 +66,7 @@ export function subscribeActivity(cb: () => void): () => void {
 }
 
 export function useHighlightsStore(): HighlightEntry[] {
-  return useSyncExternalStore(subscribeActivity, getHighlightsSnapshot, () => []);
+  return useSyncExternalStore(subscribeActivity, getHighlightsSnapshot, getServerHighlights);
 }
 
 export function addHighlight(entry: HighlightEntry) {
@@ -84,7 +94,7 @@ export function getQuizSnapshot(): Record<string, QuizScore> {
 }
 
 export function useQuizStore(): Record<string, QuizScore> {
-  return useSyncExternalStore(subscribeActivity, getQuizSnapshot, () => ({}));
+  return useSyncExternalStore(subscribeActivity, getQuizSnapshot, getServerQuiz);
 }
 
 export function saveQuizResult(slug: string, score: number, total: number) {
@@ -107,7 +117,7 @@ export function getReflectionsSnapshot(): Record<string, string> {
 }
 
 export function useReflectionsStore(): Record<string, string> {
-  return useSyncExternalStore(subscribeActivity, getReflectionsSnapshot, () => ({}));
+  return useSyncExternalStore(subscribeActivity, getReflectionsSnapshot, getServerReflections);
 }
 
 export function saveReflection(slug: string, text: string) {
@@ -131,11 +141,7 @@ export function getStreakSnapshot(): StreakState {
 }
 
 export function useStreakStore(): StreakState {
-  return useSyncExternalStore(subscribeActivity, getStreakSnapshot, () => ({
-    current: 0,
-    best: 0,
-    last: "",
-  }));
+  return useSyncExternalStore(subscribeActivity, getStreakSnapshot, getServerStreak);
 }
 
 export function recordActivity(now: Date = new Date()) {

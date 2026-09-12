@@ -16,6 +16,7 @@ import {
   restoreStreak,
 } from "@/lib/activity";
 import { buildBackup, validateBackup, type BackupState } from "@/lib/backup";
+import { reloadActionToolsCaches } from "@/lib/actionTools";
 import { PillarTag } from "@/components/ui";
 import GamificationPanel from "@/components/GamificationPanel";
 
@@ -30,6 +31,19 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
   const [imported, setImported] = useState(false);
 
   const onExport = () => {
+    let actionState: BackupState["actionState"] = undefined;
+    try {
+      actionState = {
+        pillarsHistory: JSON.parse(localStorage.getItem("levelup-pillar-floors-v1") || "{}"),
+        focusSessions: JSON.parse(localStorage.getItem("levelup-focus-sessions-v1") || "[]"),
+        protocolLogs: JSON.parse(localStorage.getItem("levelup-protocol-logs-v1") || "[]"),
+        urgesLog: JSON.parse(localStorage.getItem("levelup-urge-pauses-v1") || "[]"),
+        calibrations: JSON.parse(localStorage.getItem("levelup-daily-calibration-v1") || "{}"),
+      };
+    } catch {
+      /* ignore storage read error */
+    }
+
     const state: BackupState = {
       theme: document.documentElement.getAttribute("data-theme"),
       readerScale: document.documentElement.getAttribute("data-reader-scale"),
@@ -39,6 +53,7 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
       quiz: getQuizSnapshot(),
       reflections: getReflectionsSnapshot(),
       streak: getStreakSnapshot(),
+      actionState,
     };
     const blob = new Blob([JSON.stringify(buildBackup(state), null, 2)], {
       type: "application/json",
@@ -75,6 +90,28 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
       restoreQuiz(d.quiz);
       restoreReflections(d.reflections);
       if (d.streak) restoreStreak(d.streak);
+      if (d.actionState) {
+        try {
+          if (d.actionState.pillarsHistory) {
+            localStorage.setItem("levelup-pillar-floors-v1", JSON.stringify(d.actionState.pillarsHistory));
+          }
+          if (d.actionState.focusSessions) {
+            localStorage.setItem("levelup-focus-sessions-v1", JSON.stringify(d.actionState.focusSessions));
+          }
+          if (d.actionState.protocolLogs) {
+            localStorage.setItem("levelup-protocol-logs-v1", JSON.stringify(d.actionState.protocolLogs));
+          }
+          if (d.actionState.urgesLog) {
+            localStorage.setItem("levelup-urge-pauses-v1", JSON.stringify(d.actionState.urgesLog));
+          }
+          if (d.actionState.calibrations) {
+            localStorage.setItem("levelup-daily-calibration-v1", JSON.stringify(d.actionState.calibrations));
+          }
+          reloadActionToolsCaches();
+        } catch {
+          /* ignore storage write error */
+        }
+      }
       if (d.theme) {
         document.documentElement.setAttribute("data-theme", d.theme);
         try {

@@ -1,0 +1,6 @@
+{
+  "name": "The Level Up Manual",
+  "description": "An evidence-audited life operating system with interactive daily action tools: Web-Audio focus synthesizer, automated ICS calendar time-blocker, 28-day consistency matrix, and 4-pillar floor tracking.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

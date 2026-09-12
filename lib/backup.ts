@@ -33,6 +33,13 @@ export interface BackupState {
   quiz: Record<string, BackupQuizScore>;
   reflections: Record<string, string>;
   streak: BackupStreak | null;
+  actionState?: {
+    pillarsHistory?: Record<string, unknown>;
+    focusSessions?: unknown[];
+    protocolLogs?: unknown[];
+    urgesLog?: unknown[];
+    calibrations?: Record<string, unknown>;
+  };
 }
 
 export const BACKUP_SCHEMA = 1;
@@ -83,7 +90,7 @@ function isStreak(v: unknown): v is BackupStreak {
 }
 
 export function buildBackup(state: BackupState): { schema: number; exportedAt: string; [k: string]: unknown } {
-  return {
+  const result: { schema: number; exportedAt: string; [k: string]: unknown } = {
     schema: BACKUP_SCHEMA,
     exportedAt: new Date().toISOString(),
     theme: state.theme,
@@ -95,6 +102,10 @@ export function buildBackup(state: BackupState): { schema: number; exportedAt: s
     reflections: state.reflections,
     streak: state.streak,
   };
+  if (state.actionState !== undefined) {
+    result.actionState = state.actionState;
+  }
+  return result;
 }
 
 export function validateBackup(json: unknown): { ok: boolean; errors: string[]; data?: BackupState } {
@@ -148,19 +159,29 @@ export function validateBackup(json: unknown): { ok: boolean; errors: string[]; 
   if (json.streak !== null && !isStreak(json.streak)) {
     errors.push("streak has an invalid shape.");
   }
+  let actionState: BackupState["actionState"] = undefined;
+  if (json.actionState && isRecord(json.actionState)) {
+    actionState = json.actionState as BackupState["actionState"];
+  }
+
   if (errors.length > 0) return { ok: false, errors };
+  const outData: BackupState = {
+    theme: json.theme as string | null,
+    readerScale: json.readerScale as string | null,
+    progress: json.progress as Record<string, BackupProgressEntry>,
+    bookmarks: json.bookmarks as string[],
+    highlights: json.highlights as BackupHighlight[],
+    quiz: json.quiz as Record<string, BackupQuizScore>,
+    reflections: json.reflections as Record<string, string>,
+    streak: json.streak as BackupStreak | null,
+  };
+  if (actionState !== undefined) {
+    outData.actionState = actionState;
+  }
+
   return {
     ok: true,
     errors: [],
-    data: {
-      theme: json.theme as string | null,
-      readerScale: json.readerScale as string | null,
-      progress: json.progress as Record<string, BackupProgressEntry>,
-      bookmarks: json.bookmarks as string[],
-      highlights: json.highlights as BackupHighlight[],
-      quiz: json.quiz as Record<string, BackupQuizScore>,
-      reflections: json.reflections as Record<string, string>,
-      streak: json.streak as BackupStreak | null,
-    },
+    data: outData,
   };
 }
