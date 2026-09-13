@@ -13,6 +13,10 @@ export const metadata: Metadata = {
 export default function QuotesPage() {
   const { quotes, chapters } = getSiteData();
   const slugByTitle = new Map(chapters.map((c) => [c.title, c.slug]));
+  // Defensive fallback: if a quote's chapter label ever drifts from a canonical
+  // title, still emit a well-formed slug instead of a raw string (which 404s).
+  const slugifyTitle = (title: string) =>
+    title.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
   return (
     <PageShell>
       <SectionHeading
@@ -33,7 +37,7 @@ export default function QuotesPage() {
                 <span className="ml-1 text-ink-faint">
                   — see chapter{" "}
                   <Link
-                    href={`/chapters/${slugByTitle.get(q.chapter) ?? q.chapter}/`}
+                    href={`/chapters/${slugByTitle.get(q.chapter) ?? slugifyTitle(q.chapter)}/`}
                     className="text-gold underline-offset-2 hover:underline"
                   >
                     {q.chapter}

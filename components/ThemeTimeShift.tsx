@@ -22,9 +22,10 @@ function ThemeTimeShift() {
     // Run once on mount
     updateHue();
 
-    // Optional: uncomment to enable per-minute updates
-    // const interval = setInterval(updateHue, 60000);
-    // return () => clearInterval(interval);
+    // Keep shifting the hue as the hour changes; without this the theme goes
+    // stale after the first minute of a session.
+    const interval = setInterval(updateHue, 60000);
+    return () => clearInterval(interval);
   }, []);
 
   return null;

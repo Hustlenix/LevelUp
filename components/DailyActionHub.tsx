@@ -28,6 +28,7 @@ import {
   togglePillarFloor
 } from "@/lib/actionTools";
 import { useStreakStore } from "@/lib/activity";
+import { localToday } from "@/lib/dates";
 import ProtocolRunnerModal from "@/components/ProtocolRunnerModal";
 import AmbientAudioPlayer from "@/components/AmbientAudioPlayer";
 import DailyScheduleBlockerModal from "@/components/DailyScheduleBlockerModal";
@@ -49,7 +50,7 @@ export default function DailyActionHub({ protocols }: DailyActionHubProps) {
   const pillars = usePillarsStore();
   const protocolLogs = useProtocolLogsStore();
 
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = localToday();
   const todayCalibration = calibrations[todayStr];
   const todayPillars = pillars[todayStr] || {
     date: todayStr,

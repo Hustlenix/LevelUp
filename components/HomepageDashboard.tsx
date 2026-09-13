@@ -25,6 +25,7 @@ import {
   togglePillarFloor 
 } from "@/lib/actionTools";
 import { useStreakStore } from "@/lib/activity";
+import { localToday } from "@/lib/dates";
 import AmbientAudioPlayer from "@/components/AmbientAudioPlayer";
 import DailyScheduleBlockerModal from "@/components/DailyScheduleBlockerModal";
 import ConsistencyMatrix from "@/components/ConsistencyMatrix";
@@ -72,7 +73,7 @@ export default function HomepageDashboard({ protocols, chapters }: Props) {
   const pillarsHistory = usePillarsStore();
   const streak = useStreakStore();
 
-  const todayStr = useMemo(() => new Date().toISOString().slice(0, 10), []);
+  const todayStr = useMemo(() => localToday(), []);
 
   const todayPillars = pillarsHistory[todayStr] || {
     date: todayStr,

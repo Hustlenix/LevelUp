@@ -17,6 +17,7 @@ import {
 } from "@/lib/activity";
 import { buildBackup, validateBackup, type BackupState } from "@/lib/backup";
 import { reloadActionToolsCaches } from "@/lib/actionTools";
+import { localToday } from "@/lib/dates";
 import { PillarTag } from "@/components/ui";
 import GamificationPanel from "@/components/GamificationPanel";
 
@@ -61,7 +62,7 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `levelup-backup-v1-${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = `levelup-backup-v1-${localToday()}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { X, Calendar, Clock, Download, Sparkles, CheckCircle2 } from "lucide-react";
 import { downloadDailyScheduleICS } from "@/lib/calendarExport";
+import { localDateOffset, localToday } from "@/lib/dates";
 
 interface Props {
   onClose: () => void;
@@ -10,10 +11,8 @@ interface Props {
 }
 
 export default function DailyScheduleBlockerModal({ onClose, defaultGoal = "" }: Props) {
-  const todayDateStr = new Date().toISOString().slice(0, 10);
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const tomorrowDateStr = tomorrow.toISOString().slice(0, 10);
+  const todayDateStr = localToday();
+  const tomorrowDateStr = localDateOffset(1);
 
   const [targetDate, setTargetDate] = useState(todayDateStr);
   const [startTime, setStartTime] = useState("09:00");

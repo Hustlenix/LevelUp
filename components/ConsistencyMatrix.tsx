@@ -19,16 +19,19 @@ import {
   useFocusStore, 
   useProtocolLogsStore, 
   useUrgesStore,
+  useCalibrationStore,
   reloadActionToolsCaches,
   type PillarFloorCheck 
 } from "@/lib/actionTools";
 import { useStreakStore } from "@/lib/activity";
+import { formatLocalDate, localToday } from "@/lib/dates";
 
 export default function ConsistencyMatrix() {
   const pillarsHistory = usePillarsStore();
   const focusSessions = useFocusStore();
   const protocolLogs = useProtocolLogsStore();
   const urgesLog = useUrgesStore();
+  const calibrations = useCalibrationStore();
   const streak = useStreakStore();
 
   const [showExportModal, setShowExportModal] = useState(false);
@@ -40,7 +43,7 @@ export default function ConsistencyMatrix() {
     for (let i = 27; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
-      const dateStr = d.toISOString().slice(0, 10);
+      const dateStr = formatLocalDate(d);
       const entry = pillarsHistory[dateStr];
       
       const dayFocus = focusSessions
@@ -126,12 +129,13 @@ export default function ConsistencyMatrix() {
       focusSessions,
       protocolLogs,
       urgesLog,
+      calibrations,
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `levelup-lifeos-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = `levelup-lifeos-backup-${localToday()}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -195,7 +199,7 @@ export default function ConsistencyMatrix() {
   };
 
   const handleClearData = () => {
-    if (confirm("Are you sure you want to reset your local progress? All sessions, calibrations, streak, and logs will be wiped.")) {
+    if (confirm("Reset consistency data? This clears your pillar history, focus sessions, protocol logs, urge pauses, and streak for this browser. Reading progress, highlights, bookmarks, and quiz results stay intact.")) {
       localStorage.removeItem("levelup-pillar-floors-v1");
       localStorage.removeItem("levelup-focus-sessions-v1");
       localStorage.removeItem("levelup-protocol-logs-v1");
@@ -308,7 +312,7 @@ export default function ConsistencyMatrix() {
             if (completedCount === 2 || day.focusMinutes >= 45) bgClass = "bg-gold/50 border-gold/70 text-ink";
             if (completedCount >= 3 || day.focusMinutes >= 90) bgClass = "bg-gold text-paper font-bold";
 
-            const isToday = day.dateStr === new Date().toISOString().slice(0, 10);
+            const isToday = day.dateStr === localToday();
 
             return (
               <div

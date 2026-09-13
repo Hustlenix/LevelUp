@@ -150,7 +150,7 @@ function buildSearchIndex(chapters, audit, protocols, glossary, quotes) {
     docs.push({ id: `gl:${g.term}`, type: "Glossary", title: g.term, sub: "Glossary term", teaser: g.definition, url: `/glossary/#term-${encodeURIComponent(g.term.toLowerCase().replace(/\W+/g, "-"))}`, text: `${g.term}. ${g.definition}` });
   }
   for (const q of quotes) {
-    docs.push({ id: `qt:${docs.length}`, type: "Quote", title: q.text.slice(0, 90), sub: q.source, teaser: q.text, url: q.chapter && q.chapter !== "" ? `/quotes/` : `/quotes/`, text: `${q.text}. ${q.source}. ${q.chapter || ""}` });
+    docs.push({ id: `qt:${docs.length}`, type: "Quote", title: q.text.slice(0, 90), sub: q.source, teaser: q.text, url: `/quotes/`, text: `${q.text}. ${q.source}. ${q.chapter || ""}` });
   }
   mkdirSync(publicDataDir, { recursive: true });
   writeFileSync(join(publicDataDir, "search-index.json"), JSON.stringify(docs));
