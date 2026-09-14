@@ -73,6 +73,7 @@ export function addHighlight(entry: HighlightEntry) {
   const next = [...getHighlightsSnapshot(), entry];
   highlightsCache = next;
   writeJson(HIGHLIGHTS_KEY, next);
+  recordActivity();
 }
 
 export function removeHighlight(id: string) {
@@ -124,6 +125,7 @@ export function saveReflection(slug: string, text: string) {
   const next = { ...getReflectionsSnapshot(), [slug]: text };
   reflectionsCache = next;
   writeJson(REFLECTIONS_KEY, next);
+  recordActivity();
 }
 
 export function restoreReflections(reflections: Record<string, string>) {

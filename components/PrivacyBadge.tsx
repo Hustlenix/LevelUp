@@ -16,7 +16,7 @@ export default function PrivacyBadge() {
   return (
     <div
       aria-hidden="true"
-      className="fixed bottom-4 left-1/2 -translate-x-1/2 z-10 rounded-full bg-card px-4 py-1.5 text-xs text-mint-soft transition-opacity"
+      className="fixed bottom-4 left-1/2 -translate-x-1/2 z-10 rounded-full bg-card px-4 py-1.5 text-xs text-health transition-opacity"
     >
       <span>100% Private</span>
       <span>· On-Device Storage Only</span>

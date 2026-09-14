@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { recordActivity } from "@/lib/activity";
 
 export interface ChapterProgress {
   complete: boolean;
@@ -58,6 +59,7 @@ export function markComplete(slug: string, complete: boolean) {
   const entry = map[slug] ?? { complete: false, maxScroll: 0, updatedAt: 0 };
   map[slug] = { ...entry, complete, updatedAt: Date.now() };
   write(map);
+  if (complete) recordActivity();
 }
 
 export function recordScroll(slug: string, maxScroll: number) {

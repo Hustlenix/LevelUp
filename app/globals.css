@@ -13,6 +13,7 @@
   --color-health: #2f6b4f;
   --color-wealth: #96772c;
   --color-love: #a4574f;
+  --color-crimson: #c8102e;
   --color-self: #5b4b7a;
   --font-display: var(--font-fraunces);
   --font-body: var(--font-source);
@@ -51,6 +52,7 @@
   --color-health: #5fa37f;
   --color-wealth: #c9a94e;
   --color-love: #d0837a;
+  --color-crimson: #e0526d;
   --color-self: #8d7db5;
 }
 
@@ -68,6 +70,7 @@
   --color-health: #2e5f45;
   --color-wealth: #8a6d2a;
   --color-love: #96493f;
+  --color-crimson: #b3121f;
   --color-self: #51436e;
 }
 
@@ -85,6 +88,7 @@
   --color-health: #22d3ee;
   --color-wealth: #c9a94e;
   --color-love: #f472b6;
+  --color-crimson: #ff4d6d;
   --color-self: #a78bfa;
 }
 

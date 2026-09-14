@@ -67,7 +67,12 @@ export function downloadDailyScheduleICS(
       baseDate.setFullYear(y, m - 1, d);
     }
   }
-  baseDate.setHours(hours || 9, minutes || 0, 0, 0);
+  baseDate.setHours(
+    Number.isFinite(hours) ? hours : 9,
+    Number.isFinite(minutes) ? minutes : 0,
+    0,
+    0
+  );
 
   const plans: Record<
     string,
