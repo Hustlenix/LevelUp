@@ -18,6 +18,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/roadmap/`, lastModified },
     { url: `${SITE_URL}/devlog/`, lastModified },
     { url: `${SITE_URL}/progress/`, lastModified },
+    { url: `${SITE_URL}/search/`, lastModified },
+    { url: `${SITE_URL}/action/`, lastModified },
   ];
   const chapterPages: MetadataRoute.Sitemap = chapters.map((c) => ({
     url: `${SITE_URL}/chapters/${c.slug}/`,

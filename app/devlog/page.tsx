@@ -22,7 +22,7 @@ export default function DevlogPage() {
       />
       <div className="space-y-8">
         {entries.map((e) => (
-          <article key={e.slug} className="rounded-xl border border-line bg-card p-6 sm:p-10">
+          <article key={e.slug} id={e.slug} className="scroll-mt-28 rounded-xl border border-line bg-card p-6 sm:p-10">
             <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">
               {e.date}
             </p>
