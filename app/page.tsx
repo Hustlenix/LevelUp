@@ -1,7 +1,7 @@
 import { getSiteData } from "@/lib/content";
 import JsonLd from "@/components/JsonLd";
-import HomepageDashboard from "@/components/HomepageDashboard";
-import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_AUTHOR, PUBLISHED_DATE } from "@/lib/site";
+import ReaderFrontDoor, { BOOK_ONE_LINER } from "@/components/ReaderFrontDoor";
+import { SITE_NAME, SITE_DESCRIPTION, SITE_AUTHOR, PUBLISHED_DATE } from "@/lib/site";
 
 export default function Home() {
   const data = getSiteData();
@@ -11,19 +11,17 @@ export default function Home() {
       <JsonLd
         data={{
           "@context": "https://schema.org",
-          "@type": "WebApplication",
+          "@type": "Book",
           name: SITE_NAME,
-          url: SITE_URL,
+          abstract: BOOK_ONE_LINER,
           description: SITE_DESCRIPTION,
           inLanguage: "en",
           author: { "@type": "Organization", name: SITE_AUTHOR },
           datePublished: PUBLISHED_DATE,
-          applicationCategory: "ProductivityApplication",
-          operatingSystem: "All",
         }}
       />
-      
-      <HomepageDashboard protocols={data.protocols} chapters={data.chapters} />
+
+      <ReaderFrontDoor chapters={data.chapters} />
     </div>
   );
 }

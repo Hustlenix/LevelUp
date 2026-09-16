@@ -137,7 +137,7 @@ export default function AmbientAudioPlayer({ compact = false }: Props) {
             <button
               type="button"
               onClick={() => handlePlaySelected()}
-              className="inline-flex items-center gap-1 rounded-full bg-ink px-3 py-1 font-semibold text-paper hover:bg-gold transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1 rounded-full bg-gold px-3 py-1 font-semibold text-paper hover:bg-gold-deep transition-colors cursor-pointer"
             >
               <Play className="h-2.5 w-2.5 fill-current" /> Play
             </button>
@@ -189,7 +189,7 @@ export default function AmbientAudioPlayer({ compact = false }: Props) {
             <button
               type="button"
               onClick={() => handlePlaySelected()}
-              className="inline-flex items-center gap-1.5 rounded-full bg-ink px-4 py-1.5 text-xs font-semibold text-paper hover:bg-gold transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 rounded-full bg-gold px-4 py-1.5 text-xs font-semibold text-paper hover:bg-gold-deep transition-colors cursor-pointer"
             >
               <Play className="h-3 w-3 fill-current" /> Play {currentOption.label}
             </button>

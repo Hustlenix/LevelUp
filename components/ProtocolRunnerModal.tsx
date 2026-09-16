@@ -187,7 +187,7 @@ function MorningCalibrationRunner({ protocol, onClose, onCompleted }: { protocol
             <button
               onClick={() => setStep(2)}
               disabled={!primaryOutcome.trim()}
-              className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2 text-sm font-semibold text-paper transition-colors hover:bg-gold disabled:opacity-40"
+              className="inline-flex items-center gap-2 rounded-full bg-gold px-5 py-2 text-sm font-semibold text-paper transition-colors cta-hover disabled:opacity-40"
             >
               Next Step <ArrowRight className="h-4 w-4" />
             </button>
@@ -236,7 +236,7 @@ function MorningCalibrationRunner({ protocol, onClose, onCompleted }: { protocol
             <button
               onClick={() => setStep(3)}
               disabled={!physicalAction.trim()}
-              className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2 text-sm font-semibold text-paper transition-colors hover:bg-gold disabled:opacity-40"
+              className="inline-flex items-center gap-2 rounded-full bg-gold px-5 py-2 text-sm font-semibold text-paper transition-colors cta-hover disabled:opacity-40"
             >
               Next Step <ArrowRight className="h-4 w-4" />
             </button>
@@ -269,7 +269,7 @@ function MorningCalibrationRunner({ protocol, onClose, onCompleted }: { protocol
             </button>
             <button
               onClick={() => setStep(4)}
-              className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2 text-sm font-semibold text-paper transition-colors hover:bg-gold"
+              className="inline-flex items-center gap-2 rounded-full bg-gold px-5 py-2 text-sm font-semibold text-paper transition-colors cta-hover"
             >
               Go to Breathing Pacer <ArrowRight className="h-4 w-4" />
             </button>
@@ -313,13 +313,13 @@ function MorningCalibrationRunner({ protocol, onClose, onCompleted }: { protocol
                 setBreathActive(!breathActive);
                 if (!breathActive) playBellChime("start");
               }}
-              className="inline-flex items-center gap-2 rounded-full bg-gold px-5 py-2 text-sm font-semibold text-paper transition-colors hover:bg-gold-soft"
+              className="inline-flex items-center gap-2 rounded-full bg-gold px-5 py-2 text-sm font-semibold text-paper transition-colors cta-hover"
             >
               {breathActive ? <><Pause className="h-4 w-4" /> Pause</> : <><Play className="h-4 w-4" /> Start Pacer</>}
             </button>
             <button
               onClick={handleFinish}
-              className="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-2 text-sm font-semibold text-paper transition-colors hover:bg-gold"
+              className="inline-flex items-center gap-2 rounded-full bg-gold px-6 py-2 text-sm font-semibold text-paper transition-colors cta-hover"
             >
               <CheckCircle2 className="h-4 w-4" /> Complete Calibration
             </button>
@@ -422,7 +422,7 @@ function FocusSprintRunner({ protocol, onClose, onCompleted }: { protocol: Proto
         </div>
         <button
           onClick={handleCompleteSession}
-          className="rounded-full bg-ink px-8 py-2.5 font-display text-sm font-semibold text-paper hover:bg-gold transition-colors"
+          className="rounded-full bg-gold px-8 py-2.5 font-display text-sm font-semibold text-paper cta-hover transition-colors"
         >
           Bank Win & Close (+35 XP)
         </button>
@@ -499,7 +499,7 @@ function FocusSprintRunner({ protocol, onClose, onCompleted }: { protocol: Proto
               setIsActive(!isActive);
               playBellChime(isActive ? "tick" : "start");
             }}
-            className="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-2.5 text-sm font-semibold text-paper transition-colors hover:bg-gold"
+            className="inline-flex items-center gap-2 rounded-full bg-gold px-6 py-2.5 text-sm font-semibold text-paper transition-colors cta-hover"
           >
             {isActive ? <><Pause className="h-4 w-4" /> Pause Sprint</> : <><Play className="h-4 w-4" /> {secondsRemaining < selectedMinutes * 60 ? "Resume" : "Start Sprint"}</>}
           </button>
@@ -678,7 +678,7 @@ function BoredomToleranceRunner({ protocol, onClose, onCompleted }: { protocol: 
                   setDelayActive(true);
                   playBellChime("start");
                 }}
-                className="mt-4 rounded-full bg-ink px-6 py-2 text-sm font-semibold text-paper hover:bg-gold transition-colors"
+                className="mt-4 rounded-full bg-gold px-6 py-2 text-sm font-semibold text-paper cta-hover transition-colors"
               >
                 Start 10-Second Pause
               </button>
@@ -727,7 +727,7 @@ function BoredomToleranceRunner({ protocol, onClose, onCompleted }: { protocol: 
                 setFastActive(!fastActive);
                 playBellChime(fastActive ? "tick" : "start");
               }}
-              className="rounded-full bg-ink px-6 py-2 text-sm font-semibold text-paper hover:bg-gold transition-colors"
+              className="rounded-full bg-gold px-6 py-2 text-sm font-semibold text-paper cta-hover transition-colors"
             >
               {fastActive ? "Pause Block" : "Start 30-Min Fast"}
             </button>
@@ -823,7 +823,7 @@ function IdentityStackRunner({ protocol, onClose, onCompleted }: { protocol: Pro
         <button
           onClick={handleSave}
           disabled={!verbBehavior.trim() || !zeroFloor.trim()}
-          className="rounded-full bg-ink px-6 py-2 text-sm font-semibold text-paper hover:bg-gold transition-colors disabled:opacity-40"
+          className="rounded-full bg-gold px-6 py-2 text-sm font-semibold text-paper cta-hover transition-colors disabled:opacity-40"
         >
           Save Identity Stack (+25 XP)
         </button>
@@ -908,7 +908,7 @@ function AuditDiagnosticRunner({ protocol, onClose, onCompleted }: { protocol: P
         <button
           onClick={handleSave}
           disabled={!claim.trim()}
-          className="rounded-full bg-ink px-6 py-2 text-sm font-semibold text-paper hover:bg-gold transition-colors disabled:opacity-40"
+          className="rounded-full bg-gold px-6 py-2 text-sm font-semibold text-paper cta-hover transition-colors disabled:opacity-40"
         >
           Save Audit Test (+20 XP)
         </button>
@@ -995,7 +995,7 @@ function GenericProtocolRunner({ protocol, onClose, onCompleted }: { protocol: P
       <div className="flex justify-end pt-2">
         <button
           onClick={handleFinish}
-          className="rounded-full bg-ink px-6 py-2 text-sm font-semibold text-paper hover:bg-gold transition-colors"
+          className="rounded-full bg-gold px-6 py-2 text-sm font-semibold text-paper cta-hover transition-colors"
         >
           Complete & Log Protocol (+20 XP)
         </button>

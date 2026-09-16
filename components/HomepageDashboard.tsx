@@ -172,7 +172,7 @@ export default function HomepageDashboard({ protocols, chapters }: Props) {
             </button>
             <Link
               href="/action/"
-              className="inline-flex items-center gap-1.5 rounded-full bg-ink px-4 py-1.5 text-xs font-semibold text-paper hover:bg-gold transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-full bg-gold px-4 py-1.5 text-xs font-semibold text-paper hover:bg-gold-deep transition-colors"
             >
               <Activity className="h-3.5 w-3.5" />
               Full Action OS
@@ -210,9 +210,9 @@ export default function HomepageDashboard({ protocols, chapters }: Props) {
           {/* Audio Synthesizer & Focus Bar */}
           <section className="space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <span className="font-display text-xs font-bold uppercase tracking-wider text-ink-faint">
+              <h2 className="font-display text-xs font-bold uppercase tracking-wider text-ink-faint">
                 Focus Soundscape & Sprints
-              </span>
+              </h2>
               <button
                 onClick={() => handleLaunchProtocolByNum("2.6")}
                 className="inline-flex items-center gap-1.5 text-xs font-semibold text-gold hover:underline"
@@ -300,9 +300,9 @@ export default function HomepageDashboard({ protocols, chapters }: Props) {
 
           {/* Quick Intervention Protocols */}
           <section className="rounded-2xl border border-line bg-card p-6 shadow-xs">
-            <span className="font-display text-xs font-bold uppercase tracking-wider text-ink-faint">
+            <h2 className="font-display text-xs font-bold uppercase tracking-wider text-ink-faint">
               Instant Action Protocols
-            </span>
+            </h2>
             <div className="mt-3 grid gap-3 sm:grid-cols-3">
               <button
                 onClick={() => handleLaunchProtocolByNum("2.3")}

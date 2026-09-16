@@ -63,9 +63,9 @@ export default function GamificationPanel() {
 
   return (
     <div className="mt-8 rounded-xl border border-line bg-card p-6">
-      <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">
+      <h2 className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">
         Level &amp; badges
-      </p>
+      </h2>
 
       <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
         <div>

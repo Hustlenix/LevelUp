@@ -195,7 +195,7 @@ export default function DailyScheduleBlockerModal({ onClose, defaultGoal = "" }:
             </span>
             <button
               onClick={handleExport}
-              className="inline-flex items-center gap-2 rounded-full bg-gold px-6 py-2.5 text-sm font-bold text-paper transition-colors hover:bg-gold-soft shadow-xs"
+              className="inline-flex items-center gap-2 rounded-full bg-gold px-6 py-2.5 text-sm font-bold text-paper transition-colors cta-hover shadow-xs"
             >
               {downloaded ? (
                 <>

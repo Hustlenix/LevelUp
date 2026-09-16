@@ -170,7 +170,7 @@ export default function DailyActionHub({ protocols }: DailyActionHubProps) {
                 ) : (
                   <button
                     onClick={() => handleLaunchProtocol("2.3")}
-                    className="rounded-full bg-ink px-4 py-1.5 text-xs font-semibold text-paper transition-colors hover:bg-gold"
+                    className="rounded-full bg-gold px-4 py-1.5 text-xs font-semibold text-paper transition-colors cta-hover"
                   >
                     Start Calibration (2m)
                   </button>
@@ -211,7 +211,7 @@ export default function DailyActionHub({ protocols }: DailyActionHubProps) {
                   </p>
                   <button
                     onClick={() => handleLaunchProtocol("2.3")}
-                    className="mt-3 inline-flex items-center gap-2 rounded-full bg-gold px-5 py-2 text-xs font-bold text-paper transition-colors hover:bg-gold-soft"
+                    className="mt-3 inline-flex items-center gap-2 rounded-full bg-gold px-5 py-2 text-xs font-bold text-paper transition-colors cta-hover"
                   >
                     Launch Calibration Tool <ChevronRight className="h-3.5 w-3.5" />
                   </button>
@@ -369,7 +369,7 @@ export default function DailyActionHub({ protocols }: DailyActionHubProps) {
 
               <button
                 onClick={() => handleLaunchProtocol("2.8")}
-                className="mt-4 w-full rounded-full bg-ink px-4 py-2.5 font-display text-xs font-bold text-paper transition-colors hover:bg-gold flex items-center justify-center gap-2"
+                className="mt-4 w-full rounded-full bg-gold px-4 py-2.5 font-display text-xs font-bold text-paper transition-colors cta-hover flex items-center justify-center gap-2"
               >
                 <Clock className="h-3.5 w-3.5" /> Start 10-Second Urge Pause
               </button>
@@ -446,7 +446,7 @@ export default function DailyActionHub({ protocols }: DailyActionHubProps) {
             </div>
             <button
               onClick={() => handleLaunchProtocol("2.9")}
-              className="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-2.5 font-display text-sm font-semibold text-paper transition-colors hover:bg-gold"
+              className="inline-flex items-center gap-2 rounded-full bg-gold px-6 py-2.5 font-display text-sm font-semibold text-paper transition-colors cta-hover"
             >
               <Play className="h-4 w-4" /> Open Dedicated Sprint Engine
             </button>
@@ -626,7 +626,7 @@ export default function DailyActionHub({ protocols }: DailyActionHubProps) {
                   <div className="mt-4 pt-3 border-t border-line flex justify-end">
                     <button
                       onClick={() => setSelectedProtocol(p)}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-ink px-4 py-1.5 text-xs font-semibold text-paper transition-colors hover:bg-gold"
+                      className="inline-flex items-center gap-1.5 rounded-full bg-gold px-4 py-1.5 text-xs font-semibold text-paper transition-colors cta-hover"
                     >
                       <Play className="h-3 w-3" /> Run Protocol
                     </button>

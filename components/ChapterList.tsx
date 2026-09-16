@@ -41,7 +41,7 @@ function ChapterRow({
         completed ? "border-gold/40" : "border-line"
       }`}
     >
-      <span className="w-8 shrink-0 font-display text-sm font-bold text-gold/70 group-hover:text-gold">
+      <span className="w-8 shrink-0 font-display text-sm font-bold text-gold group-hover:text-gold">
         {num}
       </span>
       <span className="min-w-0 flex-1 truncate text-sm font-medium text-ink">{chapter.title}</span>

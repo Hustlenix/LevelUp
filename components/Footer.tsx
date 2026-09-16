@@ -12,8 +12,9 @@ export default function Footer() {
             checks the evidence.
           </p>
         </div>
-        <div className="flex flex-col gap-2 text-xs">
+        <div className="flex flex-col gap-2.5 text-xs">
           <span className="font-display uppercase tracking-[0.2em] text-gold">Browse</span>
+          <Link className="hover:text-gold" href="/dashboard/">Dashboard</Link>
           <Link className="hover:text-gold" href="/chapters/">Table of Contents</Link>
           <Link className="hover:text-gold" href="/audit/">Verification Audit</Link>
           <Link className="hover:text-gold" href="/protocols/">13 Protocols</Link>
@@ -21,7 +22,7 @@ export default function Footer() {
           <Link className="hover:text-gold" href="/research/">Research Notes</Link>
           <Link className="hover:text-gold" href="/devlog/">Devlog</Link>
         </div>
-        <div className="flex flex-col gap-2 text-xs">
+        <div className="flex flex-col gap-2.5 text-xs">
           <span className="font-display uppercase tracking-[0.2em] text-gold">Read</span>
           <Link className="hover:text-gold" href="/glossary/">Glossary</Link>
           <Link className="hover:text-gold" href="/quotes/">Quote Library</Link>

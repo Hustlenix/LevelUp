@@ -10,7 +10,7 @@ export default function NotFound() {
       </p>
       <Link
         href="/chapters/"
-        className="mt-8 inline-block rounded-full bg-ink px-6 py-3 font-display text-sm font-semibold text-paper transition-colors hover:bg-gold"
+        className="mt-8 inline-block rounded-full bg-gold px-6 py-3 font-display text-sm font-semibold text-paper transition-colors cta-hover"
       >
         Back to the Table of Contents
       </Link>

@@ -59,7 +59,7 @@ export function ChapterCard({ chapter, completed, bookmarked, onToggleBookmark }
         }`}
       >
         <div className="flex w-12 shrink-0 flex-col items-center justify-center">
-          <span className="font-display text-2xl font-bold text-gold/70 transition-colors group-hover:text-gold">
+          <span className="font-display text-2xl font-bold text-gold transition-colors group-hover:text-gold">
             {num}
           </span>
         </div>

@@ -43,7 +43,7 @@ export function ReadingProgress({ slug }: { slug: string }) {
       </div>
       <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-line">
         <div
-          className={`h-full rounded-full transition-all ${complete ? "bg-emerald-600" : "bg-gold"}`}
+          className={`h-full rounded-full transition-all ${complete ? "bg-gold" : "bg-gold/40"}`}
           style={{ width: `${entry?.maxScroll ?? 0}%` }}
         />
       </div>

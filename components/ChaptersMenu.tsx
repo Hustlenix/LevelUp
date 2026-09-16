@@ -52,7 +52,7 @@ export default function ChaptersMenu({
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-haspopup="menu"
-        className={`flex items-center gap-1.5 text-ink-soft transition-colors hover:text-gold ${
+        className={`flex items-center gap-1.5 py-1 text-ink-soft transition-colors hover:text-gold ${
           mobile ? "text-xs" : "text-sm"
         }`}
       >
@@ -125,7 +125,7 @@ export default function ChaptersMenu({
                                 onClick={() => setOpen(false)}
                                 className="flex items-baseline gap-2 rounded-md px-3 py-1.5 text-sm text-ink-soft transition-colors hover:bg-paper-deep hover:text-gold"
                               >
-                                <span className="w-6 shrink-0 text-right font-display text-xs font-bold text-gold/70">
+                                <span className="w-6 shrink-0 text-right font-display text-xs font-bold text-gold">
                                   {c.number}
                                 </span>
                                 <span className="truncate">{c.title}</span>

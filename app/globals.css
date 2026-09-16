@@ -7,8 +7,9 @@
   --color-ink: #221d16;
   --color-ink-soft: #5c5345;
   --color-ink-faint: #6f6557;
-  --color-gold: #96772c;
+  --color-gold: #826624;
   --color-gold-soft: #c9a94e;
+  --color-gold-deep: #6b521c;
   --color-line: #ddd2ba;
   --color-health: #2f6b4f;
   --color-wealth: #96772c;
@@ -48,6 +49,7 @@
   --color-ink-faint: #8f8371;
   --color-gold: #c9a94e;
   --color-gold-soft: #e0c06a;
+  --color-gold-deep: #9a7d30;
   --color-line: #3a332a;
   --color-health: #5fa37f;
   --color-wealth: #c9a94e;
@@ -64,8 +66,9 @@
   --color-ink: #3a3123;
   --color-ink-soft: #6d5f47;
   --color-ink-faint: #7a6b50;
-  --color-gold: #8a6d2a;
+  --color-gold: #826624;
   --color-gold-soft: #b5903f;
+  --color-gold-deep: #6b521c;
   --color-line: #d9cbac;
   --color-health: #2e5f45;
   --color-wealth: #8a6d2a;
@@ -84,6 +87,7 @@
   --color-ink-faint: #8288a8;
   --color-gold: #c9a94e;
   --color-gold-soft: #e0c06a;
+  --color-gold-deep: #9a7d30;
   --color-line: #2a2a40;
   --color-health: #22d3ee;
   --color-wealth: #c9a94e;
@@ -107,6 +111,10 @@ body {
 ::selection {
   background: var(--color-gold-soft);
   color: var(--color-ink);
+}
+
+.cta-hover:hover {
+  background-color: var(--color-gold-deep);
 }
 
 .book-prose {

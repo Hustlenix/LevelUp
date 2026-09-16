@@ -12,3 +12,6 @@ coverage/
 /out/
 *.tsbuildinfo
 next-env.d.ts
+
+# Local verification screenshots (never commit)
+/shot-*.png

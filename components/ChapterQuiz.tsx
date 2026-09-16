@@ -59,7 +59,7 @@ export default function ChapterQuiz({ quiz }: { quiz: ChapterQuiz }) {
             {quiz.questions[idx].options.map((o, i) => {
               let cls = "border-line bg-paper text-ink-soft hover:border-gold hover:text-ink";
               if (picked !== null) {
-                if (o.correct) cls = "border-emerald-600 bg-emerald-600/10 text-ink";
+                if (o.correct) cls = "border-gold bg-gold/10 text-ink";
                 else if (i === picked) cls = "border-rose-600 bg-rose-600/10 text-ink";
                 else cls = "border-line bg-paper text-ink-faint";
               }
@@ -81,7 +81,7 @@ export default function ChapterQuiz({ quiz }: { quiz: ChapterQuiz }) {
             <div className="mt-4" role="status" aria-live="polite">
               <p
                 className={`font-display text-sm font-semibold ${
-                  results[results.length - 1] ? "text-emerald-600" : "text-rose-600"
+                  results[results.length - 1] ? "text-gold" : "text-rose-600"
                 }`}
               >
                 {results[results.length - 1] ? "Correct." : "Not quite."}
@@ -93,7 +93,7 @@ export default function ChapterQuiz({ quiz }: { quiz: ChapterQuiz }) {
                 <button
                   type="button"
                   onClick={next}
-                  className="mt-3 rounded-full bg-ink px-5 py-2 text-sm font-semibold text-paper transition-colors hover:bg-gold"
+                  className="mt-3 rounded-full bg-gold px-5 py-2 text-sm font-semibold text-paper transition-colors cta-hover"
                 >
                   Next question
                 </button>
@@ -101,7 +101,7 @@ export default function ChapterQuiz({ quiz }: { quiz: ChapterQuiz }) {
                 <button
                   type="button"
                   onClick={finish}
-                  className="mt-3 rounded-full bg-ink px-5 py-2 text-sm font-semibold text-paper transition-colors hover:bg-gold"
+                  className="mt-3 rounded-full bg-gold px-5 py-2 text-sm font-semibold text-paper transition-colors cta-hover"
                 >
                   See my score
                 </button>

@@ -167,7 +167,7 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
             <div
               key={c.slug}
               className={`flex items-center gap-4 rounded-xl border p-4 transition-colors ${
-                complete ? "border-emerald-500/40 bg-emerald-500/10" : "border-line bg-card"
+                complete ? "border-gold/40 bg-gold/10" : "border-line bg-card"
               }`}
             >
               <span className="w-8 shrink-0 text-right font-display text-sm font-bold text-ink-faint">
@@ -185,7 +185,7 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
                 </div>
                 <div className="mt-1.5 h-1.5 w-full max-w-xs overflow-hidden rounded-full bg-line">
                   <div
-                    className={`h-full rounded-full ${complete ? "bg-emerald-600" : "bg-gold"}`}
+                    className={`h-full rounded-full ${complete ? "bg-gold" : "bg-gold/40"}`}
                     style={{ width: `${entry?.maxScroll ?? 0}%` }}
                   />
                 </div>
@@ -194,7 +194,7 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
                 onClick={() => markComplete(c.slug, !complete)}
                 className={`shrink-0 rounded-full border px-3 py-1 text-xs transition-colors ${
                   complete
-                    ? "border-emerald-500/60 bg-emerald-600 text-white hover:bg-emerald-700"
+                    ? "border-gold bg-gold text-paper hover:bg-gold-deep"
                     : "border-line bg-paper text-ink-soft hover:border-gold hover:text-gold"
                 }`}
               >
@@ -206,9 +206,9 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
       </div>
 
       <div className="mt-8 rounded-xl border border-line bg-card p-6">
-        <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">
+        <h2 className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">
           Backup &amp; restore
-        </p>
+        </h2>
         <p className="mt-2 text-sm text-ink-soft">
           Your progress, highlights, quiz scores, reflections and settings live only in
           this browser. Export a JSON backup to keep them, or import one to move them to
@@ -218,7 +218,7 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
           <button
             type="button"
             onClick={onExport}
-            className="rounded-full bg-ink px-5 py-2 text-sm font-semibold text-paper transition-colors hover:bg-gold"
+            className="rounded-full bg-gold px-5 py-2 text-sm font-semibold text-paper transition-colors cta-hover"
           >
             Export backup
           </button>
@@ -247,7 +247,7 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
           </p>
         )}
         {imported && (
-          <p role="status" className="mt-3 text-sm text-emerald-600">
+          <p role="status" className="mt-3 text-sm text-gold">
             Backup imported — refresh the page to see it everywhere.
           </p>
         )}
