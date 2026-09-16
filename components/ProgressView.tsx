@@ -20,6 +20,7 @@ import { reloadActionToolsCaches } from "@/lib/actionTools";
 import { localToday } from "@/lib/dates";
 import { PillarTag } from "@/components/ui";
 import GamificationPanel from "@/components/GamificationPanel";
+import { trackEvent, ANALYTICS_EVENTS } from "@/lib/analytics";
 
 const THEME_KEY = "levelup-theme";
 const SCALE_KEY = "levelup-reader-scale";
@@ -65,6 +66,7 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
     a.download = `levelup-backup-v1-${localToday()}.json`;
     a.click();
     URL.revokeObjectURL(url);
+    trackEvent(ANALYTICS_EVENTS.backupExported);
   };
 
   const onImportFile = (file: File) => {
@@ -130,6 +132,7 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
         }
       }
       setImported(true);
+      trackEvent(ANALYTICS_EVENTS.backupImported);
     };
     reader.readAsText(file);
   };

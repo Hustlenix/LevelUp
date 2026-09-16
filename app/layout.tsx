@@ -8,6 +8,7 @@ import SearchProvider from "@/components/SearchProvider";
 import BackToTop from "@/components/BackToTop";
 import JsonLd from "@/components/JsonLd";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+import AnalyticsProvider from "@/components/AnalyticsProvider";
 import { getSiteData } from "@/lib/content";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_AUTHOR } from "@/lib/site";
 
@@ -97,6 +98,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </SearchProvider>
         <BackToTop />
         <ServiceWorkerRegister />
+        <AnalyticsProvider />
       </body>
     </html>
   );

@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { markComplete, recordScroll, useProgressStore, getProgressSnapshot } from "@/lib/progress";
+import { trackEvent, ANALYTICS_EVENTS } from "@/lib/analytics";
 
 export function ReadingProgress({ slug }: { slug: string }) {
   const map = useProgressStore();
@@ -22,6 +23,7 @@ export function ReadingProgress({ slug }: { slug: string }) {
         const curEntry = cur[slug];
         if (shouldComplete && !curEntry?.complete) {
           markComplete(slug, true);
+          trackEvent(ANALYTICS_EVENTS.chapterCompleted, { chapter_slug: slug });
         } else {
           recordScroll(slug, pct);
         }
@@ -33,6 +35,10 @@ export function ReadingProgress({ slug }: { slug: string }) {
       window.removeEventListener("scroll", onScroll);
       cancelAnimationFrame(raf);
     };
+  }, [slug]);
+
+  useEffect(() => {
+    trackEvent(ANALYTICS_EVENTS.chapterOpened, { chapter_slug: slug });
   }, [slug]);
 
   return (
@@ -49,7 +55,10 @@ export function ReadingProgress({ slug }: { slug: string }) {
       </div>
       {!complete && (
         <button
-          onClick={() => markComplete(slug, true)}
+          onClick={() => {
+            markComplete(slug, true);
+            trackEvent(ANALYTICS_EVENTS.chapterCompleted, { chapter_slug: slug });
+          }}
           className="mt-2 text-xs text-gold underline-offset-2 hover:underline"
         >
           Mark as read

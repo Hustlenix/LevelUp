@@ -9,7 +9,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date(PUBLISHED_DATE);
   const pages: MetadataRoute.Sitemap = [
     { url: `${SITE_URL}/`, lastModified },
-    { url: `${SITE_URL}/dashboard/`, lastModified },
     { url: `${SITE_URL}/chapters/`, lastModified },
     { url: `${SITE_URL}/audit/`, lastModified },
     { url: `${SITE_URL}/protocols/`, lastModified },
@@ -18,9 +17,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/research/`, lastModified },
     { url: `${SITE_URL}/roadmap/`, lastModified },
     { url: `${SITE_URL}/devlog/`, lastModified },
-    { url: `${SITE_URL}/progress/`, lastModified },
     { url: `${SITE_URL}/search/`, lastModified },
-    { url: `${SITE_URL}/action/`, lastModified },
+    { url: `${SITE_URL}/privacy/`, lastModified },
   ];
   const chapterPages: MetadataRoute.Sitemap = chapters.map((c) => ({
     url: `${SITE_URL}/chapters/${c.slug}/`,

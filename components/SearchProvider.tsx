@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { SearchHit } from "@/lib/search";
+import { trackEvent, ANALYTICS_EVENTS } from "@/lib/analytics";
 
 interface SearchCtx {
   open: boolean;
@@ -75,6 +76,7 @@ function SearchModal({ go, close }: { go: (url: string) => void; close: () => vo
         if (query.trim().length >= 2) {
           const hits = engine.search(query).slice(0, 12).map(serializeHit);
           if (!cancelled) setResults(hits);
+          trackEvent(ANALYTICS_EVENTS.searchPerformed);
         } else {
           if (!cancelled) setResults([]);
         }

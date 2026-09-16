@@ -28,6 +28,7 @@ export default function Footer() {
           <Link className="hover:text-gold" href="/quotes/">Quote Library</Link>
           <Link className="hover:text-gold" href="/search/">Search</Link>
           <Link className="hover:text-gold" href="/progress/">Reading Progress</Link>
+          <Link className="hover:text-gold" href="/privacy/">Privacy</Link>
         </div>
       </div>
       <div className="border-t border-line/60 py-4 text-center text-[11px] text-ink-faint">

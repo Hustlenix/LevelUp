@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { ChapterQuiz } from "@/lib/types";
 import { useQuizStore, saveQuizResult, useReflectionsStore, saveReflection } from "@/lib/activity";
+import { trackEvent, ANALYTICS_EVENTS } from "@/lib/analytics";
 
 export default function ChapterQuiz({ quiz }: { quiz: ChapterQuiz }) {
   const scores = useQuizStore();
@@ -18,6 +19,9 @@ export default function ChapterQuiz({ quiz }: { quiz: ChapterQuiz }) {
 
   const pick = (i: number) => {
     if (picked !== null) return;
+    if (results.length === 0) {
+      trackEvent(ANALYTICS_EVENTS.quizStarted, { chapter_slug: quiz.slug });
+    }
     setPicked(i);
     const correct = quiz.questions[idx].options[i].correct;
     setResults((r) => [...r, correct]);
@@ -36,6 +40,10 @@ export default function ChapterQuiz({ quiz }: { quiz: ChapterQuiz }) {
 
   const finish = () => {
     saveQuizResult(quiz.slug, score, quiz.questions.length);
+    trackEvent(ANALYTICS_EVENTS.quizCompleted, {
+      chapter_slug: quiz.slug,
+      quiz_score: score,
+    });
   };
 
   return (

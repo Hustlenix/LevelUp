@@ -18,6 +18,7 @@ import {
   logFocusSession, 
   logUrgePause 
 } from "@/lib/actionTools";
+import { trackEvent, ANALYTICS_EVENTS } from "@/lib/analytics";
 
 interface ProtocolRunnerModalProps {
   protocol: Protocol | null;
@@ -26,7 +27,16 @@ interface ProtocolRunnerModalProps {
 }
 
 export default function ProtocolRunnerModal({ protocol, onClose, onCompleted }: ProtocolRunnerModalProps) {
+  useEffect(() => {
+    if (!protocol) return;
+    trackEvent(ANALYTICS_EVENTS.protocolStarted, { protocol_id: protocol.num });
+  }, [protocol]);
+
   if (!protocol) return null;
+  const handleCompleted = () => {
+    trackEvent(ANALYTICS_EVENTS.protocolCompleted, { protocol_id: protocol.num });
+    onCompleted?.();
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm animate-fadeIn">
@@ -56,17 +66,17 @@ export default function ProtocolRunnerModal({ protocol, onClose, onCompleted }: 
         {/* Content Body */}
         <div className="flex-1 overflow-y-auto p-6 scrollbar-thin">
           {protocol.num === "2.3" ? (
-            <MorningCalibrationRunner protocol={protocol} onClose={onClose} onCompleted={onCompleted} />
+            <MorningCalibrationRunner protocol={protocol} onClose={onClose} onCompleted={handleCompleted} />
           ) : protocol.num === "2.6" || protocol.num === "2.9" ? (
-            <FocusSprintRunner protocol={protocol} onClose={onClose} onCompleted={onCompleted} />
+            <FocusSprintRunner protocol={protocol} onClose={onClose} onCompleted={handleCompleted} />
           ) : protocol.num === "2.8" ? (
-            <BoredomToleranceRunner protocol={protocol} onClose={onClose} onCompleted={onCompleted} />
+            <BoredomToleranceRunner protocol={protocol} onClose={onClose} onCompleted={handleCompleted} />
           ) : protocol.num === "2.4" ? (
-            <IdentityStackRunner protocol={protocol} onClose={onClose} onCompleted={onCompleted} />
+            <IdentityStackRunner protocol={protocol} onClose={onClose} onCompleted={handleCompleted} />
           ) : protocol.num === "2.1" || protocol.num === "2.2" ? (
-            <AuditDiagnosticRunner protocol={protocol} onClose={onClose} onCompleted={onCompleted} />
+            <AuditDiagnosticRunner protocol={protocol} onClose={onClose} onCompleted={handleCompleted} />
           ) : (
-            <GenericProtocolRunner protocol={protocol} onClose={onClose} onCompleted={onCompleted} />
+            <GenericProtocolRunner protocol={protocol} onClose={onClose} onCompleted={handleCompleted} />
           )}
         </div>
       </div>

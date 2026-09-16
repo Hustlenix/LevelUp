@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useHighlightsStore, addHighlight, removeHighlight } from "@/lib/activity";
 import { normalize, prefixCandidates } from "@/lib/highlights";
+import { trackEvent, ANALYTICS_EVENTS } from "@/lib/analytics";
 
 function newId(): string {
   try {
@@ -129,6 +130,7 @@ export default function HighlightLayer({
       color: "gold",
       ts: Date.now(),
     });
+    trackEvent(ANALYTICS_EVENTS.highlightCreated, { chapter_slug: slug });
     sel.removeAllRanges();
     setToolbar(null);
   };
