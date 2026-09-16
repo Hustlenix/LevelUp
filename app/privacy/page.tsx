@@ -29,7 +29,7 @@ export default function PrivacyPage() {
             The short version
           </h2>
           <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-ink-soft">
-            <li>Reading progress, quiz results, reflections, protocol runs, highlights, and points are stored only in your browser's local storage — on this device, in this browser.</li>
+            <li>Reading progress, quiz results, reflections, protocol runs, highlights, and points are stored only in your browser&apos;s local storage — on this device, in this browser.</li>
             <li>Nothing is uploaded. There is no account, no sync, no server-side database.</li>
             <li>Backups are files you download and re-import yourself; they never leave your machine unless you move them.</li>
             <li>Analytics is {analyticsOn ? (
@@ -46,13 +46,13 @@ export default function PrivacyPage() {
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-ink-soft">
             Everything you create here — chapters marked complete, scroll progress, quiz answers, reflections,
-            protocol runs, highlights, and gamification points — is stored in your browser's local storage on the
+            protocol runs, highlights, and gamification points — is stored in your browser&apos;s local storage on the
             device and browser you are using. It is not sent to any server and is not shared between devices or
             browsers. If you use the site in a different browser or on a different machine, you start fresh (unless
             you export a backup and import it there).
           </p>
           <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-            Deleting your browser's data for this site permanently removes everything — there is no way to recover
+            Deleting your browser&apos;s data for this site permanently removes everything — there is no way to recover
             it afterward. Export a backup first if you might want it later (see the{" "}
             <Link className="text-gold underline-offset-2 hover:underline" href="/progress/">
               progress page
@@ -66,7 +66,7 @@ export default function PrivacyPage() {
             Search stays in memory
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-            The search feature indexes the book's content in your browser and matches your query against it on the
+            The search feature indexes the book&apos;s content in your browser and matches your query against it on the
             spot. Search queries are not stored and not sent anywhere.
           </p>
         </section>
@@ -99,7 +99,7 @@ export default function PrivacyPage() {
               </p>
               <p className="mt-3 text-sm leading-relaxed text-ink-soft">
                 Google Analytics may set cookies and collect standard usage data (such as device type, approximate
-                location, and referrer) under Google's{" "}
+                location, and referrer) under Google&apos;s{" "}
                 <a className="text-gold underline-offset-2 hover:underline" href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">
                   privacy policy
                 </a>
@@ -126,7 +126,7 @@ export default function PrivacyPage() {
           <p className="mt-3 text-sm leading-relaxed text-ink-soft">
             The site is hosted as a static export on GitHub Pages. Like any web host, GitHub retains standard
             server logs (the page requested, your IP address, browser, and time) for operational purposes under
-            GitHub's policies. The site itself sets no cookies and embeds no third-party scripts beyond the
+            GitHub&apos;s policies. The site itself sets no cookies and embeds no third-party scripts beyond the
             analytics described above when it is enabled.
           </p>
         </section>
@@ -136,8 +136,8 @@ export default function PrivacyPage() {
             Clearing your data
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-            You can erase this site's data using your browser's settings for site data — for example, Chrome's
-            "Site data" (or "Cookies and other site data"), Firefox's "Manage Data", or Safari's "Website Data" —
+            You can erase this site&apos;s data using your browser&apos;s settings for site data — for example, Chrome&apos;s
+            &quot;Site data&quot; (or &quot;Cookies and other site data&quot;), Firefox&apos;s &quot;Manage Data&quot;, or Safari&apos;s &quot;Website Data&quot; —
             and, if your browser offers it, restrict it to just this site. A fresh visit after that behaves like a
             new reader: no progress, no highlights. Export a backup first if you want to keep what you have.
           </p>
@@ -148,7 +148,7 @@ export default function PrivacyPage() {
             Changes
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-            This page is part of the site's source, so it changes only when the source changes — the same review a
+            This page is part of the site&apos;s source, so it changes only when the source changes — the same review a
             code change gets. If something here becomes inaccurate, it gets corrected here rather than hidden in a
             policy nobody reads.
           </p>
