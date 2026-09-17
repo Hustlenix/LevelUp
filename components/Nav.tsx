@@ -9,6 +9,7 @@ import ChaptersMenu from "@/components/ChaptersMenu";
 import type { Chapter } from "@/lib/types";
 
 const MORE_ITEMS = [
+  { href: "/study/", label: "Study Mode" },
   { href: "/audit/", label: "Verification" },
   { href: "/glossary/", label: "Glossary" },
   { href: "/quotes/", label: "Quotes" },
@@ -88,6 +89,9 @@ export default function Nav({ chapters }: { chapters: Chapter[] }) {
         <Link className="shrink-0 whitespace-nowrap py-1 font-bold text-gold transition-colors hover:text-gold-deep" href="/dashboard/">
           Dashboard
         </Link>
+        <Link className="shrink-0 whitespace-nowrap py-1 transition-colors hover:text-gold" href="/study/">
+          Study Mode
+        </Link>
         <div ref={moreDesktopRef} className="relative shrink-0">
           <button
             type="button"
@@ -128,6 +132,7 @@ export default function Nav({ chapters }: { chapters: Chapter[] }) {
           </Link>
           <Link className="shrink-0 py-1 hover:text-gold" href="/protocols/">Protocols</Link>
           <Link className="shrink-0 py-1 font-bold text-gold hover:text-gold-deep" href="/dashboard/">Dashboard</Link>
+          <Link className="shrink-0 py-1 hover:text-gold" href="/study/">Study Mode</Link>
           <div ref={moreMobileRef} className="relative shrink-0">
             <button
               type="button"

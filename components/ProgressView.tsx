@@ -18,6 +18,7 @@ import {
 import { buildBackup, validateBackup, type BackupState } from "@/lib/backup";
 import { reloadActionToolsCaches } from "@/lib/actionTools";
 import { localToday } from "@/lib/dates";
+import { toBackupPayload, fromBackupPayload } from "@/lib/studentProfile";
 import { PillarTag } from "@/components/ui";
 import GamificationPanel from "@/components/GamificationPanel";
 import { trackEvent, ANALYTICS_EVENTS } from "@/lib/analytics";
@@ -55,6 +56,7 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
       quiz: getQuizSnapshot(),
       reflections: getReflectionsSnapshot(),
       streak: getStreakSnapshot(),
+      studentProfile: toBackupPayload() ?? undefined,
       actionState,
     };
     const blob = new Blob([JSON.stringify(buildBackup(state), null, 2)], {
@@ -93,6 +95,7 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
       restoreQuiz(d.quiz);
       restoreReflections(d.reflections);
       if (d.streak) restoreStreak(d.streak);
+      if (d.studentProfile !== undefined) fromBackupPayload(d.studentProfile);
       if (d.actionState) {
         try {
           if (d.actionState.pillarsHistory) {

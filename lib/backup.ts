@@ -40,6 +40,7 @@ export interface BackupState {
     urgesLog?: unknown[];
     calibrations?: Record<string, unknown>;
   };
+  studentProfile?: unknown; // validated via isStudentProfile at restore
 }
 
 export const BACKUP_SCHEMA = 1;
@@ -105,6 +106,9 @@ export function buildBackup(state: BackupState): { schema: number; exportedAt: s
   if (state.actionState !== undefined) {
     result.actionState = state.actionState;
   }
+  if (state.studentProfile !== undefined) {
+    result.studentProfile = state.studentProfile;
+  }
   return result;
 }
 
@@ -163,6 +167,10 @@ export function validateBackup(json: unknown): { ok: boolean; errors: string[]; 
   if (json.actionState && isRecord(json.actionState)) {
     actionState = json.actionState as BackupState["actionState"];
   }
+  let studentProfile: unknown;
+  if (json.studentProfile !== undefined) {
+    studentProfile = json.studentProfile;
+  }
 
   if (errors.length > 0) return { ok: false, errors };
   const outData: BackupState = {
@@ -177,6 +185,9 @@ export function validateBackup(json: unknown): { ok: boolean; errors: string[]; 
   };
   if (actionState !== undefined) {
     outData.actionState = actionState;
+  }
+  if (studentProfile !== undefined) {
+    outData.studentProfile = studentProfile;
   }
 
   return {
