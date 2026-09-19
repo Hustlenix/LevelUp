@@ -3,11 +3,13 @@ import { getSiteData } from "@/lib/content";
 import JsonLd from "@/components/JsonLd";
 import HomepageDashboard from "@/components/HomepageDashboard";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_AUTHOR, PUBLISHED_DATE, canonical } from "@/lib/site";
+import LevelUpOSWorkspace from "@/components/LevelUpOSWorkspace";
 
 export const metadata: Metadata = {
   title: "Dashboard",
   description: "Your daily operating system — streak, daily floors, consistency matrix, and protocols — stored locally.",
-  alternates: { canonical: canonical("/dashboard/") },
+  alternates: { canonical: canonical("/today/") },
+  robots: { index: false, follow: false },
 };
 
 export default function DashboardPage() {
@@ -30,6 +32,7 @@ export default function DashboardPage() {
         }}
       />
 
+      <LevelUpOSWorkspace mode="today" />
       <HomepageDashboard protocols={data.protocols} chapters={data.chapters} />
     </div>
   );

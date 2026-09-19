@@ -9,6 +9,14 @@ import ChaptersMenu from "@/components/ChaptersMenu";
 import type { Chapter } from "@/lib/types";
 
 const MORE_ITEMS = [
+  { href: "/today/", label: "Today" },
+  { href: "/goals/", label: "Goals" },
+  { href: "/focus/", label: "Focus" },
+  { href: "/review/", label: "Review" },
+  { href: "/playbook/", label: "My Playbook" },
+  { href: "/experiments/", label: "Experiments" },
+  { href: "/backup/", label: "Backup" },
+  { href: "/settings/", label: "Settings" },
   { href: "/study/", label: "Study Mode" },
   { href: "/audit/", label: "Verification" },
   { href: "/glossary/", label: "Glossary" },
@@ -83,6 +91,12 @@ export default function Nav({ chapters }: { chapters: Chapter[] }) {
           <span className="flex h-2 w-2 rounded-full bg-gold animate-pulse" />
           Daily Action
         </Link>
+        <Link className="shrink-0 whitespace-nowrap py-1 font-semibold text-gold transition-colors hover:text-gold-deep" href="/today/">
+          Today
+        </Link>
+        <Link className="shrink-0 whitespace-nowrap py-1 transition-colors hover:text-gold" href="/goals/">
+          Goals
+        </Link>
         <Link className="shrink-0 whitespace-nowrap py-1 transition-colors hover:text-gold" href="/protocols/">
           Protocols
         </Link>
@@ -130,6 +144,8 @@ export default function Nav({ chapters }: { chapters: Chapter[] }) {
             <span className="h-1.5 w-1.5 rounded-full bg-gold animate-pulse" />
             Daily Action
           </Link>
+          <Link className="shrink-0 py-1 font-bold text-gold hover:text-gold-deep" href="/today/">Today</Link>
+          <Link className="shrink-0 py-1 hover:text-gold" href="/goals/">Goals</Link>
           <Link className="shrink-0 py-1 hover:text-gold" href="/protocols/">Protocols</Link>
           <Link className="shrink-0 py-1 font-bold text-gold hover:text-gold-deep" href="/dashboard/">Dashboard</Link>
           <Link className="shrink-0 py-1 hover:text-gold" href="/study/">Study Mode</Link>
