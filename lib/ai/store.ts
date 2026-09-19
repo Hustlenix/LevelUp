@@ -4,9 +4,9 @@ import { useSyncExternalStore } from "react";
 import type { AiPlanState } from "./store-types.ts";
 import type { AiSessionStatus, DailyPlan } from "./contracts.ts";
 import { validatePlannerResult } from "./schemas.ts";
+import { reduceAiPlanState } from "./store-reducer.ts";
 
 const KEY = "levelup-ai-plans-v1";
-const MAX_STORED_PLANS = 30;
 const listeners = new Set<() => void>();
 let cache: AiPlanState | null = null;
 
@@ -61,21 +61,14 @@ export function useAiPlanStore(): AiPlanState {
 }
 
 export function saveAiPlan(plan: DailyPlan): void {
-  const valid = validatePlannerResult(plan, plan.source);
-  if (!valid) return;
-  const current = getAiPlanStateSnapshot();
-  const nextPlans = { ...current.plans, [valid.date]: valid };
-  const dates = Object.keys(nextPlans).sort().reverse().slice(0, MAX_STORED_PLANS);
-  const boundedPlans = Object.fromEntries(dates.map((date) => [date, nextPlans[date]]));
-  writeState({ plans: boundedPlans });
+  const next = reduceAiPlanState(getAiPlanStateSnapshot(), { type: "save", plan });
+  if (next !== getAiPlanStateSnapshot()) writeState(next);
 }
 
 export function setAiSessionStatus(date: string, sessionId: string, status: AiSessionStatus): void {
-  const plan = getAiPlanStateSnapshot().plans[date];
-  if (!plan) return;
-  const sessions = plan.sessions.map((session) => session.id === sessionId ? { ...session, status } : session);
-  if (!sessions.some((session) => session.id === sessionId)) return;
-  saveAiPlan({ ...plan, sessions });
+  const current = getAiPlanStateSnapshot();
+  const next = reduceAiPlanState(current, { type: "set-session-status", date, sessionId, status });
+  if (next !== current) writeState(next);
 }
 
 export function getAiPlan(date: string): DailyPlan | null {

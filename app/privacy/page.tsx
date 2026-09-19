@@ -73,6 +73,22 @@ export default function PrivacyPage() {
 
         <section>
           <h2 className="border-b-2 border-gold/60 pb-1 font-display text-2xl font-bold text-ink">
+            Optional local AI
+          </h2>
+          <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+            Study Mode can optionally call Ollama running on the same computer as your browser. The app is locked to the
+            local <code className="rounded border border-line bg-paper-deep px-1.5 py-0.5 text-xs">llama3.1:latest</code> model and accepts only a loopback Ollama address. Prompts, selected LevelUp context, responses, and saved study state are not sent to LevelUp, a cloud AI provider, or analytics, and raw prompts and full responses are not saved by the app.
+          </p>
+          <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+            The public site cannot use the site owner&apos;s computer. Every visitor who wants model-powered help must
+            install and run Ollama on their own device. If Ollama is not available, Study Mode clearly uses its
+            deterministic local Coach, Planner, and Tutor instead. More setup detail is included in the project&apos;s
+            <code className="ml-1 rounded border border-line bg-paper-deep px-1.5 py-0.5 text-xs">docs/AI-LOCAL-OLLAMA.md</code> note.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="border-b-2 border-gold/60 pb-1 font-display text-2xl font-bold text-ink">
             Backups are your files
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-ink-soft">

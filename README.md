@@ -58,8 +58,11 @@ Level Up Manual is a static book-like site with:
 - Keyboard navigation (J/K chapter flips, Escape to close)
 - Schema-validated JSON backup and restore
 - Devlog hub documenting the build
+- Optional local Ollama Coach, Planner, and Tutor locked to `llama3.1:latest`, with a deterministic fallback when Ollama is unavailable
 
-Everything runs locally. Your data stays in your browser.
+Everything runs locally. Your data stays in your browser. If you choose the optional model-powered Study Mode, it calls
+only Ollama on your own computer; the public site cannot use anyone else's Ollama process, and AI interactions are not
+sent to analytics or a remote AI service. See [`docs/AI-LOCAL-OLLAMA.md`](docs/AI-LOCAL-OLLAMA.md).
 
 ## How we built it
 

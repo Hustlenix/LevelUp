@@ -17,6 +17,13 @@ import {
 } from "../lib/ai/retrieval.ts";
 import { createLocalProvider } from "../lib/ai/local-provider.ts";
 import { createAiServices } from "../lib/ai/services.ts";
+import { reduceAiPlanState } from "../lib/ai/store-reducer.ts";
+import {
+  OLLAMA_MODEL,
+  checkOllamaStatus,
+  createOllamaProvider,
+  isLocalOllamaEndpoint,
+} from "../lib/ai/ollama-provider.ts";
 
 const profile = {
   ...defaultProfile(),
@@ -190,11 +197,60 @@ test("local coach and tutor responses cite actual LevelUp context", async () => 
   assert.equal(tutor.value.chapterSlug, "the-one-hour-law");
 });
 
-test("service layer falls back locally when the remote endpoint fails", async () => {
+test("Ollama endpoint validation only permits the local machine", () => {
+  assert.equal(isLocalOllamaEndpoint("http://127.0.0.1:11434/api/chat"), true);
+  assert.equal(isLocalOllamaEndpoint("http://localhost:11434/api/chat"), true);
+  assert.equal(isLocalOllamaEndpoint("https://ai.example.test/v1/levelup"), false);
+  assert.equal(isLocalOllamaEndpoint("http://192.168.1.10:11434/api/chat"), false);
+});
+
+test("Ollama provider locks the local model and validates structured responses", async () => {
+  const context = makeContext();
+  const refs = retrieveLevelUpContent(buildContentDocuments(siteData), "focus", 2);
+  let body;
+  const provider = createOllamaProvider({
+    endpoint: "http://127.0.0.1:11434/api/chat",
+    fetchImpl: async (_url, init) => {
+      body = JSON.parse(init.body);
+      return new Response(JSON.stringify({
+        message: {
+          content: JSON.stringify({
+            answer: "Use the next chapter as your small step.",
+            nextActions: ["Open the chapter"],
+            basis: ["Your next unread chapter is available."],
+          }),
+        },
+      }), { status: 200, headers: { "content-type": "application/json" } });
+    },
+  });
+  assert.ok(provider);
+  const result = await provider.coach({ question: "What should I learn next?" }, context, refs);
+  assert.equal(result.ok, true);
+  assert.equal(result.source, "ollama");
+  assert.equal(body.model, OLLAMA_MODEL);
+  assert.equal(body.stream, false);
+  assert.equal(body.format, "json");
+  assert.match(body.messages[0].content, /LevelUp Coach/);
+});
+
+test("Ollama status reports whether the locked model is installed", async () => {
+  const ready = await checkOllamaStatus({
+    endpoint: "http://127.0.0.1:11434/api/chat",
+    fetchImpl: async () => new Response(JSON.stringify({ models: [{ name: OLLAMA_MODEL }] }), { status: 200 }),
+  });
+  assert.equal(ready.state, "ready");
+  const missing = await checkOllamaStatus({
+    endpoint: "http://127.0.0.1:11434/api/chat",
+    fetchImpl: async () => new Response(JSON.stringify({ models: [{ name: "other-model" }] }), { status: 200 }),
+  });
+  assert.equal(missing.state, "model-missing");
+});
+
+test("service layer falls back locally when Ollama is unavailable", async () => {
   const context = makeContext();
   const refs = retrieveLevelUpContent(buildContentDocuments(siteData), "focus", 2);
   const services = createAiServices({
-    endpoint: "https://ai.example.test/v1/levelup",
+    endpoint: "http://127.0.0.1:11434/api/chat",
     fetchImpl: async () => {
       throw new Error("network down");
     },
@@ -202,14 +258,14 @@ test("service layer falls back locally when the remote endpoint fails", async ()
   const result = await services.coach({ question: "What should I learn next?" }, context, refs);
   assert.equal(result.ok, true);
   assert.equal(result.source, "local");
-  assert.equal(result.fallbackReason, "remote-unavailable");
+  assert.equal(result.fallbackReason, "ollama-unavailable");
 });
 
-test("service layer rejects invalid remote structure and falls back locally", async () => {
+test("service layer rejects invalid Ollama structure and falls back locally", async () => {
   const context = makeContext();
   const refs = retrieveLevelUpContent(buildContentDocuments(siteData), "focus", 2);
   const services = createAiServices({
-    endpoint: "https://ai.example.test/v1/levelup",
+    endpoint: "http://127.0.0.1:11434/api/chat",
     fetchImpl: async () => new Response(JSON.stringify({ ok: true, result: { answer: "not enough" } }), {
       status: 200,
       headers: { "content-type": "application/json" },
@@ -218,5 +274,28 @@ test("service layer rejects invalid remote structure and falls back locally", as
   const result = await services.coach({ question: "What should I focus on today?" }, context, refs);
   assert.equal(result.ok, true);
   assert.equal(result.source, "local");
-  assert.equal(result.fallbackReason, "remote-unavailable");
+  assert.equal(result.fallbackReason, "ollama-unavailable");
+});
+
+test("AI plan reducer saves a bounded plan and advances one session at a time", () => {
+  const plan = {
+    date: "2026-09-16",
+    availableMinutes: 30,
+    objective: "Build a short study loop",
+    priority: "steady progress",
+    sessions: [
+      { id: "session-1", title: "Read", durationMinutes: 20, type: "learn", reason: "Start small", status: "pending" },
+      { id: "session-2", title: "Recall", durationMinutes: 10, type: "practice", reason: "Check the idea", status: "pending" },
+    ],
+    source: "local",
+    generatedAt: "2026-09-16T00:00:00.000Z",
+  };
+  const initial = { plans: {} };
+  const saved = reduceAiPlanState(initial, { type: "save", plan });
+  assert.equal(saved.plans[plan.date].sessions[0].status, "pending");
+  const started = reduceAiPlanState(saved, { type: "set-session-status", date: plan.date, sessionId: "session-1", status: "started" });
+  assert.equal(started.plans[plan.date].sessions[0].status, "started");
+  const completed = reduceAiPlanState(started, { type: "set-session-status", date: plan.date, sessionId: "session-1", status: "completed" });
+  assert.equal(completed.plans[plan.date].sessions[0].status, "completed");
+  assert.equal(completed.plans[plan.date].sessions[1].status, "pending");
 });

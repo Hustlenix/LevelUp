@@ -15,11 +15,12 @@ export const AI_LIMITS = {
   maxActionChars: 220,
   requestBytes: 32000,
   responseBytes: 50000,
-  remoteTimeoutMs: 8000,
+  ollamaTimeoutMs: 5000,
+  ollamaStatusTimeoutMs: 1800,
 } as const;
 
 export type AiOperation = "coach" | "planner" | "tutor";
-export type AiSource = "local" | "remote";
+export type AiSource = "local" | "ollama";
 export type PlanSessionType = "learn" | "practice" | "review" | "focus" | "reflect";
 export type AiSessionStatus = "pending" | "started" | "completed";
 export type TutorMode = "explain" | "summarize" | "practice";
@@ -165,7 +166,7 @@ export type ProviderResult<T> =
   | { ok: false; source?: AiSource; error: AiError };
 
 export type AiServiceResult<T> =
-  | { ok: true; source: AiSource; value: T; note?: string; fallbackReason?: "no-remote-endpoint" | "remote-unavailable" }
+  | { ok: true; source: AiSource; value: T; note?: string; fallbackReason?: "no-ollama" | "ollama-unavailable" }
   | { ok: false; source?: AiSource; error: AiError };
 
 export interface AiProvider {

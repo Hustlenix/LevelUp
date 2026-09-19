@@ -82,7 +82,7 @@ export function createLocalProvider(): AiProvider {
         generatedAt: localGeneratedAt(request.date),
       };
       const plan = validatePlannerResult(raw, "local");
-      return plan ? { ok: true, source: "local", value: plan, note: "Deterministic local fallback; no remote AI endpoint is configured." } : failure("unavailable", "The local planner could not build a valid plan.");
+       return plan ? { ok: true, source: "local", value: plan, note: "Deterministic local fallback generated this result from saved LevelUp state." } : failure("unavailable", "The local planner could not build a valid plan.");
     },
 
     async coach(input: CoachRequest, context: AiContext, refs: ContentReference[]) {
@@ -102,7 +102,7 @@ export function createLocalProvider(): AiProvider {
             basis: context.behavior.missedSignals.length ? context.behavior.missedSignals.slice(0, 2) : [`Current streak: ${context.behavior.streakCurrent} day(s).`],
             ...(suggestedChapterSlug ? { suggestedChapterSlug } : {}),
           },
-          note: "Deterministic local fallback; no remote AI endpoint is configured.",
+           note: "Deterministic local fallback generated this result from saved LevelUp state.",
         };
       }
       if (question.includes("next") || question.includes("learn")) {
@@ -116,7 +116,7 @@ export function createLocalProvider(): AiProvider {
             basis: [`Manual completion: ${context.progress.completionPct}%.`, context.progress.quizWeaknesses[0] ? `Quiz weakness: ${context.progress.quizWeaknesses[0]}.` : "No weak quiz result is recorded yet."],
             ...(suggestedChapterSlug ? { suggestedChapterSlug } : {}),
           },
-          note: "Deterministic local fallback; no remote AI endpoint is configured.",
+           note: "Deterministic local fallback generated this result from saved LevelUp state.",
         };
       }
       const examLine = context.exams[0] ? ` ${context.exams[0].subjectName} is next in ${context.exams[0].daysUntil} day(s).` : "";
@@ -129,7 +129,7 @@ export function createLocalProvider(): AiProvider {
           basis: [`Today’s mission: ${context.mission.label}.`, `Current streak: ${context.behavior.streakCurrent} day(s).`, `Focus minutes in seven days: ${context.behavior.focusMinutesLast7Days}.`],
           ...(suggestedChapterSlug ? { suggestedChapterSlug } : {}),
         },
-        note: "Deterministic local fallback; no remote AI endpoint is configured.",
+         note: "Deterministic local fallback generated this result from saved LevelUp state.",
       };
     },
 
@@ -158,7 +158,7 @@ export function createLocalProvider(): AiProvider {
           : "This response is grounded in the LevelUp chapter text; no external evidence grade was attached to the selected reference.",
       };
       const tutor = validateTutorResult(raw);
-      return tutor ? { ok: true, source: "local", value: tutor, note: "Deterministic local fallback; no remote AI endpoint is configured." } : failure("unavailable", "The local tutor could not build a valid response.");
+       return tutor ? { ok: true, source: "local", value: tutor, note: "Deterministic local fallback generated this result from saved LevelUp state." } : failure("unavailable", "The local tutor could not build a valid response.");
     },
   };
 }

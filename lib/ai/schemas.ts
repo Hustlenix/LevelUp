@@ -67,7 +67,7 @@ export function validateTutorRequest(value: unknown): TutorRequest | null {
   return { chapterSlug, mode, level };
 }
 
-export function validatePlannerResult(value: unknown, defaultSource: AiSource = "remote"): DailyPlan | null {
+export function validatePlannerResult(value: unknown, defaultSource: AiSource = "local"): DailyPlan | null {
   const input = record(value);
   if (!input) return null;
   const date = safeDate(input.date);

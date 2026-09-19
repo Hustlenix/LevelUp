@@ -1,17 +1,17 @@
 # LevelUp AI Layer Design
 
-**Status:** Approved for staged implementation on 2026-09-19.
+**Status:** Approved for staged implementation on 2026-09-19; local-only Ollama override applied during execution.
 
 ## Goal
 
-Add a context-aware AI layer to LevelUp without replacing the existing local-first product or exposing an OpenAI secret in the GitHub Pages bundle.
+Add a context-aware AI layer to LevelUp without replacing the existing local-first product or sending user data to a remote AI service.
 
 ## Current constraints
 
 - The frontend remains a Next.js static export deployed to GitHub Pages.
 - Existing uncommitted Study SEO work and generated data changes are preserved.
-- The browser may call a separately deployed public AI endpoint, but it must never receive `OPENAI_API_KEY`.
-- When no remote endpoint is configured or reachable, the product must remain useful through deterministic local recommendations.
+- The browser may call only the user's own loopback Ollama endpoint; it must never call a remote AI endpoint or receive an AI credential.
+- When Ollama is not installed, not running, or unreachable, the product remains useful through deterministic local recommendations.
 - Existing localStorage stores remain the source of truth. No second state system is introduced.
 - LevelUp content is retrieved from the existing generated content/search data. No vector database is added.
 
@@ -21,27 +21,27 @@ The AI layer is split into four boundaries:
 
 1. **Contracts and validation** — typed request/context/response contracts with strict limits and deterministic validation for planner, coach, and tutor output.
 2. **Context and retrieval** — a compact projection of profile, progress, streak, activity signals, roadmap state, and relevant LevelUp content. Retrieved content is explicitly marked as untrusted reference material and cannot change system instructions.
-3. **Providers and domain services** — a deterministic local provider for immediate functionality plus a remote provider that accepts only a public endpoint URL. Coach, planner, and tutor services use the same provider contract.
+3. **Providers and domain services** — a deterministic local provider plus a loopback-only Ollama provider locked to `llama3.1:latest`. Coach, planner, and tutor services use the same provider contract.
 4. **Native Study UI** — Study Mode renders structured plans, actions, fallback state, loading state, and errors using existing cards and storage conventions.
 
-The future remote endpoint contract is:
+The local Ollama request contract is:
 
 ```text
-POST {LEVELUP_AI_ENDPOINT}
+POST http://127.0.0.1:11434/api/chat
 Content-Type: application/json
 
 {
   "operation": "coach" | "planner" | "tutor",
-  "request": validated request data,
-  "context": compact context projection,
-  "content": relevant LevelUp references
+  "model": "llama3.1:latest",
+  "stream": false,
+  "format": "json",
+  "messages": compact system and user messages
 }
 
-200 { "ok": true, "source": "remote", "result": validated result }
-4xx/5xx { "ok": false, "error": "safe public error code" }
+200 { "message": { "content": "validated JSON result" } }
 ```
 
-The separately deployed endpoint will own the official OpenAI client, model selection, server-side secret, rate limiting, and provider-specific structured-output calls. This repository documents the required environment variables but does not pretend that endpoint exists while it is absent.
+The user's local Ollama installation owns model execution. The browser sends only bounded selected context to loopback, never to LevelUp analytics or a remote server. Public visitors cannot use the owner's computer; each visitor must install and run Ollama locally to use model-powered help.
 
 ## MVP behavior
 
@@ -65,8 +65,8 @@ Generated plans and session completion are persisted under a single additive AI 
 
 - Client input is trimmed, length-bounded, and validated before provider calls.
 - Context and retrieved content are size-bounded.
-- Remote calls use an abort timeout and never retry non-idempotent requests.
-- Invalid remote JSON or schema-invalid output is rejected and falls back to the local provider.
+- Ollama calls use an abort timeout and never retry requests.
+- Invalid Ollama JSON or schema-invalid output is rejected and falls back to the deterministic local provider.
 - User content and retrieved documents are wrapped as data, not instructions.
 - Result rendering uses ordinary React text nodes; no raw HTML or executable output is accepted.
 - Provider errors show a clear fallback state and never crash the dashboard.
@@ -74,6 +74,5 @@ Generated plans and session completion are persisted under a single additive AI 
 
 ## Deferred work
 
-- Live OpenAI endpoint implementation and deployment.
-- Server-side authentication/rate limiting policy beyond the client adapter contract.
+- Remote AI services and server-side AI deployment are intentionally out of scope.
 - Adaptive roadmap mutation. The current roadmap is read-only context for MVP recommendations; goal-to-milestone editing is deferred until the plan model proves stable.

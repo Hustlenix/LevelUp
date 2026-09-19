@@ -11,7 +11,7 @@ import {
   type TutorResult,
 } from "./contracts.ts";
 import { createLocalProvider } from "./local-provider.ts";
-import { configuredAiEndpoint, createRemoteProvider } from "./remote-provider.ts";
+import { configuredOllamaEndpoint, createOllamaProvider } from "./ollama-provider.ts";
 
 interface AiServiceOptions {
   endpoint?: string;
@@ -21,8 +21,8 @@ interface AiServiceOptions {
 
 export function createAiServices(options: AiServiceOptions = {}) {
   const local = createLocalProvider();
-  const remote: AiProvider | null = createRemoteProvider({
-    endpoint: options.endpoint ?? configuredAiEndpoint(),
+  const ollama: AiProvider | null = createOllamaProvider({
+    endpoint: options.endpoint ?? configuredOllamaEndpoint(),
     ...(options.fetchImpl ? { fetchImpl: options.fetchImpl } : {}),
     ...(options.timeoutMs ? { timeoutMs: options.timeoutMs } : {}),
   });
@@ -33,15 +33,18 @@ export function createAiServices(options: AiServiceOptions = {}) {
     context: AiContext,
     refs: ContentReference[],
   ): Promise<AiServiceResult<TResult>> {
-    if (remote) {
-      const result = await remote[method](request as never, context, refs);
+    if (ollama) {
+      const result = await ollama[method](request as never, context, refs);
       if (result.ok) return result as AiServiceResult<TResult>;
     }
     const localResult = await local[method](request as never, context, refs);
     if (!localResult.ok) return localResult as AiServiceResult<TResult>;
     return {
       ...localResult,
-      fallbackReason: remote ? "remote-unavailable" : "no-remote-endpoint",
+      note: ollama
+        ? "Ollama was unavailable; the deterministic fallback generated this result from saved LevelUp state."
+        : "Ollama was not available; the deterministic fallback generated this result from saved LevelUp state.",
+      fallbackReason: ollama ? "ollama-unavailable" : "no-ollama",
     } as AiServiceResult<TResult>;
   }
 
