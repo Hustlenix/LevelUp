@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useMemo, useState, useSyncExternalStore, type FormEvent } from "react";
 import { localToday } from "@/lib/dates";
 import { useClientToday } from "@/lib/clientToday";
 import { dispatchOS, useOSStore } from "@/lib/os/store";
@@ -9,7 +9,7 @@ import { typeGoal, typeMilestone, typeRoadmap, typeSession, typeTask } from "@/l
 import type { Goal, Session } from "@/lib/os/types";
 import { addExperiment, updateExperiment, useExperimentsStore, type ExperimentDecision } from "@/lib/experiments";
 import { ANALYTICS_EVENTS, trackEvent } from "@/lib/analytics";
-import { defaultNotificationState, deriveInbox, dismissInboxItem, markInboxRead, NOTIFICATIONS_KEY, type NotificationState } from "@/lib/notifications";
+import { deriveInbox, dismissInboxItem, markInboxRead, saveNotificationState, useNotificationsStore, type NotificationState } from "@/lib/notifications";
 import { deriveLocalPatterns } from "@/lib/os/patterns";
 import { PageShell, SectionHeading } from "@/components/ui";
 
@@ -19,6 +19,34 @@ const inputClass = "mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2
 const primaryButton = "inline-flex min-h-11 items-center justify-center rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-paper transition-colors hover:bg-gold-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold disabled:cursor-not-allowed disabled:opacity-50";
 const secondaryButton = "inline-flex min-h-11 items-center justify-center rounded-lg border border-line bg-paper px-4 py-2 text-sm font-semibold text-ink-soft transition-colors hover:border-gold hover:text-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold disabled:cursor-not-allowed disabled:opacity-50";
 const cardClass = "rounded-2xl border border-line bg-card p-5 shadow-xs sm:p-6";
+const clockListeners = new Set<() => void>();
+let clockNow = 0;
+let clockTimer: number | null = null;
+
+function subscribeToClock(listener: () => void): () => void {
+  clockListeners.add(listener);
+  if (clockListeners.size === 1 && typeof window !== "undefined") {
+    clockNow = Date.now();
+    clockTimer = window.setInterval(() => {
+      clockNow = Date.now();
+      for (const subscribed of clockListeners) subscribed();
+    }, 1000);
+  }
+  return () => {
+    clockListeners.delete(listener);
+    if (!clockListeners.size && clockTimer !== null) {
+      window.clearInterval(clockTimer);
+      clockTimer = null;
+    }
+  };
+}
+
+const getClientClock = () => clockNow;
+const getServerClock = () => 0;
+
+function useClientClock(): number {
+  return useSyncExternalStore(subscribeToClock, getClientClock, getServerClock);
+}
 
 function newId(prefix: string): string {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
@@ -180,21 +208,11 @@ function SessionPanel({ sessions, title = "Today's sessions", showAll = false, t
 
 function FocusTimerPanel({ sessions }: { sessions: Record<string, Session> }) {
   const selected = Object.values(sessions).find((session) => session.status === "in-progress") ?? Object.values(sessions).find((session) => session.status === "planned");
-  const selectedId = selected?.id;
-  const [remaining, setRemaining] = useState(() => {
-    if (!selected) return 0;
-    const elapsed = selected.elapsedSeconds ?? (selected.startedAt ? Math.max(0, Math.floor((Date.now() - Date.parse(selected.startedAt)) / 1000)) : 0);
-    return Math.max(0, selected.plannedMinutes * 60 - elapsed);
-  });
+  const now = useClientClock();
+  const remaining = selected ? Math.max(0, selected.plannedMinutes * 60 - (selected.elapsedSeconds ?? (selected.startedAt ? Math.max(0, Math.floor((now - Date.parse(selected.startedAt)) / 1000)) : 0))) : 0;
   const [running, setRunning] = useState(selected?.status === "in-progress");
   const [interruptionSeconds, setInterruptionSeconds] = useState("60");
   const [note, setNote] = useState("");
-
-  useEffect(() => {
-    if (!running) return;
-    const timer = window.setInterval(() => setRemaining((value) => Math.max(0, value - 1)), 1000);
-    return () => window.clearInterval(timer);
-  }, [running, selectedId]);
 
   if (!selected) return <section className={cardClass}><p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">Focus timer</p><h2 className="mt-1 font-display text-xl font-semibold text-ink">No session is ready</h2><p className="mt-2 text-sm text-ink-soft">Create a goal or schedule a task before starting a focus block.</p><Link href="/goals/" className={`mt-4 ${primaryButton}`}>Create a session</Link></section>;
   const activeSession = selected;
@@ -237,16 +255,16 @@ function ProgressForm({ goals }: { goals: Record<string, Goal> }) {
 }
 
 function InboxPanel({ state, today }: { state: ReturnType<typeof useOSStore>; today: string }) {
-  const [preferences, setPreferences] = useState<NotificationState>(() => {
-    try { return { ...defaultNotificationState(), ...JSON.parse(window.localStorage.getItem(NOTIFICATIONS_KEY) ?? "{}") }; } catch { return defaultNotificationState(); }
-  });
-  const nowMinutes = new Date().getHours() * 60 + new Date().getMinutes();
+  const preferences = useNotificationsStore();
+  const now = useClientClock();
+  const nowDate = new Date(now);
+  const nowMinutes = nowDate.getHours() * 60 + nowDate.getMinutes();
   const toMinutes = (value: string) => { const [hour, minute] = value.split(":").map(Number); return (hour * 60) + minute; };
   const quietStart = toMinutes(preferences.quietStart);
   const quietEnd = toMinutes(preferences.quietEnd);
   const quiet = quietStart === quietEnd || (quietStart < quietEnd ? nowMinutes >= quietStart && nowMinutes < quietEnd : nowMinutes >= quietStart || nowMinutes < quietEnd);
   const inbox = quiet || !today ? [] : deriveInbox(state, today).filter((item) => !preferences.dismissedIds.includes(item.id));
-  function save(next: NotificationState) { setPreferences(next); try { window.localStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(next)); } catch { /* private browsing */ } }
+  function save(next: NotificationState) { saveNotificationState(next); }
   return <section className={cardClass}><div className="flex flex-wrap items-start justify-between gap-3"><div><p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">Inbox</p><h2 className="mt-1 font-display text-xl font-semibold text-ink">Actionable reminders</h2></div><label className="inline-flex min-h-10 items-center gap-2 text-sm text-ink-soft"><input type="checkbox" checked={preferences.enabled} onChange={(event) => save({ ...preferences, enabled: event.target.checked })} /> Reminders on</label></div>{preferences.enabled && inbox.length ? <ul className="mt-4 space-y-3">{inbox.map((item) => <li key={item.id} className={`flex flex-wrap items-center gap-3 rounded-xl border border-line bg-paper p-3 ${preferences.readIds.includes(item.id) ? "opacity-60" : ""}`}><div className="min-w-0 flex-1"><p className="font-medium text-ink">{item.title}</p><p className="mt-1 text-xs text-ink-soft">{item.body}</p></div><Link href={item.actionHref} onClick={() => save(markInboxRead(preferences, item.id))} className={secondaryButton}>Open</Link><button type="button" className="text-xs text-ink-faint underline hover:text-ink" onClick={() => save(dismissInboxItem(preferences, item.id))}>Dismiss</button></li>)}</ul> : <p className="mt-4 text-sm text-ink-soft">{!preferences.enabled ? "Reminders are off. You can turn them back on any time." : quiet ? "Quiet hours are active. Reminders will return afterward." : "Nothing needs your attention right now."}</p>}<div className="mt-4 flex flex-wrap items-center gap-3 border-t border-line pt-4 text-xs text-ink-faint"><span>Quiet hours</span><input aria-label="Quiet hours start" className="rounded border border-line bg-paper px-2 py-1" type="time" value={preferences.quietStart} onChange={(event) => save({ ...preferences, quietStart: event.target.value })} /><span>to</span><input aria-label="Quiet hours end" className="rounded border border-line bg-paper px-2 py-1" type="time" value={preferences.quietEnd} onChange={(event) => save({ ...preferences, quietEnd: event.target.value })} /></div></section>;
 }
 
