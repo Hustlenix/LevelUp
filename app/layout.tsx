@@ -60,7 +60,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${source.variable}`}>
+    <html lang="en" className={`${fraunces.variable} ${source.variable}`} suppressHydrationWarning>
       <head>
         <Script id="theme-init" strategy="beforeInteractive">
           {`(function(){try{var t=window.localStorage.getItem("levelup-theme");if(t==="dark"||t==="light"||t==="deepwork"||t==="cyberpunk"){document.documentElement.setAttribute("data-theme",t);}else if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches){document.documentElement.setAttribute("data-theme","dark");}else{document.documentElement.setAttribute("data-theme","light");}var s=window.localStorage.getItem("levelup-reader-scale");if(s==="0.85"||s==="1"||s==="1.15"||s==="1.3"){document.documentElement.setAttribute("data-reader-scale",s);}else{document.documentElement.setAttribute("data-reader-scale","1");}}catch(e){document.documentElement.setAttribute("data-theme","light");document.documentElement.setAttribute("data-reader-scale","1");}})();`}
