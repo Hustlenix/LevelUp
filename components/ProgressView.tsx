@@ -22,6 +22,7 @@ import { toBackupPayload, fromBackupPayload } from "@/lib/studentProfile";
 import { PillarTag } from "@/components/ui";
 import GamificationPanel from "@/components/GamificationPanel";
 import { trackEvent, ANALYTICS_EVENTS } from "@/lib/analytics";
+import { getOSStateSnapshot, restoreOSState } from "@/lib/os/store";
 
 const THEME_KEY = "levelup-theme";
 const SCALE_KEY = "levelup-reader-scale";
@@ -58,6 +59,7 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
       streak: getStreakSnapshot(),
       studentProfile: toBackupPayload() ?? undefined,
       actionState,
+      osState: getOSStateSnapshot(),
     };
     const blob = new Blob([JSON.stringify(buildBackup(state), null, 2)], {
       type: "application/json",
@@ -96,6 +98,7 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
       restoreReflections(d.reflections);
       if (d.streak) restoreStreak(d.streak);
       if (d.studentProfile !== undefined) fromBackupPayload(d.studentProfile);
+      if (d.osState !== undefined) restoreOSState(d.osState);
       if (d.actionState) {
         try {
           if (d.actionState.pillarsHistory) {

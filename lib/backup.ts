@@ -1,3 +1,6 @@
+import type { OSState } from "./os/types.ts";
+import { validateOSState } from "./os/migrations.ts";
+
 export interface BackupProgressEntry {
   complete: boolean;
   maxScroll: number;
@@ -41,6 +44,7 @@ export interface BackupState {
     calibrations?: Record<string, unknown>;
   };
   studentProfile?: unknown; // validated via isStudentProfile at restore
+  osState?: OSState;
 }
 
 export const BACKUP_SCHEMA = 1;
@@ -109,6 +113,9 @@ export function buildBackup(state: BackupState): { schema: number; exportedAt: s
   if (state.studentProfile !== undefined) {
     result.studentProfile = state.studentProfile;
   }
+  if (state.osState !== undefined) {
+    result.osState = state.osState;
+  }
   return result;
 }
 
@@ -171,6 +178,15 @@ export function validateBackup(json: unknown): { ok: boolean; errors: string[]; 
   if (json.studentProfile !== undefined) {
     studentProfile = json.studentProfile;
   }
+  let osState: OSState | undefined;
+  if (json.osState !== undefined) {
+    const checked = validateOSState(json.osState);
+    if (!checked.ok || !checked.state) {
+      errors.push(...checked.errors.map((error) => `osState: ${error}`));
+    } else {
+      osState = checked.state;
+    }
+  }
 
   if (errors.length > 0) return { ok: false, errors };
   const outData: BackupState = {
@@ -188,6 +204,9 @@ export function validateBackup(json: unknown): { ok: boolean; errors: string[]; 
   }
   if (studentProfile !== undefined) {
     outData.studentProfile = studentProfile;
+  }
+  if (osState !== undefined) {
+    outData.osState = osState;
   }
 
   return {
