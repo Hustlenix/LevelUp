@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { localToday } from "@/lib/dates";
+import { useClientToday } from "@/lib/clientToday";
 import { dispatchOS, useOSStore } from "@/lib/os/store";
 import { typeGoal, typeMilestone, typeRoadmap, typeSession, typeTask } from "@/lib/os/types";
 import type { Goal, Session } from "@/lib/os/types";
@@ -159,8 +160,7 @@ export function RoadmapTree({ state }: { state: ReturnType<typeof useOSStore> })
   </section>;
 }
 
-function SessionPanel({ sessions, title = "Today's sessions", showAll = false }: { sessions: Record<string, Session>; title?: string; showAll?: boolean }) {
-  const today = localToday();
+function SessionPanel({ sessions, title = "Today's sessions", showAll = false, today = "" }: { sessions: Record<string, Session>; title?: string; showAll?: boolean; today?: string }) {
   const rows = Object.values(sessions).filter((session) => showAll || session.date === today).sort((a, b) => a.date.localeCompare(b.date) || a.createdAt.localeCompare(b.createdAt));
   function start(session: Session) {
     dispatchOS({ type: "session/start", sessionId: session.id, occurredAt: new Date().toISOString() });
@@ -236,7 +236,7 @@ function ProgressForm({ goals }: { goals: Record<string, Goal> }) {
   return <form className="mt-4 flex flex-wrap items-end gap-3" onSubmit={(event) => { event.preventDefault(); const value = Number(current); if (!Number.isFinite(value)) return; dispatchOS({ type: "goal/progress", goalId: selected.id, current: value, occurredAt: new Date().toISOString(), note: "Progress logged from Today." }); trackEvent(ANALYTICS_EVENTS.goalProgressed, { os_entity: "goal" }); setCurrent(""); }}><label className="min-w-[220px] flex-1"><span className="text-xs font-semibold text-ink-soft">Goal</span><select className={inputClass} value={selected.id} onChange={(event) => setGoalId(event.target.value)}>{entries.map((goal) => <option key={goal.id} value={goal.id}>{goal.title}</option>)}</select></label><label className="w-32"><span className="text-xs font-semibold text-ink-soft">Current</span><input className={inputClass} type="number" min={0} value={current} onChange={(event) => setCurrent(event.target.value)} placeholder={String(selected.current)} /></label><button type="submit" className={primaryButton}>Save progress</button></form>;
 }
 
-function InboxPanel({ state }: { state: ReturnType<typeof useOSStore> }) {
+function InboxPanel({ state, today }: { state: ReturnType<typeof useOSStore>; today: string }) {
   const [preferences, setPreferences] = useState<NotificationState>(() => {
     try { return { ...defaultNotificationState(), ...JSON.parse(window.localStorage.getItem(NOTIFICATIONS_KEY) ?? "{}") }; } catch { return defaultNotificationState(); }
   });
@@ -245,13 +245,13 @@ function InboxPanel({ state }: { state: ReturnType<typeof useOSStore> }) {
   const quietStart = toMinutes(preferences.quietStart);
   const quietEnd = toMinutes(preferences.quietEnd);
   const quiet = quietStart === quietEnd || (quietStart < quietEnd ? nowMinutes >= quietStart && nowMinutes < quietEnd : nowMinutes >= quietStart || nowMinutes < quietEnd);
-  const inbox = quiet ? [] : deriveInbox(state, localToday()).filter((item) => !preferences.dismissedIds.includes(item.id));
+  const inbox = quiet || !today ? [] : deriveInbox(state, today).filter((item) => !preferences.dismissedIds.includes(item.id));
   function save(next: NotificationState) { setPreferences(next); try { window.localStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(next)); } catch { /* private browsing */ } }
   return <section className={cardClass}><div className="flex flex-wrap items-start justify-between gap-3"><div><p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">Inbox</p><h2 className="mt-1 font-display text-xl font-semibold text-ink">Actionable reminders</h2></div><label className="inline-flex min-h-10 items-center gap-2 text-sm text-ink-soft"><input type="checkbox" checked={preferences.enabled} onChange={(event) => save({ ...preferences, enabled: event.target.checked })} /> Reminders on</label></div>{preferences.enabled && inbox.length ? <ul className="mt-4 space-y-3">{inbox.map((item) => <li key={item.id} className={`flex flex-wrap items-center gap-3 rounded-xl border border-line bg-paper p-3 ${preferences.readIds.includes(item.id) ? "opacity-60" : ""}`}><div className="min-w-0 flex-1"><p className="font-medium text-ink">{item.title}</p><p className="mt-1 text-xs text-ink-soft">{item.body}</p></div><Link href={item.actionHref} onClick={() => save(markInboxRead(preferences, item.id))} className={secondaryButton}>Open</Link><button type="button" className="text-xs text-ink-faint underline hover:text-ink" onClick={() => save(dismissInboxItem(preferences, item.id))}>Dismiss</button></li>)}</ul> : <p className="mt-4 text-sm text-ink-soft">{!preferences.enabled ? "Reminders are off. You can turn them back on any time." : quiet ? "Quiet hours are active. Reminders will return afterward." : "Nothing needs your attention right now."}</p>}<div className="mt-4 flex flex-wrap items-center gap-3 border-t border-line pt-4 text-xs text-ink-faint"><span>Quiet hours</span><input aria-label="Quiet hours start" className="rounded border border-line bg-paper px-2 py-1" type="time" value={preferences.quietStart} onChange={(event) => save({ ...preferences, quietStart: event.target.value })} /><span>to</span><input aria-label="Quiet hours end" className="rounded border border-line bg-paper px-2 py-1" type="time" value={preferences.quietEnd} onChange={(event) => save({ ...preferences, quietEnd: event.target.value })} /></div></section>;
 }
 
-function PatternPanel({ state }: { state: ReturnType<typeof useOSStore> }) {
-  const patterns = deriveLocalPatterns(state, localToday());
+function PatternPanel({ state, today }: { state: ReturnType<typeof useOSStore>; today: string }) {
+  const patterns = today ? deriveLocalPatterns(state, today) : [];
   return <section className={cardClass}><p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">Local patterns</p><h2 className="mt-1 font-display text-xl font-semibold text-ink">What the record suggests</h2><div className="mt-4 grid gap-3 sm:grid-cols-3">{patterns.map((pattern) => <article key={pattern.id} className="rounded-xl border border-line bg-paper p-3"><p className="text-sm font-semibold text-ink">{pattern.title}</p><p className="mt-1 text-xs leading-relaxed text-ink-soft">{pattern.detail}</p><p className="mt-2 text-xs font-semibold text-gold">Next: {pattern.action}</p></article>)}</div></section>;
 }
 
@@ -275,8 +275,7 @@ function ReviewForm({ state }: { state: ReturnType<typeof useOSStore> }) {
   return <form className={cardClass} onSubmit={submit}><p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">Write it down</p><h2 className="mt-1 font-display text-xl font-semibold text-ink">Complete a {kind} review</h2><div className="mt-4 grid gap-4 sm:grid-cols-2"><label className="block"><span className="text-xs font-semibold text-ink-soft">Review type</span><select className={inputClass} value={kind} onChange={(event) => setKind(event.target.value as "daily" | "weekly")}><option value="daily">Daily</option><option value="weekly">Weekly</option></select></label><label className="block"><span className="text-xs font-semibold text-ink-soft">Recovery reason (optional)</span><input className={inputClass} value={recoveryReason} onChange={(event) => setRecoveryReason(event.target.value)} placeholder="Time, energy, distraction, or external event" /></label><label className="block sm:col-span-2"><span className="text-xs font-semibold text-ink-soft">What worked?</span><textarea className={inputClass} rows={2} value={worked} onChange={(event) => setWorked(event.target.value)} /></label><label className="block"><span className="text-xs font-semibold text-ink-soft">What did you learn?</span><textarea className={inputClass} rows={2} value={learned} onChange={(event) => setLearned(event.target.value)} /></label><label className="block"><span className="text-xs font-semibold text-ink-soft">What changes next?</span><textarea className={inputClass} rows={2} value={nextChange} onChange={(event) => setNextChange(event.target.value)} /></label></div><button type="submit" className={`mt-4 ${primaryButton}`}>Save review</button></form>;
 }
 
-function ReviewPanel({ state }: { state: ReturnType<typeof useOSStore> }) {
-  const today = localToday();
+function ReviewPanel({ state, today }: { state: ReturnType<typeof useOSStore>; today: string }) {
   const overdue = Object.values(state.sessions).filter((session) => session.date < today && session.status !== "completed" && session.status !== "skipped");
   const events = [...state.completionEvents].sort((a, b) => b.occurredAt.localeCompare(a.occurredAt)).slice(0, 8);
   const reviews = Object.values(state.reviews).sort((a, b) => b.completedAt.localeCompare(a.completedAt));
@@ -300,10 +299,11 @@ function ExperimentsPanel() {
 export default function LevelUpOSWorkspace({ mode }: { mode: OSWorkspaceMode }) {
   const state = useOSStore();
   const copy = pageCopy(mode);
+  const today = useClientToday();
   const [notice, setNotice] = useState<string | null>(null);
   const goals = state.goals;
   const sessions = state.sessions;
-  const todaySessions = useMemo(() => Object.values(sessions).filter((session) => session.date === localToday()), [sessions]);
+  const todaySessions = useMemo(() => today ? Object.values(sessions).filter((session) => session.date === today) : [], [sessions, today]);
   const completedToday = todaySessions.filter((session) => session.status === "completed").length;
   const activeGoal = Object.values(goals).find((goal) => goal.status === "active");
 
@@ -314,10 +314,10 @@ export default function LevelUpOSWorkspace({ mode }: { mode: OSWorkspaceMode }) 
 
   return <PageShell><SectionHeading eyebrow={copy.eyebrow} title={copy.title} lede={copy.lede} />
     {notice ? <p className="mb-5 rounded-lg border border-gold/40 bg-gold/10 px-4 py-3 text-sm text-ink" role="status">{notice}</p> : null}
-    {mode === "today" ? <div className="space-y-5"><section className={`${cardClass} border-gold/40`}><div className="flex flex-wrap items-start justify-between gap-5"><div><p className="text-xs uppercase tracking-[0.2em] text-gold">{localToday()}</p><h2 className="mt-1 font-display text-2xl font-semibold text-ink">Your next visible move</h2><p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-soft">{activeGoal ? `Work toward ${activeGoal.title}. ${todaySessions.length ? `${completedToday} of ${todaySessions.length} sessions complete today.` : "The first session is ready when you are."}` : todaySessions.length ? `${completedToday} of ${todaySessions.length} sessions complete today.` : "No session is scheduled yet. Create a goal and let the system make the first block concrete."}</p></div><div className="rounded-xl border border-line bg-paper px-4 py-3 text-right"><p className="text-xs uppercase tracking-wider text-ink-faint">Active goals</p><p className="mt-1 font-display text-2xl font-bold text-gold">{Object.values(goals).filter((goal) => goal.status === "active").length}</p></div></div><div className="mt-5 flex flex-wrap gap-2"><Link href="/goals/" className={primaryButton}>Create or edit goals</Link><Link href="/focus/" className={secondaryButton}>Open focus</Link><Link href="/review/" className={secondaryButton}>Review the record</Link><Link href="/portfolio/" className={secondaryButton}>Open portfolio</Link></div></section><InboxPanel state={state} /><GoalForm onCreated={created} /><SessionPanel sessions={sessions} /><section className={cardClass}><p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">Goal progress</p><h2 className="mt-1 font-display text-xl font-semibold text-ink">Update the record, not the story</h2><ProgressForm goals={goals} /></section></div> : null}
+    {mode === "today" ? <div className="space-y-5"><section className={`${cardClass} border-gold/40`}><div className="flex flex-wrap items-start justify-between gap-5"><div><p className="text-xs uppercase tracking-[0.2em] text-gold">{today || "Today"}</p><h2 className="mt-1 font-display text-2xl font-semibold text-ink">Your next visible move</h2><p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-soft">{activeGoal ? `Work toward ${activeGoal.title}. ${todaySessions.length ? `${completedToday} of ${todaySessions.length} sessions complete today.` : "The first session is ready when you are."}` : todaySessions.length ? `${completedToday} of ${todaySessions.length} sessions complete today.` : "No session is scheduled yet. Create a goal and let the system make the first block concrete."}</p></div><div className="rounded-xl border border-line bg-paper px-4 py-3 text-right"><p className="text-xs uppercase tracking-wider text-ink-faint">Active goals</p><p className="mt-1 font-display text-2xl font-bold text-gold">{Object.values(goals).filter((goal) => goal.status === "active").length}</p></div></div><div className="mt-5 flex flex-wrap gap-2"><Link href="/goals/" className={primaryButton}>Create or edit goals</Link><Link href="/focus/" className={secondaryButton}>Open focus</Link><Link href="/review/" className={secondaryButton}>Review the record</Link><Link href="/portfolio/" className={secondaryButton}>Open portfolio</Link></div></section><InboxPanel state={state} today={today} /><GoalForm onCreated={created} /><SessionPanel sessions={sessions} today={today} /><section className={cardClass}><p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">Goal progress</p><h2 className="mt-1 font-display text-xl font-semibold text-ink">Update the record, not the story</h2><ProgressForm goals={goals} /></section></div> : null}
     {mode === "goals" ? <div className="space-y-5"><GoalForm onCreated={created} /><GoalList goals={goals} onProgress={(goal) => { dispatchOS({ type: "goal/progress", goalId: goal.id, current: Math.min(goal.target, goal.current + 1), occurredAt: new Date().toISOString(), note: "One unit of progress logged from Goals." }); trackEvent(ANALYTICS_EVENTS.goalProgressed, { os_entity: "goal" }); }} /><RoadmapTree state={state} /></div> : null}
     {mode === "focus" ? <div className="space-y-5"><section className={cardClass}><p className="text-sm leading-relaxed text-ink-soft">Focus is a session with a beginning, an end, and a recorded result. Start the block only when the task is specific enough to finish.</p></section><FocusTimerPanel sessions={sessions} /><SessionPanel sessions={sessions} title="Focus blocks" showAll /></div> : null}
-    {mode === "review" ? <div className="space-y-5"><ReviewPanel state={state} /><PatternPanel state={state} /></div> : null}
+    {mode === "review" ? <div className="space-y-5"><ReviewPanel state={state} today={today} /><PatternPanel state={state} today={today} /></div> : null}
     {mode === "playbook" ? <PlaybookPanel state={state} /> : null}
     {mode === "experiments" ? <ExperimentsPanel /> : null}
   </PageShell>;

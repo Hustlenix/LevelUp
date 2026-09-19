@@ -8,7 +8,7 @@ import { useHighlightsStore, useQuizStore, useReflectionsStore, useStreakStore }
 import { useCalibrationStore, useFocusStore, usePillarsStore } from "@/lib/actionTools";
 import { computeXp, type GamificationState } from "@/lib/gamification";
 import type { SiteData } from "@/lib/types";
-import { localToday } from "@/lib/dates";
+import { useClientToday } from "@/lib/clientToday";
 import { buildAiContext } from "@/lib/ai/context";
 import { buildContentDocuments } from "@/lib/ai/retrieval";
 import AiStudyPanel from "@/components/study/AiStudyPanel";
@@ -39,10 +39,11 @@ export default function StudyHome({ data }: { data: SiteData }) {
   );
 
   const xp = useMemo(() => computeXp(state), [state]);
-  const today = useMemo(() => localToday(), []);
+  const today = useClientToday();
+  const resolvedToday = today || "1970-01-01";
   const aiContext = useMemo(
     () => buildAiContext({
-      date: today,
+       date: resolvedToday,
       profile,
       progress,
       quiz,
@@ -51,10 +52,10 @@ export default function StudyHome({ data }: { data: SiteData }) {
       streak,
       focusSessions,
       pillars,
-      todayCalibration: calibrations[today],
+       todayCalibration: calibrations[resolvedToday],
       siteData: data,
     }),
-    [today, profile, progress, quiz, highlights, reflections, streak, focusSessions, pillars, calibrations, data]
+     [resolvedToday, profile, progress, quiz, highlights, reflections, streak, focusSessions, pillars, calibrations, data]
   );
   const aiDocuments = useMemo(() => buildContentDocuments(data), [data]);
 

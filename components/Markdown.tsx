@@ -1,9 +1,11 @@
+/* eslint-disable @next/next/no-img-element */
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Link from "next/link";
 import type { Components } from "react-markdown";
 import type { Element } from "hast";
 import { GradeBadge } from "@/components/ui";
+import { withPublicBasePath } from "@/lib/sitePaths";
 
 function headingId(node: Element): string | undefined {
   const text: string[] = [];
@@ -22,6 +24,7 @@ function headingId(node: Element): string | undefined {
 }
 
 const components: Components = {
+  img: ({ src, alt, ...props }) => <img src={typeof src === "string" ? withPublicBasePath(src) : src} alt={alt ?? ""} loading="lazy" {...props} />,
   h2: ({ node, children }) => {
     const id = node ? headingId(node) : undefined;
     return (
