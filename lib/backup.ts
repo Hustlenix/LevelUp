@@ -48,6 +48,13 @@ export interface BackupState {
 }
 
 export const BACKUP_SCHEMA = 1;
+export const BACKUP_TRANSACTION_KEY = "levelup-backup-transaction-v1";
+
+export interface BackupStorageLike {
+  getItem(key: string): string | null;
+  setItem(key: string, value: string): void;
+  removeItem?(key: string): void;
+}
 
 const READER_SCALES = ["0.85", "1", "1.15", "1.3"];
 const THEMES = ["light", "dark", "deepwork", "cyberpunk"];
@@ -214,4 +221,69 @@ export function validateBackup(json: unknown): { ok: boolean; errors: string[]; 
     errors: [],
     data: outData,
   };
+}
+
+function remove(storage: BackupStorageLike, key: string) {
+  if (storage.removeItem) storage.removeItem(key);
+  else storage.setItem(key, "");
+}
+
+function entriesForBackup(data: BackupState): Record<string, string> {
+  const entries: Record<string, string> = {
+    "levelup-progress-v1": JSON.stringify(data.progress),
+    "levelup-bookmarks-v1": JSON.stringify(data.bookmarks),
+    "levelup-highlights-v1": JSON.stringify(data.highlights),
+    "levelup-quiz-v1": JSON.stringify(data.quiz),
+    "levelup-reflections-v1": JSON.stringify(data.reflections),
+    "levelup-streak-v1": JSON.stringify(data.streak ?? { current: 0, best: 0, last: "" }),
+  };
+  if (data.osState !== undefined) entries["levelup-os-state-v1"] = JSON.stringify(data.osState);
+  if (data.actionState?.pillarsHistory) entries["levelup-pillar-floors-v1"] = JSON.stringify(data.actionState.pillarsHistory);
+  if (data.actionState?.focusSessions) entries["levelup-focus-sessions-v1"] = JSON.stringify(data.actionState.focusSessions);
+  if (data.actionState?.protocolLogs) entries["levelup-protocol-logs-v1"] = JSON.stringify(data.actionState.protocolLogs);
+  if (data.actionState?.urgesLog) entries["levelup-urge-pauses-v1"] = JSON.stringify(data.actionState.urgesLog);
+  if (data.actionState?.calibrations) entries["levelup-daily-calibration-v1"] = JSON.stringify(data.actionState.calibrations);
+  if (data.theme) entries["levelup-theme"] = data.theme;
+  if (data.readerScale) entries["levelup-reader-scale"] = data.readerScale;
+  return entries;
+}
+
+export function recoverBackupTransaction(storage: BackupStorageLike): boolean {
+  const raw = storage.getItem(BACKUP_TRANSACTION_KEY);
+  if (!raw) return false;
+  try {
+    const transaction = JSON.parse(raw) as { previous?: Record<string, string | null> };
+    for (const [key, value] of Object.entries(transaction.previous ?? {})) {
+      if (value === null) remove(storage, key);
+      else storage.setItem(key, value);
+    }
+  } finally {
+    remove(storage, BACKUP_TRANSACTION_KEY);
+  }
+  return true;
+}
+
+/** Restore all legacy localStorage keys with a rollback journal. */
+export function restoreBackupAtomically(data: BackupState, storage: BackupStorageLike): { ok: boolean; error?: string } {
+  recoverBackupTransaction(storage);
+  const entries = entriesForBackup(data);
+  const previous: Record<string, string | null> = {};
+  for (const key of Object.keys(entries)) previous[key] = storage.getItem(key);
+  try {
+    storage.setItem(BACKUP_TRANSACTION_KEY, JSON.stringify({ schema: 1, previous }));
+    for (const [key, value] of Object.entries(entries)) storage.setItem(key, value);
+    remove(storage, BACKUP_TRANSACTION_KEY);
+    return { ok: true };
+  } catch {
+    try {
+      for (const [key, value] of Object.entries(previous)) {
+        if (value === null) remove(storage, key);
+        else storage.setItem(key, value);
+      }
+      remove(storage, BACKUP_TRANSACTION_KEY);
+    } catch {
+      return { ok: false, error: "Backup restore failed and the rollback could not be completed." };
+    }
+    return { ok: false, error: "Backup restore failed; the previous local state was kept." };
+  }
 }

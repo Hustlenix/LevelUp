@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { ANALYTICS_EVENTS, trackEvent } from "./analytics.ts";
 
 export type ExperimentStatus = "planned" | "running" | "complete";
 export type ExperimentDecision = "keep" | "modify" | "abandon" | "repeat";
@@ -66,12 +67,14 @@ export function addExperiment(input: Omit<Experiment, "id" | "createdAt" | "upda
   const now = new Date().toISOString();
   const experiment: Experiment = { ...input, id: `experiment-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, createdAt: now, updatedAt: now };
   write([experiment, ...getExperimentsSnapshot()]);
+  trackEvent(ANALYTICS_EVENTS.experimentStarted, { os_entity: "experiment" });
   return experiment;
 }
 
 export function updateExperiment(id: string, patch: Partial<Experiment>): void {
   const next = getExperimentsSnapshot().map((experiment) => experiment.id === id ? { ...experiment, ...patch, id, updatedAt: new Date().toISOString() } : experiment);
   write(next);
+  if (patch.status === "complete") trackEvent(ANALYTICS_EVENTS.experimentCompleted, { os_entity: "experiment" });
 }
 
 export function restoreExperiments(experiments: Experiment[]): void {

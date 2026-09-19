@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { getSiteData } from "@/lib/content";
-import ProgressView from "@/components/ProgressView";
+import BackupPanel from "@/components/BackupPanel";
+import { PageShell, SectionHeading } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Backup",
@@ -10,5 +10,5 @@ export const metadata: Metadata = {
 };
 
 export default function BackupPage() {
-  return <ProgressView chapters={getSiteData().chapters} />;
+  return <PageShell><SectionHeading eyebrow="Backup" title="Keep your local system portable" lede="Export or restore the state that makes LevelUp yours. The file stays on your device until you choose to move it." /><BackupPanel /></PageShell>;
 }

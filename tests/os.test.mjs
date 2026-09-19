@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { buildBackup, validateBackup } from "../lib/backup.ts";
+import { buildBackup, restoreBackupAtomically, validateBackup } from "../lib/backup.ts";
 import {
   createEmptyOSState,
   reduceOSState,
@@ -235,4 +235,45 @@ test("backup includes the additive OS state and rejects malformed OS state", () 
   const invalid = validateBackup({ ...backup, osState: { schemaVersion: 99 } });
   assert.equal(invalid.ok, false);
   assert.match(invalid.errors.join(" "), /osState/);
+});
+
+test("roadmap and task edits update real entities without breaking the chain", () => {
+  const { state, chain } = chainState();
+  const edited = reduceOSState(state, { type: "milestone/update", milestoneId: chain.milestone.id, patch: { title: "A clearer first proof" }, updatedAt: "2026-09-20T11:00:00.000Z" });
+  const taskEdited = reduceOSState(edited, { type: "task/update", taskId: chain.task.id, patch: { title: "Run the first uninterrupted block", description: "Phone away; one visible output." }, updatedAt: "2026-09-20T11:01:00.000Z" });
+  assert.equal(taskEdited.milestones[chain.milestone.id].title, "A clearer first proof");
+  assert.equal(taskEdited.tasks[chain.task.id].title, "Run the first uninterrupted block");
+  assert.equal(taskEdited.tasks[chain.task.id].milestoneId, chain.milestone.id);
+});
+
+test("interruptions, recovery, and daily/weekly reviews persist as local evidence", () => {
+  const { state, chain } = chainState();
+  const interrupted = reduceOSState(state, { type: "session/start", sessionId: chain.session.id, occurredAt: "2026-09-20T10:00:00.000Z" });
+  const logged = reduceOSState(interrupted, { type: "session/interrupt", sessionId: chain.session.id, occurredAt: "2026-09-20T10:10:00.000Z", seconds: 90, note: "Unexpected call" });
+  assert.equal(logged.sessions[chain.session.id].interruptionCount, 1);
+  assert.equal(logged.sessions[chain.session.id].interruptedSeconds, 90);
+  const recovered = reduceOSState(logged, { type: "session/recover", sessionId: chain.session.id, occurredAt: "2026-09-20T11:00:00.000Z" });
+  assert.equal(recovered.sessions[chain.session.id].date, "2026-09-20");
+  assert.equal(recovered.sessions[chain.session.id].status, "in-progress");
+  const reviewed = reduceOSState(recovered, { type: "review/complete", review: { id: "review-1", kind: "daily", date: "2026-09-20", completedAt: "2026-09-20T20:00:00.000Z", completedSessionCount: 0, missedSessionCount: 1, worked: "Starting was the hard part.", learned: "Short blocks are easier to protect.", nextChange: "Start before opening messages.", recoveryReason: "Unexpected call" } });
+  const weekly = reduceOSState(reviewed, { type: "review/complete", review: { id: "review-2", kind: "weekly", date: "2026-09-20", completedAt: "2026-09-20T20:05:00.000Z", completedSessionCount: 0, missedSessionCount: 1, worked: "The route is clear.", learned: "Recovery is part of the system.", nextChange: "Keep one protected block.", recoveryReason: "" } });
+  assert.equal(weekly.reviews["review-1"].kind, "daily");
+  assert.equal(weekly.reviews["review-2"].kind, "weekly");
+  assert.equal(weekly.completionEvents.filter((event) => event.kind === "review-completed").length, 2);
+});
+
+test("legacy multi-key backup restore rolls back when a storage write fails", () => {
+  const state = createEmptyOSState(NOW);
+  const backup = buildBackup({ theme: "light", readerScale: "1", progress: {}, bookmarks: [], highlights: [], quiz: {}, reflections: {}, streak: null, osState: state });
+  const values = new Map([["levelup-progress-v1", "old-progress"], ["levelup-os-state-v1", "old-os"]]);
+  let writes = 0;
+  const storage = {
+    getItem(key) { return values.has(key) ? values.get(key) : null; },
+    setItem(key, value) { writes += 1; if (writes === 3) throw new Error("quota"); values.set(key, String(value)); },
+    removeItem(key) { values.delete(key); },
+  };
+  const result = restoreBackupAtomically(backup, storage);
+  assert.equal(result.ok, false);
+  assert.equal(values.get("levelup-progress-v1"), "old-progress");
+  assert.equal(values.get("levelup-os-state-v1"), "old-os");
 });

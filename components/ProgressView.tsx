@@ -15,7 +15,7 @@ import {
   restoreReflections,
   restoreStreak,
 } from "@/lib/activity";
-import { buildBackup, validateBackup, type BackupState } from "@/lib/backup";
+import { buildBackup, restoreBackupAtomically, validateBackup, type BackupState } from "@/lib/backup";
 import { reloadActionToolsCaches } from "@/lib/actionTools";
 import { localToday } from "@/lib/dates";
 import { toBackupPayload, fromBackupPayload } from "@/lib/studentProfile";
@@ -91,6 +91,11 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
         return;
       }
       const d = res.data;
+      const atomicRestore = restoreBackupAtomically(d, window.localStorage);
+      if (!atomicRestore.ok) {
+        setImportError(atomicRestore.error ?? "Backup restore failed; your previous local state was kept.");
+        return;
+      }
       restoreProgress(d.progress);
       restoreBookmarks(d.bookmarks);
       restoreHighlights(d.highlights);

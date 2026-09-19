@@ -45,6 +45,26 @@ export function reduceOSState(state: OSState, action: OSAction): OSState {
       const nextSession: Session = { ...session, status: "in-progress", startedAt: session.startedAt ?? action.occurredAt, updatedAt: action.occurredAt };
       return rebuildDerivedState(withTimestamp({ ...state, sessions: { ...state.sessions, [session.id]: nextSession } }, action.occurredAt));
     }
+    case "session/update": {
+      const session = state.sessions[action.sessionId];
+      if (!session) return state;
+      const nextSession: Session = { ...session, ...action.patch, updatedAt: action.occurredAt };
+      return rebuildDerivedState(withTimestamp({ ...state, sessions: { ...state.sessions, [session.id]: nextSession } }, action.occurredAt));
+    }
+    case "session/interrupt": {
+      const session = state.sessions[action.sessionId];
+      if (!session || session.status === "completed" || session.status === "skipped") return state;
+      const nextSession: Session = { ...session, interruptionCount: session.interruptionCount + 1, interruptedSeconds: session.interruptedSeconds + Math.max(0, action.seconds), note: action.note ?? session.note, updatedAt: action.occurredAt };
+      const withSession = withTimestamp({ ...state, sessions: { ...state.sessions, [session.id]: nextSession } }, action.occurredAt);
+      return rebuildDerivedState(addEvent(withSession, { id: `${session.id}:interrupt:${session.interruptionCount + 1}`, kind: "session-interrupted", occurredAt: action.occurredAt, taskId: session.taskId, sessionId: session.id, value: Math.max(0, action.seconds), note: action.note }));
+    }
+    case "session/recover": {
+      const session = state.sessions[action.sessionId];
+      if (!session || session.status === "completed") return state;
+      const nextSession: Session = { ...session, date: action.occurredAt.slice(0, 10), status: "in-progress", startedAt: session.startedAt ?? action.occurredAt, updatedAt: action.occurredAt };
+      const withSession = withTimestamp({ ...state, sessions: { ...state.sessions, [session.id]: nextSession } }, action.occurredAt);
+      return rebuildDerivedState(addEvent(withSession, { id: `${session.id}:recovery:${action.occurredAt}`, kind: "recovery-started", occurredAt: action.occurredAt, taskId: session.taskId, sessionId: session.id }));
+    }
     case "session/complete": {
       const session = state.sessions[action.sessionId];
       if (!session || session.status === "completed" || session.status === "skipped") return state;
@@ -82,6 +102,25 @@ export function reduceOSState(state: OSState, action: OSAction): OSState {
       const nextGoal = { ...goal, current, status: current >= goal.target ? "completed" as const : goal.status, updatedAt: action.occurredAt };
       const withGoal = withTimestamp({ ...state, goals: { ...state.goals, [goal.id]: nextGoal } }, action.occurredAt);
       return rebuildDerivedState(addEvent(withGoal, { id: `${goal.id}:progress:${action.occurredAt}`, kind: "goal-progressed", occurredAt: action.occurredAt, goalId: goal.id, value: current, note: action.note }));
+    }
+    case "roadmap/update": {
+      const roadmap = state.roadmaps[action.roadmapId];
+      if (!roadmap) return state;
+      return rebuildDerivedState({ ...state, roadmaps: { ...state.roadmaps, [roadmap.id]: { ...roadmap, ...action.patch, updatedAt: action.updatedAt } }, updatedAt: action.updatedAt });
+    }
+    case "milestone/update": {
+      const milestone = state.milestones[action.milestoneId];
+      if (!milestone) return state;
+      return rebuildDerivedState({ ...state, milestones: { ...state.milestones, [milestone.id]: { ...milestone, ...action.patch, updatedAt: action.updatedAt } }, updatedAt: action.updatedAt });
+    }
+    case "task/update": {
+      const task = state.tasks[action.taskId];
+      if (!task) return state;
+      return rebuildDerivedState({ ...state, tasks: { ...state.tasks, [task.id]: { ...task, ...action.patch, updatedAt: action.updatedAt } }, updatedAt: action.updatedAt });
+    }
+    case "review/complete": {
+      if (state.reviews[action.review.id]) return state;
+      return rebuildDerivedState(addEvent({ ...state, reviews: { ...state.reviews, [action.review.id]: action.review }, updatedAt: action.review.completedAt }, { id: `${action.review.id}:completed`, kind: "review-completed", occurredAt: action.review.completedAt, note: action.review.kind }));
     }
   }
 }

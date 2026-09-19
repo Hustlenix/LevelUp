@@ -40,6 +40,9 @@ export interface AnalyticsParams {
   duration?: number; // seconds
   quiz_score?: number;
   goal_type?: string;
+  os_entity?: "goal" | "roadmap" | "milestone" | "task" | "session" | "review" | "experiment";
+  review_kind?: "daily" | "weekly";
+  recovery?: "session" | "goal";
 }
 
 /** Event names from spec §66, exported so callers cannot typo them. */
@@ -52,12 +55,23 @@ export const ANALYTICS_EVENTS = {
   protocolStarted: "protocol_started",
   protocolCompleted: "protocol_completed",
   goalCreated: "goal_created",
+  goalProgressed: "goal_progressed",
+  roadmapCreated: "roadmap_created",
+  roadmapUpdated: "roadmap_updated",
+  milestoneCreated: "milestone_created",
+  milestoneUpdated: "milestone_updated",
+  taskCreated: "task_created",
+  taskUpdated: "task_updated",
+  sessionScheduled: "session_scheduled",
   commitmentCreated: "commitment_created",
   commitmentCompleted: "commitment_completed",
   focusSessionStarted: "focus_session_started",
   focusSessionCompleted: "focus_session_completed",
+  focusSessionInterrupted: "focus_session_interrupted",
   dailyReviewCompleted: "daily_review_completed",
   weeklyReviewCompleted: "weekly_review_completed",
+  reviewCompleted: "review_completed",
+  recoveryStarted: "recovery_started",
   experimentStarted: "experiment_started",
   experimentCompleted: "experiment_completed",
   searchPerformed: "search_performed",

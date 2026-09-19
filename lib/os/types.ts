@@ -10,7 +10,8 @@ export type TaskKind = "action" | "study" | "focus" | "protocol" | "review" | "r
 export type SessionStatus = "planned" | "in-progress" | "completed" | "skipped";
 export type MetricKind = "count" | "minutes" | "boolean" | "score";
 export type MasteryLevel = "unstarted" | "emerging" | "developing" | "established" | "mastery";
-export type CompletionEventKind = "session-completed" | "task-completed" | "goal-progressed";
+export type CompletionEventKind = "session-completed" | "task-completed" | "goal-progressed" | "session-interrupted" | "recovery-started" | "review-completed";
+export type ReviewKind = "daily" | "weekly";
 
 export interface GoalMetric {
   kind: MetricKind;
@@ -84,8 +85,23 @@ export interface Session {
   startedAt?: string;
   completedAt?: string;
   note?: string;
+  interruptionCount: number;
+  interruptedSeconds: number;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface ReviewEntry {
+  id: string;
+  kind: ReviewKind;
+  date: string;
+  completedAt: string;
+  completedSessionCount: number;
+  missedSessionCount: number;
+  worked: string;
+  learned: string;
+  nextChange: string;
+  recoveryReason?: string;
 }
 
 export interface CompletionEvent {
@@ -156,6 +172,7 @@ export interface OSState {
   milestones: Record<string, Milestone>;
   tasks: Record<string, Task>;
   sessions: Record<string, Session>;
+  reviews: Record<string, ReviewEntry>;
   completionEvents: CompletionEvent[];
   progress: ProgressState;
   mastery: MasteryState;
@@ -169,8 +186,15 @@ export type OSAction =
   | { type: "session/schedule"; session: Session }
   | { type: "session/start"; sessionId: string; occurredAt: string }
   | { type: "session/complete"; sessionId: string; occurredAt: string; note?: string; value?: number }
+  | { type: "session/update"; sessionId: string; patch: Partial<Pick<Session, "note" | "plannedMinutes" | "date">>; occurredAt: string }
+  | { type: "session/interrupt"; sessionId: string; occurredAt: string; seconds: number; note?: string }
+  | { type: "session/recover"; sessionId: string; occurredAt: string }
   | { type: "task/complete"; taskId: string; occurredAt: string; note?: string }
-  | { type: "goal/progress"; goalId: string; current: number; occurredAt: string; note?: string };
+  | { type: "goal/progress"; goalId: string; current: number; occurredAt: string; note?: string }
+  | { type: "roadmap/update"; roadmapId: string; patch: Partial<Pick<Roadmap, "title" | "phase" | "startDate" | "endDate" | "status">>; updatedAt: string }
+  | { type: "milestone/update"; milestoneId: string; patch: Partial<Pick<Milestone, "title" | "description" | "order" | "status">>; updatedAt: string }
+  | { type: "task/update"; taskId: string; patch: Partial<Pick<Task, "title" | "description" | "kind" | "order" | "dueDate" | "estimatedMinutes" | "status">>; updatedAt: string }
+  | { type: "review/complete"; review: ReviewEntry };
 
 export function typeGoal(input: Omit<Goal, "roadmapIds"> & Partial<Pick<Goal, "roadmapIds">>): Goal {
   return { roadmapIds: [], ...input };
@@ -188,6 +212,6 @@ export function typeTask(input: Task): Task {
   return input.sessionIds ? input : { ...input, sessionIds: [] };
 }
 
-export function typeSession(input: Session): Session {
-  return { ...input };
+export function typeSession(input: Omit<Session, "interruptionCount" | "interruptedSeconds"> & Partial<Pick<Session, "interruptionCount" | "interruptedSeconds">>): Session {
+  return { interruptionCount: 0, interruptedSeconds: 0, ...input };
 }

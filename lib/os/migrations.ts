@@ -77,11 +77,11 @@ function normalizeTask(value: unknown): Task | null {
 function normalizeSession(value: unknown): Session | null {
   const input = record(value);
   if (!input || typeof input.id !== "string" || typeof input.taskId !== "string" || typeof input.date !== "string") return null;
-  return { id: input.id, taskId: input.taskId, date: input.date, plannedMinutes: typeof input.plannedMinutes === "number" ? input.plannedMinutes : 0, status: (input.status as SessionStatus) ?? "planned", ...(typeof input.startedAt === "string" ? { startedAt: input.startedAt } : {}), ...(typeof input.completedAt === "string" ? { completedAt: input.completedAt } : {}), ...(typeof input.note === "string" ? { note: input.note } : {}), createdAt: stringValue(input.createdAt, "1970-01-01T00:00:00.000Z"), updatedAt: stringValue(input.updatedAt, "1970-01-01T00:00:00.000Z") };
+  return { id: input.id, taskId: input.taskId, date: input.date, plannedMinutes: typeof input.plannedMinutes === "number" ? input.plannedMinutes : 0, status: (input.status as SessionStatus) ?? "planned", ...(typeof input.startedAt === "string" ? { startedAt: input.startedAt } : {}), ...(typeof input.completedAt === "string" ? { completedAt: input.completedAt } : {}), ...(typeof input.note === "string" ? { note: input.note } : {}), interruptionCount: typeof input.interruptionCount === "number" ? input.interruptionCount : 0, interruptedSeconds: typeof input.interruptedSeconds === "number" ? input.interruptedSeconds : 0, createdAt: stringValue(input.createdAt, "1970-01-01T00:00:00.000Z"), updatedAt: stringValue(input.updatedAt, "1970-01-01T00:00:00.000Z") };
 }
 
 function emptyState(now: string): OSState {
-  return { schemaVersion: OS_SCHEMA_VERSION, updatedAt: now, goals: {}, roadmaps: {}, milestones: {}, tasks: {}, sessions: {}, completionEvents: [], progress: { goals: {}, milestones: {}, tasks: {}, sessions: {} }, mastery: { goals: {} } };
+  return { schemaVersion: OS_SCHEMA_VERSION, updatedAt: now, goals: {}, roadmaps: {}, milestones: {}, tasks: {}, sessions: {}, reviews: {}, completionEvents: [], progress: { goals: {}, milestones: {}, tasks: {}, sessions: {} }, mastery: { goals: {} } };
 }
 
 export function createEmptyOSState(now = new Date().toISOString()): OSState {
@@ -92,7 +92,7 @@ export function validateOSState(value: unknown): { ok: boolean; errors: string[]
   const input = record(value);
   const errors: string[] = [];
   if (!input || input.schemaVersion !== OS_SCHEMA_VERSION) return { ok: false, errors: ["osState.schemaVersion is unsupported."] };
-  for (const key of ["goals", "roadmaps", "milestones", "tasks", "sessions", "progress", "mastery"]) if (!record(input[key])) errors.push(`osState.${key} must be an object.`);
+  for (const key of ["goals", "roadmaps", "milestones", "tasks", "sessions", "reviews", "progress", "mastery"]) if (!record(input[key])) errors.push(`osState.${key} must be an object.`);
   if (!Array.isArray(input.completionEvents)) errors.push("osState.completionEvents must be an array.");
   if (typeof input.updatedAt !== "string") errors.push("osState.updatedAt must be a string.");
   const goals = record(input.goals);
@@ -127,7 +127,14 @@ export function validateOSState(value: unknown): { ok: boolean; errors: string[]
   if (sessions) {
     for (const [id, value] of Object.entries(sessions)) {
       const session = record(value);
-      if (!session || session.id !== id || typeof session.taskId !== "string" || typeof session.date !== "string" || typeof session.plannedMinutes !== "number" || !tasks?.[session.taskId]) errors.push(`osState.sessions.${id} has an invalid shape.`);
+      if (!session || session.id !== id || typeof session.taskId !== "string" || typeof session.date !== "string" || typeof session.plannedMinutes !== "number" || typeof session.interruptionCount !== "number" || typeof session.interruptedSeconds !== "number" || !tasks?.[session.taskId]) errors.push(`osState.sessions.${id} has an invalid shape.`);
+    }
+  }
+  const reviews = record(input.reviews);
+  if (reviews) {
+    for (const [id, value] of Object.entries(reviews)) {
+      const review = record(value);
+      if (!review || review.id !== id || (review.kind !== "daily" && review.kind !== "weekly") || typeof review.date !== "string" || typeof review.completedAt !== "string" || typeof review.worked !== "string" || typeof review.learned !== "string" || typeof review.nextChange !== "string") errors.push(`osState.reviews.${id} has an invalid shape.`);
     }
   }
   if (Array.isArray(input.completionEvents)) {
@@ -144,6 +151,19 @@ export function migrateOSState(value: unknown, now = new Date().toISOString()): 
   const current = validateOSState(value);
   if (current.ok && current.state) return { ok: true, migrated: false, errors: [], state: current.state };
   const input = record(value);
+  const currentSessions = input && input.schemaVersion === OS_SCHEMA_VERSION ? record(input.sessions) : null;
+  const needsAdditiveV1Migration = !!input && input.schemaVersion === OS_SCHEMA_VERSION && (!record(input.reviews) || Object.values(currentSessions ?? {}).some((value) => { const session = record(value); return !session || typeof session.interruptionCount !== "number" || typeof session.interruptedSeconds !== "number"; }));
+  if (needsAdditiveV1Migration) {
+    const state = emptyState(now);
+    for (const goal of mapValues<unknown>(input.goals)) { const normalized = normalizeGoal(goal); if (normalized) state.goals[normalized.id] = normalized; }
+    for (const roadmap of mapValues<unknown>(input.roadmaps)) { const normalized = normalizeRoadmap(roadmap); if (normalized) state.roadmaps[normalized.id] = normalized; }
+    for (const milestone of mapValues<unknown>(input.milestones)) { const normalized = normalizeMilestone(milestone); if (normalized) state.milestones[normalized.id] = normalized; }
+    for (const task of mapValues<unknown>(input.tasks)) { const normalized = normalizeTask(task); if (normalized) state.tasks[normalized.id] = normalized; }
+    for (const session of mapValues<unknown>(input.sessions)) { const normalized = normalizeSession(session); if (normalized) state.sessions[normalized.id] = normalized; }
+    state.completionEvents = mapValues<CompletionEvent>(input.completionEvents).filter((event) => typeof event.id === "string" && typeof event.occurredAt === "string");
+    for (const review of mapValues<OSState["reviews"][string]>(input.reviews)) if (review && typeof review.id === "string") state.reviews[review.id] = review;
+    return { ok: true, migrated: true, errors: [], state: rebuildDerivedState(state) };
+  }
   if (input && (input.schemaVersion === 0 || input.schemaVersion === undefined)) {
     const state = emptyState(now);
     for (const goal of mapValues<unknown>(input.goals)) { const normalized = normalizeGoal(goal); if (normalized) state.goals[normalized.id] = normalized; }
@@ -152,6 +172,8 @@ export function migrateOSState(value: unknown, now = new Date().toISOString()): 
     for (const task of mapValues<unknown>(input.tasks)) { const normalized = normalizeTask(task); if (normalized) state.tasks[normalized.id] = normalized; }
     for (const session of mapValues<unknown>(input.sessions)) { const normalized = normalizeSession(session); if (normalized) state.sessions[normalized.id] = normalized; }
     state.completionEvents = mapValues<CompletionEvent>(input.completionEvents).filter((event) => typeof event.id === "string" && typeof event.occurredAt === "string");
+    const legacyReviews = mapValues<OSState["reviews"][string]>(input.reviews);
+    for (const review of legacyReviews) if (review && typeof review.id === "string") state.reviews[review.id] = review;
     const normalizedState = rebuildDerivedState(state);
     const checked = validateOSState(normalizedState);
     return checked.ok && checked.state ? { ok: true, migrated: true, errors: [], state: checked.state } : { ok: false, migrated: true, errors: checked.errors, state: emptyState(now) };
