@@ -57,6 +57,7 @@ export interface BackupStorageLike {
   setItem(key: string, value: string): void;
   removeItem?(key: string): void;
 }
+export interface BackupJournal { schema: number; previous: Record<string, string | null>; }
 
 const READER_SCALES = ["0.85", "1", "1.15", "1.3"];
 const THEMES = ["light", "dark", "deepwork", "cyberpunk"];
@@ -266,11 +267,10 @@ function entriesForBackup(data: BackupState): Record<string, string> {
 }
 
 export function recoverBackupTransaction(storage: BackupStorageLike): boolean {
-  const raw = storage.getItem(BACKUP_TRANSACTION_KEY);
-  if (!raw) return false;
+  const transaction = inspectBackupTransaction(storage);
+  if (!transaction) return false;
   try {
-    const transaction = JSON.parse(raw) as { previous?: Record<string, string | null> };
-    for (const [key, value] of Object.entries(transaction.previous ?? {})) {
+    for (const [key, value] of Object.entries(transaction.previous)) {
       if (value === null) remove(storage, key);
       else storage.setItem(key, value);
     }
@@ -278,6 +278,22 @@ export function recoverBackupTransaction(storage: BackupStorageLike): boolean {
     remove(storage, BACKUP_TRANSACTION_KEY);
   }
   return true;
+}
+
+export function inspectBackupTransaction(storage: BackupStorageLike): BackupJournal | null {
+  const raw = storage.getItem(BACKUP_TRANSACTION_KEY);
+  if (!raw) return null;
+  try {
+    const value = JSON.parse(raw) as Partial<BackupJournal>;
+    if (value.schema !== 1 || typeof value.previous !== "object" || value.previous === null) return null;
+    return { schema: 1, previous: value.previous as Record<string, string | null> };
+  } catch {
+    return null;
+  }
+}
+
+export function clearBackupTransaction(storage: BackupStorageLike): void {
+  remove(storage, BACKUP_TRANSACTION_KEY);
 }
 
 /** Restore all legacy localStorage keys with a rollback journal. */

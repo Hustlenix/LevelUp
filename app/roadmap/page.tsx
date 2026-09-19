@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getSiteData } from "@/lib/content";
 import { PageShell, SectionHeading } from "@/components/ui";
 import { canonical } from "@/lib/site";
+import PersonalRoadmaps from "@/components/PersonalRoadmaps";
 
 export const metadata: Metadata = {
   title: "The 90-Day Roadmap",
@@ -83,6 +84,8 @@ export default function RoadmapPage() {
           ))}
         </ul>
       </div>
+
+      <PersonalRoadmaps />
     </PageShell>
   );
 }

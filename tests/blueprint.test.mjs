@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { buildBackup, validateBackup } from "../lib/backup.ts";
+import { BACKUP_TRANSACTION_KEY, buildBackup, recoverBackupTransaction, validateBackup } from "../lib/backup.ts";
 import { addPortfolioArtifact, deletePortfolioArtifact, updatePortfolioArtifact } from "../lib/portfolio.ts";
 import { deriveInbox, defaultNotificationState, dismissInboxItem } from "../lib/notifications.ts";
 import { deriveLocalPatterns } from "../lib/os/patterns.ts";
@@ -55,4 +55,14 @@ test("portfolio artifacts are included in validated backups", () => {
   const result = validateBackup(backup);
   assert.equal(result.ok, true);
   assert.equal(result.data.portfolio[0].id, "a1");
+});
+
+test("stale backup journals recover previous values without deleting valid data", () => {
+  const fake = storage();
+  fake.setItem("levelup-progress-v1", "current-valid");
+  fake.setItem(BACKUP_TRANSACTION_KEY, JSON.stringify({ schema: 1, previous: { "levelup-progress-v1": "previous-valid", "levelup-os-state-v1": "previous-os" } }));
+  assert.equal(recoverBackupTransaction(fake), true);
+  assert.equal(fake.dump()["levelup-progress-v1"], "previous-valid");
+  assert.equal(fake.dump()["levelup-os-state-v1"], "previous-os");
+  assert.equal(fake.dump()[BACKUP_TRANSACTION_KEY], undefined);
 });

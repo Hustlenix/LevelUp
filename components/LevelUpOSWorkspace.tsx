@@ -123,7 +123,7 @@ function InlineEdit({ value, label, onSave }: { value: string; label: string; on
   return <span className="flex min-w-0 flex-1 flex-wrap items-center gap-2"><label className="sr-only" htmlFor={`edit-${label}`}>{label}</label><input id={`edit-${label}`} className="min-w-[180px] flex-1 rounded-lg border border-line bg-paper px-2 py-1 text-sm text-ink focus:border-gold focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/40" value={draft} onChange={(event) => setDraft(event.target.value)} /><button type="button" className={secondaryButton} onClick={() => { if (draft.trim()) onSave(draft.trim()); setEditing(false); }}>Save</button><button type="button" className="text-xs text-ink-faint underline hover:text-ink" onClick={() => setEditing(false)}>Cancel</button></span>;
 }
 
-function RoadmapTree({ state }: { state: ReturnType<typeof useOSStore> }) {
+export function RoadmapTree({ state }: { state: ReturnType<typeof useOSStore> }) {
   const roadmaps = Object.values(state.roadmaps);
   const milestones = Object.values(state.milestones);
   const [roadmapId, setRoadmapId] = useState(roadmaps[0]?.id ?? "");

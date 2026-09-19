@@ -9,6 +9,7 @@ import BackToTop from "@/components/BackToTop";
 import JsonLd from "@/components/JsonLd";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
+import BackupJournalNotice from "@/components/BackupJournalNotice";
 import { getSiteData } from "@/lib/content";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_AUTHOR } from "@/lib/site";
 
@@ -92,8 +93,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to content
         </a>
         <SearchProvider>
-          <Nav chapters={getSiteData().chapters} />
-          <main id="main" className="flex-1">{children}</main>
+           <Nav chapters={getSiteData().chapters} />
+           <BackupJournalNotice />
+           <main id="main" className="flex-1">{children}</main>
           <Footer />
         </SearchProvider>
         <BackToTop />
