@@ -40,6 +40,10 @@ export interface AnalyticsParams {
   duration?: number; // seconds
   quiz_score?: number;
   goal_type?: string;
+  ai_operation?: "coach" | "planner" | "tutor";
+  ai_source?: "local" | "remote";
+  ai_session_count?: number;
+  ai_available_minutes?: number;
 }
 
 /** Event names from spec §66, exported so callers cannot typo them. */
@@ -65,6 +69,17 @@ export const ANALYTICS_EVENTS = {
   bookmarkCreated: "bookmark_created",
   backupExported: "backup_exported",
   backupImported: "backup_imported",
+  aiOpened: "ai_opened",
+  aiPromptSubmitted: "ai_prompt_submitted",
+  aiPlanGenerated: "ai_plan_generated",
+  aiPlanStarted: "ai_plan_started",
+  aiPlanCompleted: "ai_plan_completed",
+  aiRecommendationAccepted: "ai_recommendation_accepted",
+  aiRecommendationRejected: "ai_recommendation_rejected",
+  aiRoadmapGenerated: "ai_roadmap_generated",
+  aiRoadmapUpdated: "ai_roadmap_updated",
+  aiQuizStarted: "ai_quiz_started",
+  aiQuizCompleted: "ai_quiz_completed",
 } as const;
 
 /** Push a command onto the GA4 dataLayer (creates it if needed). */
