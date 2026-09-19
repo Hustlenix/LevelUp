@@ -42,7 +42,13 @@ export function reduceOSState(state: OSState, action: OSAction): OSState {
     case "session/start": {
       const session = state.sessions[action.sessionId];
       if (!session || session.status === "completed" || session.status === "skipped") return state;
-      const nextSession: Session = { ...session, status: "in-progress", startedAt: session.startedAt ?? action.occurredAt, updatedAt: action.occurredAt };
+      const nextSession: Session = { ...session, status: "in-progress", startedAt: session.pausedAt ? action.occurredAt : (session.startedAt ?? action.occurredAt), pausedAt: undefined, updatedAt: action.occurredAt };
+      return rebuildDerivedState(withTimestamp({ ...state, sessions: { ...state.sessions, [session.id]: nextSession } }, action.occurredAt));
+    }
+    case "session/pause": {
+      const session = state.sessions[action.sessionId];
+      if (!session || session.status !== "in-progress") return state;
+      const nextSession: Session = { ...session, pausedAt: action.occurredAt, elapsedSeconds: Math.max(session.elapsedSeconds ?? 0, action.elapsedSeconds), updatedAt: action.occurredAt };
       return rebuildDerivedState(withTimestamp({ ...state, sessions: { ...state.sessions, [session.id]: nextSession } }, action.occurredAt));
     }
     case "session/update": {
@@ -68,7 +74,7 @@ export function reduceOSState(state: OSState, action: OSAction): OSState {
     case "session/complete": {
       const session = state.sessions[action.sessionId];
       if (!session || session.status === "completed" || session.status === "skipped") return state;
-      const nextSession: Session = { ...session, status: "completed", startedAt: session.startedAt ?? action.occurredAt, completedAt: action.occurredAt, note: action.note ?? session.note, updatedAt: action.occurredAt };
+      const nextSession: Session = { ...session, status: "completed", startedAt: session.startedAt ?? action.occurredAt, completedAt: action.occurredAt, pausedAt: undefined, elapsedSeconds: action.value !== undefined ? Math.max(session.elapsedSeconds ?? 0, action.value * 60) : session.elapsedSeconds, note: action.note ?? session.note, updatedAt: action.occurredAt };
       const withSession = withTimestamp({ ...state, sessions: { ...state.sessions, [session.id]: nextSession } }, action.occurredAt);
       return rebuildDerivedState(addEvent(withSession, {
         id: `${session.id}:completed`,

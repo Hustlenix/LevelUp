@@ -14,6 +14,7 @@ const MORE_ITEMS = [
   { href: "/focus/", label: "Focus" },
   { href: "/review/", label: "Review" },
   { href: "/playbook/", label: "My Playbook" },
+  { href: "/portfolio/", label: "Portfolio" },
   { href: "/experiments/", label: "Experiments" },
   { href: "/backup/", label: "Backup" },
   { href: "/settings/", label: "Settings" },

@@ -1,5 +1,6 @@
 import type { OSState } from "./os/types.ts";
 import { validateOSState } from "./os/migrations.ts";
+import type { PortfolioArtifact } from "./portfolio.ts";
 
 export interface BackupProgressEntry {
   complete: boolean;
@@ -45,6 +46,7 @@ export interface BackupState {
   };
   studentProfile?: unknown; // validated via isStudentProfile at restore
   osState?: OSState;
+  portfolio?: PortfolioArtifact[];
 }
 
 export const BACKUP_SCHEMA = 1;
@@ -123,6 +125,9 @@ export function buildBackup(state: BackupState): { schema: number; exportedAt: s
   if (state.osState !== undefined) {
     result.osState = state.osState;
   }
+  if (state.portfolio !== undefined) {
+    result.portfolio = state.portfolio;
+  }
   return result;
 }
 
@@ -194,6 +199,14 @@ export function validateBackup(json: unknown): { ok: boolean; errors: string[]; 
       osState = checked.state;
     }
   }
+  let portfolio: PortfolioArtifact[] | undefined;
+  if (json.portfolio !== undefined) {
+    if (!Array.isArray(json.portfolio) || !json.portfolio.every((item) => isRecord(item) && typeof item.id === "string" && typeof item.title === "string" && typeof item.description === "string" && typeof item.kind === "string" && typeof item.createdAt === "string" && typeof item.updatedAt === "string")) {
+      errors.push("portfolio has an invalid shape.");
+    } else {
+      portfolio = json.portfolio as PortfolioArtifact[];
+    }
+  }
 
   if (errors.length > 0) return { ok: false, errors };
   const outData: BackupState = {
@@ -214,6 +227,9 @@ export function validateBackup(json: unknown): { ok: boolean; errors: string[]; 
   }
   if (osState !== undefined) {
     outData.osState = osState;
+  }
+  if (portfolio !== undefined) {
+    outData.portfolio = portfolio;
   }
 
   return {
@@ -238,6 +254,7 @@ function entriesForBackup(data: BackupState): Record<string, string> {
     "levelup-streak-v1": JSON.stringify(data.streak ?? { current: 0, best: 0, last: "" }),
   };
   if (data.osState !== undefined) entries["levelup-os-state-v1"] = JSON.stringify(data.osState);
+  if (data.portfolio !== undefined) entries["levelup-portfolio-v1"] = JSON.stringify(data.portfolio);
   if (data.actionState?.pillarsHistory) entries["levelup-pillar-floors-v1"] = JSON.stringify(data.actionState.pillarsHistory);
   if (data.actionState?.focusSessions) entries["levelup-focus-sessions-v1"] = JSON.stringify(data.actionState.focusSessions);
   if (data.actionState?.protocolLogs) entries["levelup-protocol-logs-v1"] = JSON.stringify(data.actionState.protocolLogs);

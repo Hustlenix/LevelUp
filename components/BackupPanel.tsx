@@ -10,6 +10,7 @@ import { getProgressSnapshot, restoreProgress } from "@/lib/progress";
 import { getBookmarksSnapshot, restoreBookmarks } from "@/lib/bookmarks";
 import { getHighlightsSnapshot, getQuizSnapshot, getReflectionsSnapshot, getStreakSnapshot, restoreHighlights, restoreQuiz, restoreReflections, restoreStreak } from "@/lib/activity";
 import { trackEvent, ANALYTICS_EVENTS } from "@/lib/analytics";
+import { getPortfolioSnapshot, restorePortfolioArtifacts } from "@/lib/portfolio";
 
 const THEME_KEY = "levelup-theme";
 const SCALE_KEY = "levelup-reader-scale";
@@ -32,7 +33,7 @@ export default function BackupPanel() {
     } catch {
       /* keep the backup usable even if an older action key is malformed */
     }
-    const state: BackupState = { theme: document.documentElement.getAttribute("data-theme"), readerScale: document.documentElement.getAttribute("data-reader-scale"), progress: getProgressSnapshot(), bookmarks: [...getBookmarksSnapshot()], highlights: getHighlightsSnapshot(), quiz: getQuizSnapshot(), reflections: getReflectionsSnapshot(), streak: getStreakSnapshot(), studentProfile: toBackupPayload() ?? undefined, actionState, osState: getOSStateSnapshot() };
+    const state: BackupState = { theme: document.documentElement.getAttribute("data-theme"), readerScale: document.documentElement.getAttribute("data-reader-scale"), progress: getProgressSnapshot(), bookmarks: [...getBookmarksSnapshot()], highlights: getHighlightsSnapshot(), quiz: getQuizSnapshot(), reflections: getReflectionsSnapshot(), streak: getStreakSnapshot(), studentProfile: toBackupPayload() ?? undefined, actionState, osState: getOSStateSnapshot(), portfolio: getPortfolioSnapshot() };
     const blob = new Blob([JSON.stringify(buildBackup(state), null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
@@ -63,6 +64,7 @@ export default function BackupPanel() {
       if (data.streak) restoreStreak(data.streak);
       if (data.studentProfile !== undefined) fromBackupPayload(data.studentProfile);
       if (data.osState !== undefined) restoreOSState(data.osState);
+      if (data.portfolio !== undefined) restorePortfolioArtifacts(data.portfolio);
       if (data.actionState) reloadActionToolsCaches();
       if (data.theme) { document.documentElement.setAttribute("data-theme", data.theme); localStorage.setItem(THEME_KEY, data.theme); }
       if (data.readerScale) { document.documentElement.setAttribute("data-reader-scale", data.readerScale); localStorage.setItem(SCALE_KEY, data.readerScale); }

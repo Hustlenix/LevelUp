@@ -84,6 +84,8 @@ export interface Session {
   status: SessionStatus;
   startedAt?: string;
   completedAt?: string;
+  pausedAt?: string;
+  elapsedSeconds?: number;
   note?: string;
   interruptionCount: number;
   interruptedSeconds: number;
@@ -185,6 +187,7 @@ export type OSAction =
   | { type: "task/add"; task: Task }
   | { type: "session/schedule"; session: Session }
   | { type: "session/start"; sessionId: string; occurredAt: string }
+  | { type: "session/pause"; sessionId: string; occurredAt: string; elapsedSeconds: number }
   | { type: "session/complete"; sessionId: string; occurredAt: string; note?: string; value?: number }
   | { type: "session/update"; sessionId: string; patch: Partial<Pick<Session, "note" | "plannedMinutes" | "date">>; occurredAt: string }
   | { type: "session/interrupt"; sessionId: string; occurredAt: string; seconds: number; note?: string }

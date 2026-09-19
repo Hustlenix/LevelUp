@@ -1,13 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import type { SearchHit } from "@/lib/search";
+import { useOSStore } from "@/lib/os/store";
+import { usePortfolioStore } from "@/lib/portfolio";
+
+function statusLabel(value: string) {
+  return value.replaceAll("-", " ");
+}
 
 export default function SearchPage() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchHit[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const osState = useOSStore();
+  const portfolio = usePortfolioStore();
+  const localHits = useMemo<SearchHit[]>(() => [
+    ...Object.values(osState.goals).map((goal) => ({ id: `goal:${goal.id}`, type: "Goal", title: goal.title, sub: goal.nextAction, teaser: goal.why, url: "/goals/" })),
+    ...Object.values(osState.roadmaps).map((roadmap) => ({ id: `roadmap:${roadmap.id}`, type: "Roadmap", title: roadmap.title, sub: `Phase ${roadmap.phase}`, teaser: "Your editable local roadmap.", url: "/roadmap/" })),
+    ...Object.values(osState.milestones).map((milestone) => ({ id: `milestone:${milestone.id}`, type: "Milestone", title: milestone.title, sub: "Local milestone", teaser: milestone.description ?? "A checkpoint on an active roadmap.", url: "/goals/" })),
+    ...Object.values(osState.tasks).map((task) => ({ id: `task:${task.id}`, type: "Task", title: task.title, sub: statusLabel(task.status), teaser: task.description ?? "A local executable task.", url: "/focus/" })),
+    ...portfolio.map((artifact) => ({ id: `portfolio:${artifact.id}`, type: "Portfolio", title: artifact.title, sub: artifact.kind, teaser: artifact.description, url: "/portfolio/" })),
+  ], [osState, portfolio]);
 
   useEffect(() => {
     let cancelled = false;
@@ -19,7 +34,9 @@ export default function SearchPage() {
       try {
         const { getSearchEngine, serializeHit } = await import("@/lib/search");
         const engine = await getSearchEngine();
-        const hits = engine.search(query).slice(0, 30).map(serializeHit);
+        const normalized = query.toLowerCase();
+        const personalHits = localHits.filter((hit) => `${hit.title} ${hit.sub} ${hit.teaser}`.toLowerCase().includes(normalized));
+        const hits = [...personalHits, ...engine.search(query).slice(0, 30).map(serializeHit)].slice(0, 40);
         if (!cancelled) setResults(hits);
       } catch {
         if (!cancelled) setError("Search index failed to load.");
@@ -29,7 +46,7 @@ export default function SearchPage() {
       cancelled = true;
       clearTimeout(t);
     };
-  }, [query]);
+  }, [query, localHits]);
 
   return (
     <div className="mx-auto max-w-3xl px-5 py-12">

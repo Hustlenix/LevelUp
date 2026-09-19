@@ -22,13 +22,17 @@ import { toBackupPayload, fromBackupPayload } from "@/lib/studentProfile";
 import { PillarTag } from "@/components/ui";
 import GamificationPanel from "@/components/GamificationPanel";
 import { trackEvent, ANALYTICS_EVENTS } from "@/lib/analytics";
-import { getOSStateSnapshot, restoreOSState } from "@/lib/os/store";
+import { getOSStateSnapshot, restoreOSState, useOSStore } from "@/lib/os/store";
+import { getPortfolioSnapshot, restorePortfolioArtifacts } from "@/lib/portfolio";
+import { deriveLocalPatterns } from "@/lib/os/patterns";
 
 const THEME_KEY = "levelup-theme";
 const SCALE_KEY = "levelup-reader-scale";
 
 export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
   const map = useProgressStore();
+  const osState = useOSStore();
+  const patterns = deriveLocalPatterns(osState, localToday());
   const stats = overallStats(map, chapters.length);
   const fileRef = useRef<HTMLInputElement>(null);
   const [importError, setImportError] = useState<string | null>(null);
@@ -60,6 +64,7 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
       studentProfile: toBackupPayload() ?? undefined,
       actionState,
       osState: getOSStateSnapshot(),
+      portfolio: getPortfolioSnapshot(),
     };
     const blob = new Blob([JSON.stringify(buildBackup(state), null, 2)], {
       type: "application/json",
@@ -104,6 +109,7 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
       if (d.streak) restoreStreak(d.streak);
       if (d.studentProfile !== undefined) fromBackupPayload(d.studentProfile);
       if (d.osState !== undefined) restoreOSState(d.osState);
+      if (d.portfolio !== undefined) restorePortfolioArtifacts(d.portfolio);
       if (d.actionState) {
         try {
           if (d.actionState.pillarsHistory) {
@@ -172,6 +178,14 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
       </div>
 
       <GamificationPanel />
+
+      <section className="mt-8 rounded-xl border border-line bg-card p-6">
+        <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">Local patterns</p>
+        <h2 className="mt-1 font-display text-xl font-semibold text-ink">What your record suggests</h2>
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          {patterns.map((pattern) => <article key={pattern.id} className="rounded-lg border border-line bg-paper p-3"><p className="text-sm font-semibold text-ink">{pattern.title}</p><p className="mt-1 text-xs leading-relaxed text-ink-soft">{pattern.detail}</p><p className="mt-2 text-xs font-semibold text-gold">Next: {pattern.action}</p></article>)}
+        </div>
+      </section>
 
       <div className="mt-8 space-y-2">
         {chapters.map((c) => {

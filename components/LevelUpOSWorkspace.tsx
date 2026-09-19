@@ -8,6 +8,8 @@ import { typeGoal, typeMilestone, typeRoadmap, typeSession, typeTask } from "@/l
 import type { Goal, Session } from "@/lib/os/types";
 import { addExperiment, updateExperiment, useExperimentsStore, type ExperimentDecision } from "@/lib/experiments";
 import { ANALYTICS_EVENTS, trackEvent } from "@/lib/analytics";
+import { defaultNotificationState, deriveInbox, dismissInboxItem, markInboxRead, NOTIFICATIONS_KEY, type NotificationState } from "@/lib/notifications";
+import { deriveLocalPatterns } from "@/lib/os/patterns";
 import { PageShell, SectionHeading } from "@/components/ui";
 
 export type OSWorkspaceMode = "today" | "goals" | "focus" | "review" | "playbook" | "experiments";
@@ -179,7 +181,11 @@ function SessionPanel({ sessions, title = "Today's sessions", showAll = false }:
 function FocusTimerPanel({ sessions }: { sessions: Record<string, Session> }) {
   const selected = Object.values(sessions).find((session) => session.status === "in-progress") ?? Object.values(sessions).find((session) => session.status === "planned");
   const selectedId = selected?.id;
-  const [remaining, setRemaining] = useState(selected ? selected.plannedMinutes * 60 : 0);
+  const [remaining, setRemaining] = useState(() => {
+    if (!selected) return 0;
+    const elapsed = selected.elapsedSeconds ?? (selected.startedAt ? Math.max(0, Math.floor((Date.now() - Date.parse(selected.startedAt)) / 1000)) : 0);
+    return Math.max(0, selected.plannedMinutes * 60 - elapsed);
+  });
   const [running, setRunning] = useState(selected?.status === "in-progress");
   const [interruptionSeconds, setInterruptionSeconds] = useState("60");
   const [note, setNote] = useState("");
@@ -210,9 +216,13 @@ function FocusTimerPanel({ sessions }: { sessions: Record<string, Session> }) {
     setRunning(false);
     trackEvent(ANALYTICS_EVENTS.focusSessionInterrupted, { duration: secondsValue });
   }
+  function pause() {
+    dispatchOS({ type: "session/pause", sessionId: activeSession.id, occurredAt: new Date().toISOString(), elapsedSeconds: Math.max(0, activeSession.plannedMinutes * 60 - remaining) });
+    setRunning(false);
+  }
   return <section className={`${cardClass} border-gold/40`}>
      <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">Focus timer</p><h2 className="mt-1 font-display text-xl font-semibold text-ink">One bounded block</h2><p className="mt-1 text-sm text-ink-soft">{activeSession.plannedMinutes} minutes planned · {activeSession.interruptionCount} interruption{activeSession.interruptionCount === 1 ? "" : "s"} recorded</p></div><div className="font-mono text-4xl font-semibold tracking-tight text-ink" aria-live="polite">{minutes}:{seconds}</div></div>
-    <div className="mt-5 flex flex-wrap gap-2">{activeSession.status === "planned" || !running ? <button type="button" onClick={start} className={primaryButton}>{activeSession.status === "planned" ? "Start block" : "Resume block"}</button> : null}{activeSession.status !== "completed" ? <button type="button" onClick={interrupt} className={secondaryButton}>Log interruption</button> : null}{activeSession.status !== "completed" ? <button type="button" onClick={complete} className={secondaryButton}>Complete block</button> : null}</div>
+    <div className="mt-5 flex flex-wrap gap-2">{activeSession.status === "planned" || !running ? <button type="button" onClick={start} className={primaryButton}>{activeSession.status === "planned" ? "Start block" : "Resume block"}</button> : <button type="button" onClick={pause} className={secondaryButton}>Pause</button>}{activeSession.status !== "completed" ? <button type="button" onClick={interrupt} className={secondaryButton}>Log interruption</button> : null}{activeSession.status !== "completed" ? <button type="button" onClick={complete} className={secondaryButton}>Complete block</button> : null}</div>
     <div className="mt-5 grid gap-3 sm:grid-cols-[160px_1fr]"><label className="block"><span className="text-xs font-semibold text-ink-soft">Interruption seconds</span><input className={inputClass} type="number" min={1} value={interruptionSeconds} onChange={(event) => setInterruptionSeconds(event.target.value)} /></label><label className="block"><span className="text-xs font-semibold text-ink-soft">Completion note</span><input className={inputClass} value={note} onChange={(event) => setNote(event.target.value)} placeholder="What happened or what did you finish?" /></label></div>
   </section>;
 }
@@ -224,6 +234,25 @@ function ProgressForm({ goals }: { goals: Record<string, Goal> }) {
   if (!entries.length) return null;
   const selected = entries.find((goal) => goal.id === goalId) ?? entries[0];
   return <form className="mt-4 flex flex-wrap items-end gap-3" onSubmit={(event) => { event.preventDefault(); const value = Number(current); if (!Number.isFinite(value)) return; dispatchOS({ type: "goal/progress", goalId: selected.id, current: value, occurredAt: new Date().toISOString(), note: "Progress logged from Today." }); trackEvent(ANALYTICS_EVENTS.goalProgressed, { os_entity: "goal" }); setCurrent(""); }}><label className="min-w-[220px] flex-1"><span className="text-xs font-semibold text-ink-soft">Goal</span><select className={inputClass} value={selected.id} onChange={(event) => setGoalId(event.target.value)}>{entries.map((goal) => <option key={goal.id} value={goal.id}>{goal.title}</option>)}</select></label><label className="w-32"><span className="text-xs font-semibold text-ink-soft">Current</span><input className={inputClass} type="number" min={0} value={current} onChange={(event) => setCurrent(event.target.value)} placeholder={String(selected.current)} /></label><button type="submit" className={primaryButton}>Save progress</button></form>;
+}
+
+function InboxPanel({ state }: { state: ReturnType<typeof useOSStore> }) {
+  const [preferences, setPreferences] = useState<NotificationState>(() => {
+    try { return { ...defaultNotificationState(), ...JSON.parse(window.localStorage.getItem(NOTIFICATIONS_KEY) ?? "{}") }; } catch { return defaultNotificationState(); }
+  });
+  const nowMinutes = new Date().getHours() * 60 + new Date().getMinutes();
+  const toMinutes = (value: string) => { const [hour, minute] = value.split(":").map(Number); return (hour * 60) + minute; };
+  const quietStart = toMinutes(preferences.quietStart);
+  const quietEnd = toMinutes(preferences.quietEnd);
+  const quiet = quietStart === quietEnd || (quietStart < quietEnd ? nowMinutes >= quietStart && nowMinutes < quietEnd : nowMinutes >= quietStart || nowMinutes < quietEnd);
+  const inbox = quiet ? [] : deriveInbox(state, localToday()).filter((item) => !preferences.dismissedIds.includes(item.id));
+  function save(next: NotificationState) { setPreferences(next); try { window.localStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(next)); } catch { /* private browsing */ } }
+  return <section className={cardClass}><div className="flex flex-wrap items-start justify-between gap-3"><div><p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">Inbox</p><h2 className="mt-1 font-display text-xl font-semibold text-ink">Actionable reminders</h2></div><label className="inline-flex min-h-10 items-center gap-2 text-sm text-ink-soft"><input type="checkbox" checked={preferences.enabled} onChange={(event) => save({ ...preferences, enabled: event.target.checked })} /> Reminders on</label></div>{preferences.enabled && inbox.length ? <ul className="mt-4 space-y-3">{inbox.map((item) => <li key={item.id} className={`flex flex-wrap items-center gap-3 rounded-xl border border-line bg-paper p-3 ${preferences.readIds.includes(item.id) ? "opacity-60" : ""}`}><div className="min-w-0 flex-1"><p className="font-medium text-ink">{item.title}</p><p className="mt-1 text-xs text-ink-soft">{item.body}</p></div><Link href={item.actionHref} onClick={() => save(markInboxRead(preferences, item.id))} className={secondaryButton}>Open</Link><button type="button" className="text-xs text-ink-faint underline hover:text-ink" onClick={() => save(dismissInboxItem(preferences, item.id))}>Dismiss</button></li>)}</ul> : <p className="mt-4 text-sm text-ink-soft">{!preferences.enabled ? "Reminders are off. You can turn them back on any time." : quiet ? "Quiet hours are active. Reminders will return afterward." : "Nothing needs your attention right now."}</p>}<div className="mt-4 flex flex-wrap items-center gap-3 border-t border-line pt-4 text-xs text-ink-faint"><span>Quiet hours</span><input aria-label="Quiet hours start" className="rounded border border-line bg-paper px-2 py-1" type="time" value={preferences.quietStart} onChange={(event) => save({ ...preferences, quietStart: event.target.value })} /><span>to</span><input aria-label="Quiet hours end" className="rounded border border-line bg-paper px-2 py-1" type="time" value={preferences.quietEnd} onChange={(event) => save({ ...preferences, quietEnd: event.target.value })} /></div></section>;
+}
+
+function PatternPanel({ state }: { state: ReturnType<typeof useOSStore> }) {
+  const patterns = deriveLocalPatterns(state, localToday());
+  return <section className={cardClass}><p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">Local patterns</p><h2 className="mt-1 font-display text-xl font-semibold text-ink">What the record suggests</h2><div className="mt-4 grid gap-3 sm:grid-cols-3">{patterns.map((pattern) => <article key={pattern.id} className="rounded-xl border border-line bg-paper p-3"><p className="text-sm font-semibold text-ink">{pattern.title}</p><p className="mt-1 text-xs leading-relaxed text-ink-soft">{pattern.detail}</p><p className="mt-2 text-xs font-semibold text-gold">Next: {pattern.action}</p></article>)}</div></section>;
 }
 
 function ReviewForm({ state }: { state: ReturnType<typeof useOSStore> }) {
@@ -285,10 +314,10 @@ export default function LevelUpOSWorkspace({ mode }: { mode: OSWorkspaceMode }) 
 
   return <PageShell><SectionHeading eyebrow={copy.eyebrow} title={copy.title} lede={copy.lede} />
     {notice ? <p className="mb-5 rounded-lg border border-gold/40 bg-gold/10 px-4 py-3 text-sm text-ink" role="status">{notice}</p> : null}
-    {mode === "today" ? <div className="space-y-5"><section className={`${cardClass} border-gold/40`}><div className="flex flex-wrap items-start justify-between gap-5"><div><p className="text-xs uppercase tracking-[0.2em] text-gold">{localToday()}</p><h2 className="mt-1 font-display text-2xl font-semibold text-ink">Your next visible move</h2><p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-soft">{activeGoal ? `Work toward ${activeGoal.title}. ${todaySessions.length ? `${completedToday} of ${todaySessions.length} sessions complete today.` : "The first session is ready when you are."}` : todaySessions.length ? `${completedToday} of ${todaySessions.length} sessions complete today.` : "No session is scheduled yet. Create a goal and let the system make the first block concrete."}</p></div><div className="rounded-xl border border-line bg-paper px-4 py-3 text-right"><p className="text-xs uppercase tracking-wider text-ink-faint">Active goals</p><p className="mt-1 font-display text-2xl font-bold text-gold">{Object.values(goals).filter((goal) => goal.status === "active").length}</p></div></div><div className="mt-5 flex flex-wrap gap-2"><Link href="/goals/" className={primaryButton}>Create or edit goals</Link><Link href="/focus/" className={secondaryButton}>Open focus</Link><Link href="/review/" className={secondaryButton}>Review the record</Link></div></section><GoalForm onCreated={created} /><SessionPanel sessions={sessions} /><section className={cardClass}><p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">Goal progress</p><h2 className="mt-1 font-display text-xl font-semibold text-ink">Update the record, not the story</h2><ProgressForm goals={goals} /></section></div> : null}
+    {mode === "today" ? <div className="space-y-5"><section className={`${cardClass} border-gold/40`}><div className="flex flex-wrap items-start justify-between gap-5"><div><p className="text-xs uppercase tracking-[0.2em] text-gold">{localToday()}</p><h2 className="mt-1 font-display text-2xl font-semibold text-ink">Your next visible move</h2><p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-soft">{activeGoal ? `Work toward ${activeGoal.title}. ${todaySessions.length ? `${completedToday} of ${todaySessions.length} sessions complete today.` : "The first session is ready when you are."}` : todaySessions.length ? `${completedToday} of ${todaySessions.length} sessions complete today.` : "No session is scheduled yet. Create a goal and let the system make the first block concrete."}</p></div><div className="rounded-xl border border-line bg-paper px-4 py-3 text-right"><p className="text-xs uppercase tracking-wider text-ink-faint">Active goals</p><p className="mt-1 font-display text-2xl font-bold text-gold">{Object.values(goals).filter((goal) => goal.status === "active").length}</p></div></div><div className="mt-5 flex flex-wrap gap-2"><Link href="/goals/" className={primaryButton}>Create or edit goals</Link><Link href="/focus/" className={secondaryButton}>Open focus</Link><Link href="/review/" className={secondaryButton}>Review the record</Link><Link href="/portfolio/" className={secondaryButton}>Open portfolio</Link></div></section><InboxPanel state={state} /><GoalForm onCreated={created} /><SessionPanel sessions={sessions} /><section className={cardClass}><p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">Goal progress</p><h2 className="mt-1 font-display text-xl font-semibold text-ink">Update the record, not the story</h2><ProgressForm goals={goals} /></section></div> : null}
     {mode === "goals" ? <div className="space-y-5"><GoalForm onCreated={created} /><GoalList goals={goals} onProgress={(goal) => { dispatchOS({ type: "goal/progress", goalId: goal.id, current: Math.min(goal.target, goal.current + 1), occurredAt: new Date().toISOString(), note: "One unit of progress logged from Goals." }); trackEvent(ANALYTICS_EVENTS.goalProgressed, { os_entity: "goal" }); }} /><RoadmapTree state={state} /></div> : null}
     {mode === "focus" ? <div className="space-y-5"><section className={cardClass}><p className="text-sm leading-relaxed text-ink-soft">Focus is a session with a beginning, an end, and a recorded result. Start the block only when the task is specific enough to finish.</p></section><FocusTimerPanel sessions={sessions} /><SessionPanel sessions={sessions} title="Focus blocks" showAll /></div> : null}
-    {mode === "review" ? <ReviewPanel state={state} /> : null}
+    {mode === "review" ? <div className="space-y-5"><ReviewPanel state={state} /><PatternPanel state={state} /></div> : null}
     {mode === "playbook" ? <PlaybookPanel state={state} /> : null}
     {mode === "experiments" ? <ExperimentsPanel /> : null}
   </PageShell>;
