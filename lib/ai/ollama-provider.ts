@@ -36,7 +36,7 @@ export interface OllamaStatusOptions {
 }
 
 export type OllamaStatus = {
-  state: "ready" | "model-missing" | "unavailable" | "blocked";
+  state: "not-checked" | "ready" | "model-missing" | "unavailable" | "blocked";
   message: string;
 };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { AlertCircle, BookOpen, Check, Clock3, MessageCircle, Play, Sparkles } from "lucide-react";
 import type { Chapter, SearchDoc } from "@/lib/types";
@@ -53,7 +53,9 @@ function ResultSource({ source, note, fallbackReason }: { source: AiSource; note
 function OllamaStatusCard({ status, checking, onCheck }: { status: OllamaStatus; checking: boolean; onCheck: () => void }) {
   const label = checking
     ? "Checking local AI…"
-    : status.state === "ready"
+    : status.state === "not-checked"
+      ? "Not checked yet"
+      : status.state === "ready"
       ? "Local AI ready"
       : status.state === "model-missing"
         ? "Install the local model"
@@ -107,21 +109,8 @@ export default function AiStudyPanel({ context, documents, chapters }: AiStudyPa
   const [tutorLevel, setTutorLevel] = useState<"beginner" | "normal" | "advanced">("normal");
   const [busy, setBusy] = useState<BusyOperation>(null);
   const [error, setError] = useState<string | null>(null);
-  const [ollamaStatus, setOllamaStatus] = useState<OllamaStatus>({ state: "unavailable", message: "Checking local Ollama…" });
-  const [checkingOllama, setCheckingOllama] = useState(true);
-
-  useEffect(() => {
-    let active = true;
-    void checkOllamaStatus({ endpoint: configuredOllamaEndpoint() }).then((nextStatus) => {
-      if (active) {
-        setOllamaStatus(nextStatus);
-        setCheckingOllama(false);
-      }
-    });
-    return () => {
-      active = false;
-    };
-  }, []);
+  const [ollamaStatus, setOllamaStatus] = useState<OllamaStatus>({ state: "not-checked", message: "Choose Check again to see whether Ollama is ready on this device." });
+  const [checkingOllama, setCheckingOllama] = useState(false);
 
   const selectedChapter = chapters.find((chapter) => chapter.slug === tutorChapter) ?? null;
 
