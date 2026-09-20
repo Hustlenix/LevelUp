@@ -25,6 +25,9 @@ import { trackEvent, ANALYTICS_EVENTS } from "@/lib/analytics";
 import { getOSStateSnapshot, restoreOSState, useOSStore } from "@/lib/os/store";
 import { getPortfolioSnapshot, restorePortfolioArtifacts } from "@/lib/portfolio";
 import { deriveLocalPatterns } from "@/lib/os/patterns";
+import { MetricStrip, WorkspaceHeader } from "@/components/workspace";
+import { getNotificationStateSnapshot, restoreNotificationState } from "@/lib/notifications";
+import { getExperimentsSnapshot, restoreExperiments } from "@/lib/experiments";
 
 const THEME_KEY = "levelup-theme";
 const SCALE_KEY = "levelup-reader-scale";
@@ -64,7 +67,9 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
       studentProfile: toBackupPayload() ?? undefined,
       actionState,
       osState: getOSStateSnapshot(),
-      portfolio: getPortfolioSnapshot(),
+       portfolio: getPortfolioSnapshot(),
+       notifications: getNotificationStateSnapshot(),
+       experiments: getExperimentsSnapshot(),
     };
     const blob = new Blob([JSON.stringify(buildBackup(state), null, 2)], {
       type: "application/json",
@@ -109,7 +114,9 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
       if (d.streak) restoreStreak(d.streak);
       if (d.studentProfile !== undefined) fromBackupPayload(d.studentProfile);
       if (d.osState !== undefined) restoreOSState(d.osState);
-      if (d.portfolio !== undefined) restorePortfolioArtifacts(d.portfolio);
+       if (d.portfolio !== undefined) restorePortfolioArtifacts(d.portfolio);
+       if (d.notifications !== undefined) restoreNotificationState(d.notifications);
+       if (d.experiments !== undefined) restoreExperiments(d.experiments);
       if (d.actionState) {
         try {
           if (d.actionState.pillarsHistory) {
@@ -156,14 +163,9 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
 
   return (
     <div className="mx-auto max-w-3xl px-5 py-12">
-      <p className="font-display text-xs font-semibold uppercase tracking-[0.25em] text-gold">Progress</p>
-      <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-ink">
-        Your reading, in one place
-      </h1>
-      <p className="mt-3 text-sm text-ink-soft">
-        Stored locally in your browser — nothing leaves this device. Chapters mark
-        themselves complete at 90% scroll; adjust anything below.
-      </p>
+      <WorkspaceHeader eyebrow="Progress" title="See the outcome, then the details" description="Reading, focus evidence, and mastery stay local to this browser. Start with the outcome and use the ledger below to choose the next useful action." />
+
+      <MetricStrip items={[{ label: "Reading", value: `${stats.pct}%`, detail: `${stats.done} of ${chapters.length} chapters complete` }, { label: "Mastery", value: Object.keys(osState.mastery.goals).length, detail: "goal records" }, { label: "Local only", value: "Yes", detail: "no sync or hosted backend" }]} />
 
       <div className="mt-8 rounded-xl border border-line bg-card p-6">
         <div className="flex items-baseline justify-between">

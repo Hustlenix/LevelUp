@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { getSiteData } from "@/lib/content";
-import { PageShell, SectionHeading } from "@/components/ui";
+import { PageShell } from "@/components/ui";
 import { canonical } from "@/lib/site";
 import PersonalRoadmaps from "@/components/PersonalRoadmaps";
+import { WorkspaceHeader } from "@/components/workspace";
 
 export const metadata: Metadata = {
   title: "The 90-Day Roadmap",
@@ -22,10 +23,10 @@ export default function RoadmapPage() {
 
   return (
     <PageShell>
-      <SectionHeading
+      <WorkspaceHeader
         eyebrow="The 90-Day Roadmap"
         title="How the manual becomes a life"
-        lede="Ninety days, three phases, thirteen protocols. The roadmap orders them so each practice settles before the next begins — one at a time, at 70% scale, with a zero-day floor."
+        description="Ninety days, three phases, thirteen protocols. The roadmap orders them so each practice settles before the next begins — one at a time, at 70% scale, with a zero-day floor."
       />
 
       <div className="relative space-y-10">

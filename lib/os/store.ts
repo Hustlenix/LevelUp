@@ -14,7 +14,8 @@ export interface StorageLike {
 }
 
 function browserStorage(): StorageLike | null {
-  return typeof window === "undefined" ? null : window.localStorage;
+  if (typeof window === "undefined") return null;
+  try { return window.localStorage; } catch { return null; }
 }
 
 export function readOSState(storage: StorageLike | null = browserStorage()): OSState {
@@ -79,8 +80,9 @@ export function useOSStore(): OSState {
 export function dispatchOS(action: OSAction): OSState {
   const current = getOSStateSnapshot();
   const next = reduceOSState(current, action);
-  if (next !== current && writeOSState(next)) {
+  if (next !== current) {
     cache = next;
+    writeOSState(next);
     emit();
   }
   return cache ?? current;

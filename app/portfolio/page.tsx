@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { PageShell, SectionHeading } from "@/components/ui";
+import { PageShell } from "@/components/ui";
 import PortfolioPanel from "@/components/PortfolioPanel";
+import { WorkspaceHeader } from "@/components/workspace";
 
 export const metadata: Metadata = {
   title: "Portfolio",
@@ -10,5 +11,5 @@ export const metadata: Metadata = {
 };
 
 export default function PortfolioPage() {
-  return <PageShell><SectionHeading eyebrow="Portfolio" title="Keep the proof of your work" lede="Artifacts and evidence stay on this device and can be tied back to goals, chapters, sessions, and completion events." /><PortfolioPanel /></PageShell>;
+  return <PageShell><WorkspaceHeader eyebrow="Portfolio" title="Keep the proof of your work" description="Artifacts and evidence stay on this device and can be tied back to goals, chapters, sessions, and completion events." /><PortfolioPanel /></PageShell>;
 }

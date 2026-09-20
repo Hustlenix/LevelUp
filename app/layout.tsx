@@ -10,6 +10,7 @@ import JsonLd from "@/components/JsonLd";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
 import BackupJournalNotice from "@/components/BackupJournalNotice";
+import MobileBottomNav from "@/components/workspace/MobileBottomNav";
 import { getSiteData } from "@/lib/content";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_AUTHOR } from "@/lib/site";
 
@@ -95,8 +96,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SearchProvider>
            <Nav chapters={getSiteData().chapters} />
            <BackupJournalNotice />
-           <main id="main" className="flex-1">{children}</main>
-          <Footer />
+            <main id="main" className="flex-1 pb-24 md:pb-0">{children}</main>
+           <Footer />
+           <MobileBottomNav />
         </SearchProvider>
         <BackToTop />
         <ServiceWorkerRegister />

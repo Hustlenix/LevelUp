@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import BackupPanel from "@/components/BackupPanel";
-import { PageShell, SectionHeading } from "@/components/ui";
+import { PageShell } from "@/components/ui";
+import { WorkspaceHeader } from "@/components/workspace";
 
 export const metadata: Metadata = {
   title: "Backup",
@@ -10,5 +11,5 @@ export const metadata: Metadata = {
 };
 
 export default function BackupPage() {
-  return <PageShell><SectionHeading eyebrow="Backup" title="Keep your local system portable" lede="Export or restore the state that makes LevelUp yours. The file stays on your device until you choose to move it." /><BackupPanel /></PageShell>;
+  return <PageShell><WorkspaceHeader eyebrow="Backup" title="Keep your local system portable" description="Export or restore the state that makes LevelUp yours. The file stays on your device until you choose to move it." /><BackupPanel /></PageShell>;
 }

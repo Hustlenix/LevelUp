@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "Reading Progress",
   description: "Your reading progress across the 28 chapters, stored locally.",
   alternates: { canonical: canonical("/progress/") },
+  robots: { index: false, follow: false },
 };
 
 export default function ProgressPage() {

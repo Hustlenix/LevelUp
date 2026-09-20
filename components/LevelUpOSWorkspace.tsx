@@ -11,7 +11,8 @@ import { addExperiment, updateExperiment, useExperimentsStore, type ExperimentDe
 import { ANALYTICS_EVENTS, trackEvent } from "@/lib/analytics";
 import { deriveInbox, dismissInboxItem, markInboxRead, saveNotificationState, useNotificationsStore, type NotificationState } from "@/lib/notifications";
 import { deriveLocalPatterns } from "@/lib/os/patterns";
-import { PageShell, SectionHeading } from "@/components/ui";
+import { PageShell } from "@/components/ui";
+import { ActionLink, EmptyState, MetricStrip, PrimaryActionCard, WorkspaceHeader } from "@/components/workspace";
 
 export type OSWorkspaceMode = "today" | "goals" | "focus" | "review" | "playbook" | "experiments";
 
@@ -209,7 +210,8 @@ function SessionPanel({ sessions, title = "Today's sessions", showAll = false, t
 function FocusTimerPanel({ sessions }: { sessions: Record<string, Session> }) {
   const selected = Object.values(sessions).find((session) => session.status === "in-progress") ?? Object.values(sessions).find((session) => session.status === "planned");
   const now = useClientClock();
-  const remaining = selected ? Math.max(0, selected.plannedMinutes * 60 - (selected.elapsedSeconds ?? (selected.startedAt ? Math.max(0, Math.floor((now - Date.parse(selected.startedAt)) / 1000)) : 0))) : 0;
+  const elapsed = selected ? (selected.elapsedSeconds ?? 0) + (selected.status === "in-progress" && selected.startedAt && !selected.pausedAt ? Math.max(0, Math.floor((now - Date.parse(selected.startedAt)) / 1000)) : 0) : 0;
+  const remaining = selected ? Math.max(0, selected.plannedMinutes * 60 - elapsed) : 0;
   const [running, setRunning] = useState(selected?.status === "in-progress");
   const [interruptionSeconds, setInterruptionSeconds] = useState("60");
   const [note, setNote] = useState("");
@@ -230,6 +232,7 @@ function FocusTimerPanel({ sessions }: { sessions: Record<string, Session> }) {
   }
   function interrupt() {
     const secondsValue = Math.max(1, Number(interruptionSeconds) || 60);
+    dispatchOS({ type: "session/pause", sessionId: activeSession.id, occurredAt: new Date().toISOString(), elapsedSeconds: elapsed });
     dispatchOS({ type: "session/interrupt", sessionId: activeSession.id, occurredAt: new Date().toISOString(), seconds: secondsValue, note: note.trim() || undefined });
     setRunning(false);
     trackEvent(ANALYTICS_EVENTS.focusSessionInterrupted, { duration: secondsValue });
@@ -324,15 +327,35 @@ export default function LevelUpOSWorkspace({ mode }: { mode: OSWorkspaceMode }) 
   const todaySessions = useMemo(() => today ? Object.values(sessions).filter((session) => session.date === today) : [], [sessions, today]);
   const completedToday = todaySessions.filter((session) => session.status === "completed").length;
   const activeGoal = Object.values(goals).find((goal) => goal.status === "active");
+  const nextSession = todaySessions.find((session) => session.status === "in-progress" || session.status === "planned");
+  const nextTask = nextSession ? state.tasks[nextSession.taskId] : null;
+  const activeGoalCount = Object.values(goals).filter((goal) => goal.status === "active").length;
+  const overdueSessionCount = today ? Object.values(sessions).filter((session) => session.date < today && session.status !== "completed" && session.status !== "skipped").length : 0;
 
   function created(goalId: string) {
     setNotice(`Goal created. Its first session is ready in Today.`);
     if (mode !== "today") window.setTimeout(() => document.getElementById(`goal-${goalId}`)?.scrollIntoView({ behavior: "smooth", block: "center" }), 0);
   }
 
-  return <PageShell><SectionHeading eyebrow={copy.eyebrow} title={copy.title} lede={copy.lede} />
+  return <PageShell><WorkspaceHeader eyebrow={copy.eyebrow} title={copy.title} description={copy.lede} />
     {notice ? <p className="mb-5 rounded-lg border border-gold/40 bg-gold/10 px-4 py-3 text-sm text-ink" role="status">{notice}</p> : null}
-    {mode === "today" ? <div className="space-y-5"><section className={`${cardClass} border-gold/40`}><div className="flex flex-wrap items-start justify-between gap-5"><div><p className="text-xs uppercase tracking-[0.2em] text-gold">{today || "Today"}</p><h2 className="mt-1 font-display text-2xl font-semibold text-ink">Your next visible move</h2><p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-soft">{activeGoal ? `Work toward ${activeGoal.title}. ${todaySessions.length ? `${completedToday} of ${todaySessions.length} sessions complete today.` : "The first session is ready when you are."}` : todaySessions.length ? `${completedToday} of ${todaySessions.length} sessions complete today.` : "No session is scheduled yet. Create a goal and let the system make the first block concrete."}</p></div><div className="rounded-xl border border-line bg-paper px-4 py-3 text-right"><p className="text-xs uppercase tracking-wider text-ink-faint">Active goals</p><p className="mt-1 font-display text-2xl font-bold text-gold">{Object.values(goals).filter((goal) => goal.status === "active").length}</p></div></div><div className="mt-5 flex flex-wrap gap-2"><Link href="/goals/" className={primaryButton}>Create or edit goals</Link><Link href="/focus/" className={secondaryButton}>Open focus</Link><Link href="/review/" className={secondaryButton}>Review the record</Link><Link href="/portfolio/" className={secondaryButton}>Open portfolio</Link></div></section><InboxPanel state={state} today={today} /><GoalForm onCreated={created} /><SessionPanel sessions={sessions} today={today} /><section className={cardClass}><p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">Goal progress</p><h2 className="mt-1 font-display text-xl font-semibold text-ink">Update the record, not the story</h2><ProgressForm goals={goals} /></section></div> : null}
+    {mode === "today" ? <div className="space-y-5">
+      <PrimaryActionCard
+        eyebrow={today || "Today"}
+        title={nextTask?.title ?? activeGoal?.nextAction ?? "Choose one outcome worth protecting"}
+        description={activeGoal ? `Work toward ${activeGoal.title}. ${todaySessions.length ? `${completedToday} of ${todaySessions.length} sessions are complete today.` : "Your first session is ready when you are."}` : "A goal gives the day a direction. Create one short route and LevelUp will schedule the first bounded block locally."}
+        meta={nextSession ? `${nextSession.plannedMinutes} min · ${nextSession.status === "in-progress" ? "in progress" : "ready"}` : "No session yet"}
+        href={nextSession ? "/focus/" : "/goals/"}
+        actionLabel={nextSession ? "Open focus" : "Create a goal"}
+      />
+      <MetricStrip items={[{ label: "Active goals", value: activeGoalCount, detail: "outcomes in motion" }, { label: "Today", value: `${completedToday}/${todaySessions.length}`, detail: "sessions recorded" }, { label: "Recovery", value: overdueSessionCount, detail: overdueSessionCount ? "unfinished blocks" : "clear for now" }]} />
+      {!activeGoal ? <EmptyState eyebrow="Start with one outcome" title="Give today a direction" description="A goal turns a vague intention into a next action, first milestone, and focus session. The rest of the workspace stays quiet until you need it." href="/goals/" actionLabel="Open Goals"><div className="text-xs text-ink-faint">No cloud account or network connection is required.</div></EmptyState> : null}
+      <InboxPanel state={state} today={today} />
+      {!activeGoal ? <GoalForm onCreated={created} /> : null}
+      <SessionPanel sessions={sessions} today={today} />
+      {activeGoal ? <section className={cardClass}><p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">Goal progress</p><h2 className="mt-1 font-display text-xl font-semibold text-ink">Update the record, not the story</h2><ProgressForm goals={goals} /></section> : null}
+      <div className="flex flex-wrap gap-2"><ActionLink href="/goals/" variant="secondary">Goals</ActionLink><ActionLink href="/review/" variant="secondary">Review</ActionLink><ActionLink href="/portfolio/" variant="quiet">Portfolio</ActionLink></div>
+    </div> : null}
     {mode === "goals" ? <div className="space-y-5"><GoalForm onCreated={created} /><GoalList goals={goals} onProgress={(goal) => { dispatchOS({ type: "goal/progress", goalId: goal.id, current: Math.min(goal.target, goal.current + 1), occurredAt: new Date().toISOString(), note: "One unit of progress logged from Goals." }); trackEvent(ANALYTICS_EVENTS.goalProgressed, { os_entity: "goal" }); }} /><RoadmapTree state={state} /></div> : null}
     {mode === "focus" ? <div className="space-y-5"><section className={cardClass}><p className="text-sm leading-relaxed text-ink-soft">Focus is a session with a beginning, an end, and a recorded result. Start the block only when the task is specific enough to finish.</p></section><FocusTimerPanel sessions={sessions} /><SessionPanel sessions={sessions} title="Focus blocks" showAll /></div> : null}
     {mode === "review" ? <div className="space-y-5"><ReviewPanel state={state} today={today} /><PatternPanel state={state} today={today} /></div> : null}

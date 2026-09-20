@@ -1,6 +1,10 @@
 import type { OSState } from "./os/types.ts";
 import { validateOSState } from "./os/migrations.ts";
 import type { PortfolioArtifact } from "./portfolio.ts";
+import { isPortfolioArtifact } from "./portfolio.ts";
+import type { NotificationState } from "./notifications.ts";
+import type { Experiment } from "./experiments.ts";
+import { isExperiment } from "./experiments.ts";
 
 export interface BackupProgressEntry {
   complete: boolean;
@@ -47,6 +51,8 @@ export interface BackupState {
   studentProfile?: unknown; // validated via isStudentProfile at restore
   osState?: OSState;
   portfolio?: PortfolioArtifact[];
+  notifications?: NotificationState;
+  experiments?: Experiment[];
 }
 
 export const BACKUP_SCHEMA = 1;
@@ -104,6 +110,12 @@ function isStreak(v: unknown): v is BackupStreak {
   );
 }
 
+function isNotificationState(v: unknown): v is NotificationState {
+  if (!isRecord(v)) return false;
+  const validTime = (value: unknown) => typeof value === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(value);
+  return typeof v.enabled === "boolean" && validTime(v.quietStart) && validTime(v.quietEnd) && Array.isArray(v.dismissedIds) && v.dismissedIds.every((id) => typeof id === "string") && Array.isArray(v.readIds) && v.readIds.every((id) => typeof id === "string");
+}
+
 export function buildBackup(state: BackupState): { schema: number; exportedAt: string; [k: string]: unknown } {
   const result: { schema: number; exportedAt: string; [k: string]: unknown } = {
     schema: BACKUP_SCHEMA,
@@ -128,6 +140,12 @@ export function buildBackup(state: BackupState): { schema: number; exportedAt: s
   }
   if (state.portfolio !== undefined) {
     result.portfolio = state.portfolio;
+  }
+  if (state.notifications !== undefined) {
+    result.notifications = state.notifications;
+  }
+  if (state.experiments !== undefined) {
+    result.experiments = state.experiments;
   }
   return result;
 }
@@ -202,11 +220,21 @@ export function validateBackup(json: unknown): { ok: boolean; errors: string[]; 
   }
   let portfolio: PortfolioArtifact[] | undefined;
   if (json.portfolio !== undefined) {
-    if (!Array.isArray(json.portfolio) || !json.portfolio.every((item) => isRecord(item) && typeof item.id === "string" && typeof item.title === "string" && typeof item.description === "string" && typeof item.kind === "string" && typeof item.createdAt === "string" && typeof item.updatedAt === "string")) {
+    if (!Array.isArray(json.portfolio) || !json.portfolio.every(isPortfolioArtifact)) {
       errors.push("portfolio has an invalid shape.");
     } else {
       portfolio = json.portfolio as PortfolioArtifact[];
     }
+  }
+  let notifications: NotificationState | undefined;
+  if (json.notifications !== undefined) {
+    if (!isNotificationState(json.notifications)) errors.push("notifications has an invalid shape.");
+    else notifications = json.notifications;
+  }
+  let experiments: Experiment[] | undefined;
+  if (json.experiments !== undefined) {
+    if (!Array.isArray(json.experiments) || !json.experiments.every(isExperiment)) errors.push("experiments has an invalid shape.");
+    else experiments = json.experiments;
   }
 
   if (errors.length > 0) return { ok: false, errors };
@@ -232,6 +260,12 @@ export function validateBackup(json: unknown): { ok: boolean; errors: string[]; 
   if (portfolio !== undefined) {
     outData.portfolio = portfolio;
   }
+  if (notifications !== undefined) {
+    outData.notifications = notifications;
+  }
+  if (experiments !== undefined) {
+    outData.experiments = experiments;
+  }
 
   return {
     ok: true,
@@ -256,6 +290,8 @@ function entriesForBackup(data: BackupState): Record<string, string> {
   };
   if (data.osState !== undefined) entries["levelup-os-state-v1"] = JSON.stringify(data.osState);
   if (data.portfolio !== undefined) entries["levelup-portfolio-v1"] = JSON.stringify(data.portfolio);
+  if (data.notifications !== undefined) entries["levelup-notifications-v1"] = JSON.stringify(data.notifications);
+  if (data.experiments !== undefined) entries["levelup-experiments-v1"] = JSON.stringify(data.experiments);
   if (data.actionState?.pillarsHistory) entries["levelup-pillar-floors-v1"] = JSON.stringify(data.actionState.pillarsHistory);
   if (data.actionState?.focusSessions) entries["levelup-focus-sessions-v1"] = JSON.stringify(data.actionState.focusSessions);
   if (data.actionState?.protocolLogs) entries["levelup-protocol-logs-v1"] = JSON.stringify(data.actionState.protocolLogs);

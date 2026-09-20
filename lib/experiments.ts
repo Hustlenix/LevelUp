@@ -21,6 +21,14 @@ export interface Experiment {
   updatedAt: string;
 }
 
+export function isExperiment(value: unknown): value is Experiment {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return false;
+  const item = value as Partial<Experiment>;
+  return typeof item.id === "string" && typeof item.hypothesis === "string" && typeof item.durationDays === "number" && typeof item.baseline === "string" && typeof item.variable === "string" && typeof item.metric === "string" && (item.status === "planned" || item.status === "running" || item.status === "complete") && typeof item.result === "string" && typeof item.reflection === "string" && (item.decision === null || item.decision === "keep" || item.decision === "modify" || item.decision === "abandon" || item.decision === "repeat") && typeof item.createdAt === "string" && typeof item.updatedAt === "string";
+}
+
+export function normalizeExperiments(value: unknown): Experiment[] { return Array.isArray(value) ? value.filter(isExperiment).slice(0, 200) : []; }
+
 const KEY = "levelup-experiments-v1";
 const listeners = new Set<() => void>();
 let cache: Experiment[] | null = null;
@@ -29,7 +37,7 @@ function read(): Experiment[] {
   if (typeof window === "undefined") return [];
   try {
     const parsed = JSON.parse(window.localStorage.getItem(KEY) ?? "[]") as unknown;
-    return Array.isArray(parsed) ? parsed.filter((value): value is Experiment => typeof value === "object" && value !== null && typeof (value as Experiment).id === "string") : [];
+    return normalizeExperiments(parsed);
   } catch {
     return [];
   }
@@ -78,5 +86,5 @@ export function updateExperiment(id: string, patch: Partial<Experiment>): void {
 }
 
 export function restoreExperiments(experiments: Experiment[]): void {
-  write(experiments);
+  write(normalizeExperiments(experiments));
 }

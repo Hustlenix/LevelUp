@@ -1,6 +1,6 @@
 import { chromium } from "playwright";
 
-const url = "http://localhost:3111";
+const url = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3111";
 const browser = await chromium.launch();
 const all = [];
 
@@ -59,7 +59,7 @@ const mobile = await browser.newPage({ viewport: { width: 375, height: 812 } });
 const merr = [];
 mobile.on("pageerror", (e) => merr.push(String(e)));
 await mobile.goto(url + "/", { waitUntil: "networkidle" });
-const moreBtn = await mobile.$('nav div button:has-text("More"):visible');
+const moreBtn = mobile.getByRole("button", { name: /^More/ });
 await moreBtn.evaluate((el) => el.scrollIntoView({ block: "nearest", inline: "center" }));
 await mobile.waitForTimeout(200);
 await moreBtn.click({ force: true });

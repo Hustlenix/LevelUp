@@ -277,3 +277,23 @@ test("legacy multi-key backup restore rolls back when a storage write fails", ()
   assert.equal(values.get("levelup-progress-v1"), "old-progress");
   assert.equal(values.get("levelup-os-state-v1"), "old-os");
 });
+
+test("backup validates optional notifications and experiments before restore", () => {
+  const state = createEmptyOSState(NOW);
+  const backup = buildBackup({
+    theme: "light",
+    readerScale: "1",
+    progress: {},
+    bookmarks: [],
+    highlights: [],
+    quiz: {},
+    reflections: {},
+    streak: null,
+    osState: state,
+    notifications: { enabled: true, quietStart: "22:00", quietEnd: "07:00", dismissedIds: [], readIds: [] },
+    experiments: [{ id: "experiment-1", hypothesis: "Start small", durationDays: 7, baseline: "None", variable: "25 minutes", metric: "Sessions", status: "planned", result: "", reflection: "", decision: null, createdAt: NOW, updatedAt: NOW }],
+  });
+  assert.equal(validateBackup(JSON.parse(JSON.stringify(backup))).ok, true);
+  assert.equal(validateBackup({ ...backup, notifications: { enabled: true, quietStart: "late" } }).ok, false);
+  assert.equal(validateBackup({ ...backup, experiments: [{ id: "bad" }] }).ok, false);
+});

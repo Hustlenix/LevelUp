@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   defaultNotificationState,
   getNotificationServerSnapshot,
+  normalizeNotificationState,
   readNotificationState,
 } from "../lib/notifications.ts";
 
@@ -27,4 +28,9 @@ test("notification preferences still load from local storage", () => {
     enabled: false,
     quietStart: "20:00",
   });
+});
+
+test("notification normalization rejects malformed times and bounds ids", () => {
+  const state = normalizeNotificationState({ enabled: "yes", quietStart: "25:90", quietEnd: "06:30", dismissedIds: ["one", 2], readIds: ["two"] });
+  assert.deepEqual(state, { ...defaultNotificationState(), quietEnd: "06:30", dismissedIds: ["one"], readIds: ["two"] });
 });

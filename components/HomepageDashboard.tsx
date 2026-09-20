@@ -153,9 +153,9 @@ export default function HomepageDashboard({ protocols, chapters }: Props) {
                 {streak.current} day streak
               </span>
             </div>
-            <h1 className="mt-1.5 font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
+            <h2 className="mt-1.5 font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
               {greeting}.
-            </h1>
+            </h2>
             <p className="mt-1 text-sm text-ink-soft">
               Your daily operating dashboard. Complete your non-zero floors, block focus time, and stay steady.
             </p>
