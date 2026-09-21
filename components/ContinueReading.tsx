@@ -37,7 +37,7 @@ export default function ContinueReading() {
   return (
     <Link
       href={`/chapters/${next}/`}
-      className="hidden items-center gap-2 rounded-full bg-ink px-4 py-1.5 font-display text-sm font-semibold text-paper transition-colors hover:bg-gold md:flex"
+      className="hidden min-h-11 items-center gap-2 rounded-lg bg-ink px-4 py-2 text-sm font-semibold text-paper transition-colors hover:bg-gold md:flex"
       title="Jump to the next chapter you haven't finished"
     >
       Continue reading

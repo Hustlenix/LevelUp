@@ -14,10 +14,10 @@ export default function ProtocolsListInteractive({ protocols }: { protocols: Pro
         {protocols.map((p) => {
           const anchor = `protocol-${p.num.replace(".", "-")}`;
           return (
-            <section key={p.num} id={anchor} className="rounded-xl border border-line bg-card p-6 shadow-xs">
+            <section key={p.num} id={anchor} className="scroll-mt-36 rounded-xl border border-line bg-card p-6 shadow-xs">
               <div className="flex flex-wrap items-baseline gap-3">
                 <span className="font-display text-lg font-bold text-gold">{p.num}</span>
-                <h2 className="font-display text-xl font-bold text-ink">{p.title}</h2>
+                <h3 className="font-display text-xl font-bold text-ink">{p.title}</h3>
                 {p.duration && (
                   <span className="ml-auto rounded-full border border-line bg-paper-deep px-3 py-1 text-[11px] uppercase tracking-wider text-ink-faint">
                     {p.duration}

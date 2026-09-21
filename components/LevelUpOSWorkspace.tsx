@@ -12,7 +12,7 @@ import { ANALYTICS_EVENTS, trackEvent } from "@/lib/analytics";
 import { deriveInbox, dismissInboxItem, markInboxRead, saveNotificationState, useNotificationsStore, type NotificationState } from "@/lib/notifications";
 import { deriveLocalPatterns } from "@/lib/os/patterns";
 import { PageShell } from "@/components/ui";
-import { ActionLink, EmptyState, MetricStrip, PrimaryActionCard, WorkspaceHeader } from "@/components/workspace";
+import { ActionLink, MetricStrip, PrimaryActionCard, WorkspaceHeader } from "@/components/workspace";
 
 export type OSWorkspaceMode = "today" | "goals" | "focus" | "review" | "playbook" | "experiments";
 
@@ -55,7 +55,7 @@ function newId(prefix: string): string {
 
 function pageCopy(mode: OSWorkspaceMode) {
   const copy: Record<OSWorkspaceMode, { eyebrow: string; title: string; lede: string }> = {
-    today: { eyebrow: "Today", title: "What matters today?", lede: "One clear outcome, a few executable actions, and a recovery path when the day goes sideways." },
+    today: { eyebrow: "Your daily workspace", title: "What matters today?", lede: "Choose an outcome. Make time for it. Build on what works." },
     goals: { eyebrow: "Goals", title: "Turn intention into a route", lede: "Every goal becomes a roadmap, milestone, task, and first session you can actually complete." },
     focus: { eyebrow: "Focus", title: "Make the next block count", lede: "Start a bounded session, capture the result, and let the record—not the feeling—show the trend." },
     review: { eyebrow: "Review", title: "Use the record to change tomorrow", lede: "Review what happened, recover from unfinished work, and adjust the next action without shame." },
@@ -268,7 +268,31 @@ function InboxPanel({ state, today }: { state: ReturnType<typeof useOSStore>; to
   const quiet = quietStart === quietEnd || (quietStart < quietEnd ? nowMinutes >= quietStart && nowMinutes < quietEnd : nowMinutes >= quietStart || nowMinutes < quietEnd);
   const inbox = quiet || !today ? [] : deriveInbox(state, today).filter((item) => !preferences.dismissedIds.includes(item.id));
   function save(next: NotificationState) { saveNotificationState(next); }
-  return <section className={cardClass}><div className="flex flex-wrap items-start justify-between gap-3"><div><p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">Inbox</p><h2 className="mt-1 font-display text-xl font-semibold text-ink">Actionable reminders</h2></div><label className="inline-flex min-h-10 items-center gap-2 text-sm text-ink-soft"><input type="checkbox" checked={preferences.enabled} onChange={(event) => save({ ...preferences, enabled: event.target.checked })} /> Reminders on</label></div>{preferences.enabled && inbox.length ? <ul className="mt-4 space-y-3">{inbox.map((item) => <li key={item.id} className={`flex flex-wrap items-center gap-3 rounded-xl border border-line bg-paper p-3 ${preferences.readIds.includes(item.id) ? "opacity-60" : ""}`}><div className="min-w-0 flex-1"><p className="font-medium text-ink">{item.title}</p><p className="mt-1 text-xs text-ink-soft">{item.body}</p></div><Link href={item.actionHref} onClick={() => save(markInboxRead(preferences, item.id))} className={secondaryButton}>Open</Link><button type="button" className="text-xs text-ink-faint underline hover:text-ink" onClick={() => save(dismissInboxItem(preferences, item.id))}>Dismiss</button></li>)}</ul> : <p className="mt-4 text-sm text-ink-soft">{!preferences.enabled ? "Reminders are off. You can turn them back on any time." : quiet ? "Quiet hours are active. Reminders will return afterward." : "Nothing needs your attention right now."}</p>}<div className="mt-4 flex flex-wrap items-center gap-3 border-t border-line pt-4 text-xs text-ink-faint"><span>Quiet hours</span><input aria-label="Quiet hours start" className="rounded border border-line bg-paper px-2 py-1" type="time" value={preferences.quietStart} onChange={(event) => save({ ...preferences, quietStart: event.target.value })} /><span>to</span><input aria-label="Quiet hours end" className="rounded border border-line bg-paper px-2 py-1" type="time" value={preferences.quietEnd} onChange={(event) => save({ ...preferences, quietEnd: event.target.value })} /></div></section>;
+  return (
+    <section className={cardClass}>
+      <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gold">Inbox</p>
+      <h2 className="mt-1 font-display text-xl font-semibold text-ink">A little nudge, when needed</h2>
+      {preferences.enabled && inbox.length ? (
+        <ul className="mt-4 space-y-3">
+          {inbox.map((item) => (
+            <li key={item.id} className={`flex flex-wrap items-center gap-3 rounded-xl border border-line bg-paper p-3 ${preferences.readIds.includes(item.id) ? "opacity-60" : ""}`}>
+              <div className="min-w-0 flex-1"><p className="font-medium text-ink">{item.title}</p><p className="mt-1 text-xs text-ink-soft">{item.body}</p></div>
+              <Link href={item.actionHref} onClick={() => save(markInboxRead(preferences, item.id))} className={secondaryButton}>Open</Link>
+              <button type="button" className="min-h-11 px-2 text-xs text-ink-faint underline hover:text-ink" onClick={() => save(dismissInboxItem(preferences, item.id))}>Dismiss</button>
+            </li>
+          ))}
+        </ul>
+      ) : <p className="mt-4 text-sm leading-relaxed text-ink-soft">{!preferences.enabled ? "Reminders are off. Turn them on in preferences below." : quiet ? "Quiet hours are active. Reminders will return afterward." : "You’re all caught up. Nothing needs your attention."}</p>}
+      <details className="mt-5 border-t border-line pt-1">
+        <summary className="min-h-11 cursor-pointer py-3 text-xs font-medium text-ink-soft">Reminder preferences</summary>
+        <label className="inline-flex min-h-11 items-center gap-3 text-sm text-ink-soft"><input type="checkbox" checked={preferences.enabled} onChange={(event) => save({ ...preferences, enabled: event.target.checked })} /> Enable reminders</label>
+        <div className="mt-2 grid grid-cols-2 gap-3 pb-2">
+          <label className="text-xs text-ink-faint">Quiet hours start<input aria-label="Quiet hours start" className={inputClass} type="time" value={preferences.quietStart} onChange={(event) => save({ ...preferences, quietStart: event.target.value })} /></label>
+          <label className="text-xs text-ink-faint">Quiet hours end<input aria-label="Quiet hours end" className={inputClass} type="time" value={preferences.quietEnd} onChange={(event) => save({ ...preferences, quietEnd: event.target.value })} /></label>
+        </div>
+      </details>
+    </section>
+  );
 }
 
 function PatternPanel({ state, today }: { state: ReturnType<typeof useOSStore>; today: string }) {
@@ -341,18 +365,24 @@ export default function LevelUpOSWorkspace({ mode }: { mode: OSWorkspaceMode }) 
     {notice ? <p className="mb-5 rounded-lg border border-gold/40 bg-gold/10 px-4 py-3 text-sm text-ink" role="status">{notice}</p> : null}
     {mode === "today" ? <div className="space-y-5">
       <PrimaryActionCard
-        eyebrow={today || "Today"}
+        eyebrow={today ? new Date(`${today}T12:00:00`).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" }) : "Your next step"}
         title={nextTask?.title ?? activeGoal?.nextAction ?? "Choose one outcome worth protecting"}
-        description={activeGoal ? `Work toward ${activeGoal.title}. ${todaySessions.length ? `${completedToday} of ${todaySessions.length} sessions are complete today.` : "Your first session is ready when you are."}` : "A goal gives the day a direction. Create one short route and LevelUp will schedule the first bounded block locally."}
-        meta={nextSession ? `${nextSession.plannedMinutes} min · ${nextSession.status === "in-progress" ? "in progress" : "ready"}` : "No session yet"}
+        description={activeGoal ? `Work toward ${activeGoal.title}. ${todaySessions.length ? `${completedToday} of ${todaySessions.length} sessions are complete today.` : "Plan your next session in Goals."}` : "Start with something that matters to you. We’ll turn it into a clear next step and your first focus session."}
+        meta={nextSession ? `${nextSession.plannedMinutes} min · ${nextSession.status === "in-progress" ? "in progress" : "ready"}` : activeGoal ? "Ready for your next step" : "Your first step"}
         href={nextSession ? "/focus/" : "/goals/"}
-        actionLabel={nextSession ? "Open focus" : "Create a goal"}
+        actionLabel={nextSession ? "Open focus" : activeGoal ? "Plan next session" : "Create a goal"}
       />
       <MetricStrip items={[{ label: "Active goals", value: activeGoalCount, detail: "outcomes in motion" }, { label: "Today", value: `${completedToday}/${todaySessions.length}`, detail: "sessions recorded" }, { label: "Recovery", value: overdueSessionCount, detail: overdueSessionCount ? "unfinished blocks" : "clear for now" }]} />
-      {!activeGoal ? <EmptyState eyebrow="Start with one outcome" title="Give today a direction" description="A goal turns a vague intention into a next action, first milestone, and focus session. The rest of the workspace stays quiet until you need it." href="/goals/" actionLabel="Open Goals"><div className="text-xs text-ink-faint">No cloud account or network connection is required.</div></EmptyState> : null}
-      <InboxPanel state={state} today={today} />
-      {!activeGoal ? <GoalForm onCreated={created} /> : null}
-      <SessionPanel sessions={sessions} today={today} />
+      {!activeGoal ? <section className="rounded-2xl border border-line bg-card p-6 sm:p-8" aria-label="How your day takes shape">
+        <h2 className="font-display text-xl font-semibold text-ink">Small steps. Visible progress.</h2>
+        <ol className="mt-6 grid gap-6 sm:grid-cols-3">
+          {[["01", "Choose an outcome", "Give your effort a direction with one meaningful goal."], ["02", "Protect a little time", "A focused session makes the next step manageable."], ["03", "Keep the evidence", "Record what you did and use it to plan tomorrow."]].map(([number, title, description]) => <li key={number} className="grid grid-cols-[1.5rem_1fr] gap-x-3 sm:block"><span className="pt-0.5 text-xs font-semibold tabular-nums text-gold">{number}</span><div><h3 className="text-sm font-semibold text-ink sm:mt-2">{title}</h3><p className="mt-2 text-sm leading-relaxed text-ink-soft">{description}</p></div></li>)}
+        </ol>
+      </section> : null}
+      <div className="grid items-start gap-5 lg:grid-cols-[1.3fr_1fr]">
+        <SessionPanel sessions={sessions} today={today} />
+        <InboxPanel state={state} today={today} />
+      </div>
       {activeGoal ? <section className={cardClass}><p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">Goal progress</p><h2 className="mt-1 font-display text-xl font-semibold text-ink">Update the record, not the story</h2><ProgressForm goals={goals} /></section> : null}
       <div className="flex flex-wrap gap-2"><ActionLink href="/goals/" variant="secondary">Goals</ActionLink><ActionLink href="/review/" variant="secondary">Review</ActionLink><ActionLink href="/portfolio/" variant="quiet">Portfolio</ActionLink></div>
     </div> : null}

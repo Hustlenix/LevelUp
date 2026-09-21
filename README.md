@@ -47,6 +47,9 @@ Level Up Manual is a static book-like site with:
 - 28 chapters with key concepts, evidence grades, and named protocols
 - 30 audit claims graded A–D/U against a verified-facts file
 - 13 protocols — testable daily practices you can run one at a time
+- Plain-language companions, worked examples and small first actions for all 28 chapters
+- 13 additional guided practice templates, including a Pomodoro starter, two-minute restart and seven-day plan
+- Local practice records with separate labels for preparation, attempts and reviews; included in data backups
 - 65-term glossary and 46-quote library
 - 90-day roadmap for applying the content
 - Full-text search (MiniSearch) across all content
@@ -174,5 +177,26 @@ cd LevelUp
 npm install
 npm run dev
 ```
+
+**Preview a production build locally (Node.js 24):**
+```bash
+npm ci
+npm run build
+npm start
+```
+Open `http://localhost:3000`. This app uses a static export, so production preview
+serves `out/` rather than using `next start`.
+
+**GitHub Pages:** pushes to `main` run lint, tests and the production build, then
+deploy to `https://hustlenix.github.io/LevelUp/`. The workflow sets
+`NEXT_PUBLIC_BASE_PATH=/LevelUp`; do not set that value for a root-path local preview.
+No GitHub token belongs in source files, frontend environment variables or build output.
+
+**Persistence and AI:** records are stored per browser and site origin. Use the
+Backup page to transfer progress between localhost and the public site. Unsaved
+practice notes and active timers reset when leaving the page; explicitly saved
+records persist. GitHub Pages does not host Ollama or an application backend:
+optional local-model features need a separately running local Ollama installation
+and permitted browser access. The built-in deterministic fallback does not need it.
 
 **Tech stack:** Next.js 16, Tailwind v4, node:sqlite, MiniSearch, GitHub Pages

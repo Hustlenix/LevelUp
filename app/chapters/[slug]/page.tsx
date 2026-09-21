@@ -14,6 +14,10 @@ import ChapterQuiz from "@/components/ChapterQuiz";
 import ChapterToc from "@/components/ChapterToc";
 import ChapterKeys from "@/components/ChapterKeys";
 import JsonLd from "@/components/JsonLd";
+import ChapterCompanion from "@/components/ChapterCompanion";
+import PracticeRunner from "@/components/PracticeRunner";
+import { getLearningGuide } from "@/lib/learningGuides";
+import { getPracticePlan } from "@/lib/practicePlans";
 import { SITE_URL, SITE_NAME, SITE_AUTHOR, PUBLISHED_DATE, canonical } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -94,12 +98,14 @@ export default async function ChapterPage({
   const chapter = getSiteData().chapters.find((c) => c.slug === slug);
   if (!chapter) notFound();
 
+  const guide = getLearningGuide(chapter.slug);
+
   const meta = PILLAR_META[chapter.pillar];
   const num = String(chapter.number).padStart(2, "0");
   const group = BOOK_GROUPS.find((g) => chapter.number >= g.start && chapter.number <= g.end);
   const groupIndex = group ? BOOK_GROUPS.indexOf(group) + 1 : 0;
   const quiz = getSiteData().quizzes.find((q) => q.slug === chapter.slug);
-  const { chapters } = getSiteData();
+  const { chapters, protocols } = getSiteData();
   const idx = chapters.findIndex((c) => c.slug === chapter.slug);
   const prevHref = idx > 0 ? `/chapters/${chapters[idx - 1].slug}/` : undefined;
   const nextHref = idx < chapters.length - 1 ? `/chapters/${chapters[idx + 1].slug}/` : undefined;
@@ -177,9 +183,22 @@ export default async function ChapterPage({
 
       <div className="mx-auto grid max-w-5xl gap-10 px-5 py-12 lg:grid-cols-[1fr_280px]">
         <div className="min-w-0">
-          <HighlightLayer slug={chapter.slug}>
-            <BookMarkdown body={chapter.body} dropCap />
-          </HighlightLayer>
+          {guide && <ChapterCompanion guide={guide} />}
+          <details className="mb-6 rounded-xl border border-line bg-card p-4 font-sans lg:hidden no-print">
+            <summary className="min-h-11 cursor-pointer py-2 text-sm font-semibold">Jump to a section</summary>
+            <ChapterToc chapter={chapter} />
+          </details>
+          <div id="full-lesson" className="scroll-mt-28">
+            <HighlightLayer slug={chapter.slug}>
+              <BookMarkdown body={chapter.body} dropCap />
+            </HighlightLayer>
+          </div>
+
+          {guide && <section id="chapter-practice" aria-labelledby="chapter-practice-heading" className="mt-10 scroll-mt-28 rounded-2xl border border-gold/30 bg-card p-5 sm:p-6 no-print">
+            <h2 id="chapter-practice-heading" className="mb-5 font-display text-2xl font-semibold">Put this lesson to work</h2>
+            <PracticeRunner plan={getPracticePlan(guide.planId)} chapterSlug={chapter.slug} />
+            <Link href="/protocols/#ready-plans" className="mt-5 inline-flex min-h-11 items-center text-sm font-semibold text-gold underline underline-offset-4">Explore all practice plans →</Link>
+          </section>}
 
           {quiz && quiz.questions.length > 0 && (
             <ChapterQuiz quiz={quiz} />
@@ -208,16 +227,19 @@ export default async function ChapterPage({
                 Protocols referenced
               </p>
               <ul className="mt-3 space-y-2">
-                {chapter.protocols.map((p) => (
-                  <li key={p}>
-                    <Link
-                      href={`/protocols/`}
-                      className="text-sm text-ink-soft underline-offset-2 hover:text-gold hover:underline"
-                    >
-                      {p}
-                    </Link>
-                  </li>
-                ))}
+                {chapter.protocols.map((p) => {
+                  const protocol = protocols.find((item) => item.title === p);
+                  return (
+                    <li key={p}>
+                      <Link
+                        href={`/protocols/${protocol ? `#protocol-${protocol.num.replace(".", "-")}` : ""}`}
+                        className="text-sm text-ink-soft underline-offset-2 hover:text-gold hover:underline"
+                      >
+                        {p}
+                      </Link>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           )}
@@ -239,6 +261,7 @@ export default async function ChapterPage({
               <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">
                 Evidence in this chapter
               </p>
+              <p className="mt-2 text-xs leading-relaxed text-ink-soft">Grades apply to cited claims. Metaphors and planning rules are not the same as scientific findings.</p>
               <div className="mt-3 flex flex-wrap gap-1.5">
                 {chapter.studies.map((s, i) => (
                   <span key={i} title={s.name}>

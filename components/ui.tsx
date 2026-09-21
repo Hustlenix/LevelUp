@@ -123,5 +123,5 @@ export function SectionHeading({ eyebrow, title, lede }: { eyebrow: string; titl
 }
 
 export function PageShell({ children }: { children: React.ReactNode }) {
-  return <div className="mx-auto max-w-5xl px-5 py-10 sm:py-14">{children}</div>;
+  return <div className="interface-font mx-auto max-w-6xl px-5 py-8 sm:px-8 sm:py-12">{children}</div>;
 }

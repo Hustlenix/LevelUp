@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 function isTypingTarget(el: EventTarget | null): boolean {
   if (!(el instanceof HTMLElement)) return false;
   if (el.isContentEditable) return true;
-  return ["INPUT", "TEXTAREA", "SELECT"].includes(el.tagName);
+  return Boolean(el.closest("input, textarea, select, button, a, summary, [role='button'], [role='tab']"));
 }
 
 export default function ChapterKeys({
@@ -20,7 +20,7 @@ export default function ChapterKeys({
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (isTypingTarget(e.target)) return;
+      if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || isTypingTarget(e.target)) return;
       if (e.key === "j" || e.key === "ArrowRight") {
         if (nextHref) {
           e.preventDefault();

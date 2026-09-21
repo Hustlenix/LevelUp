@@ -118,6 +118,42 @@ body {
   transition: background-color 0.25s ease, color 0.25s ease;
 }
 
+/* Interface copy stays crisp while the manual keeps its reading typography. */
+.interface-font {
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 4px;
+}
+
+:where(button, summary) { cursor: pointer; }
+:where(input, textarea, select) { accent-color: var(--color-gold); }
+:where(h1, h2, h3) { text-wrap: balance; }
+:where(input, textarea, select, button, a) { -webkit-tap-highlight-color: transparent; }
+
+.editorial-hero {
+  background: radial-gradient(ellipse at 100% 0%, color-mix(in srgb, var(--color-gold) 10%, transparent), transparent 60%), var(--color-card);
+}
+
+.panel-shadow {
+  box-shadow: 0 2px 4px rgb(34 29 22 / 2%), 0 16px 40px rgb(34 29 22 / 3%);
+}
+
+#more-menu [role="menuitem"],
+#more-menu-mobile [role="menuitem"] {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+@media (max-width: 767px) {
+  input:not([type="checkbox"]):not([type="range"]), textarea, select { font-size: 16px; }
+  html { scroll-padding-top: 8rem; scroll-padding-bottom: 6rem; }
+}
+
 ::selection {
   background: var(--color-gold-soft);
   color: var(--color-ink);

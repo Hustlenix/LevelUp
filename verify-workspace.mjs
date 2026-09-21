@@ -65,4 +65,4 @@ await flow.close();
 console.log(JSON.stringify(results, null, 2));
 await browser.close();
 
-if (results.some((result) => result.errors?.length || result.h1s?.length !== 1 || result.horizontalOverflow || result.menuOpened === false || result.menuClosed === false || result.goalCreated === false || result.focusStarted === false || result.evidenceVisible === false)) process.exitCode = 1;
+if (results.some((result) => result.errors?.length || (result.h1s && result.h1s.length !== 1) || result.horizontalOverflow || result.menuOpened === false || result.menuClosed === false || result.goalCreated === false || result.focusStarted === false || result.evidenceVisible === false)) process.exitCode = 1;

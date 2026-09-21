@@ -1,24 +1,31 @@
 import { chromium } from "playwright";
 
-const url = "http://localhost:3111";
+const base = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3111";
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 
-const reqFail = [];
-const resp4xx = [];
-page.on("requestfailed", (r) =>
-  reqFail.push(`${r.failure()?.errorText} :: ${r.method()} ${r.url()} :: headers=${JSON.stringify(r.headers())}`)
-);
-page.on("response", (r) => {
-  if (r.status() >= 400) resp4xx.push(`${r.status()} :: ${r.request().method()} ${r.url()} :: headers=${JSON.stringify(r.request().headers())}`);
+const requestFailures = [];
+const badResponses = [];
+const pageErrors = [];
+const isStaticExportPrefetch = (url) => /__next\..*\.txt\?.*_rsc/.test(url);
+
+page.on("requestfailed", (request) => {
+  const reason = request.failure()?.errorText ?? "unknown";
+  if (reason === "net::ERR_ABORTED" || isStaticExportPrefetch(request.url())) return;
+  requestFailures.push(`${reason} :: ${request.method()} ${request.url()}`);
 });
+page.on("response", (response) => {
+  if (response.status() < 400 || isStaticExportPrefetch(response.url())) return;
+  badResponses.push(`${response.status()} :: ${response.request().method()} ${response.url()}`);
+});
+page.on("pageerror", (error) => pageErrors.push(error.message));
 
-await page.goto(url + "/", { waitUntil: "networkidle" });
-await page.waitForTimeout(1500);
+await page.goto(`${base}/`, { waitUntil: "networkidle" });
+await page.waitForTimeout(500);
 
-console.log("=== REQUESTFAILED ===");
-console.log(reqFail.length ? reqFail.join("\n") : "(none)");
-console.log("=== 4xx RESPONSES ===");
-console.log(resp4xx.length ? resp4xx.join("\n") : "(none)");
+const result = { requestFailures, badResponses, pageErrors };
+console.log(JSON.stringify(result, null, 2));
 await page.close();
 await browser.close();
+
+if (Object.values(result).some((errors) => errors.length > 0)) process.exitCode = 1;

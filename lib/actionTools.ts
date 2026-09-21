@@ -101,13 +101,16 @@ function readJson<T>(key: string, fallback: T): T {
 }
 
 function writeJson(key: string, value: unknown) {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined") return false;
+  let persisted = false;
   try {
     window.localStorage.setItem(key, JSON.stringify(value));
+    persisted = true;
   } catch {
     /* storage unavailable */
   }
   emit();
+  return persisted;
 }
 
 // ----------------- CALIBRATION -----------------
@@ -308,9 +311,9 @@ export function useProtocolLogsStore(): ProtocolLog[] {
   );
 }
 
-export function logProtocolExecution(protocolNum: string, protocolTitle: string, inputs: Record<string, string>, durationSeconds: number) {
+export function logProtocolExecution(protocolNum: string, protocolTitle: string, inputs: Record<string, string>, durationSeconds: number, id?: string) {
   const log: ProtocolLog = {
-    id: `proto_${Date.now()}`,
+    id: id ?? `proto_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
     protocolNum,
     protocolTitle,
     date: getTodayString(),
@@ -318,11 +321,11 @@ export function logProtocolExecution(protocolNum: string, protocolTitle: string,
     durationSeconds,
     completedAt: Date.now(),
   };
-  const next = [log, ...getProtocolLogsSnapshot()];
+  const next = [log, ...getProtocolLogsSnapshot().filter((entry) => entry.id !== log.id)];
   protocolLogsCache = next;
-  writeJson(PROTOCOL_LOGS_KEY, next);
+  const persisted = writeJson(PROTOCOL_LOGS_KEY, next);
   recordActivity();
-  return log;
+  return { ...log, persisted };
 }
 
 // ----------------- AUDIO CHIME (WEB AUDIO API) -----------------

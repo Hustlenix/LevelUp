@@ -60,7 +60,7 @@ export default function ThemeToggle() {
         aria-label="Change theme"
         aria-expanded={open}
         title="Change theme"
-        className="flex h-9 w-9 items-center justify-center rounded-full border border-line bg-paper-deep text-ink-soft transition-colors hover:border-gold hover:text-gold"
+        className="flex h-11 w-11 items-center justify-center rounded-lg border border-line bg-card text-ink-soft transition-colors hover:border-gold hover:text-gold"
       >
         <svg
           width="16"

@@ -61,12 +61,16 @@ export default async function ChaptersPage() {
       <SectionHeading
         eyebrow="Table of Contents"
         title="Twenty-eight lessons, one manual"
-        lede="Read in order — each chapter builds on the ones before it. Filter by pillar to focus on what you need now."
+        lede="Read in order, or start with a question you have today. Every chapter now includes a plain-language guide, a worked example and a small action to try."
       />
       <p className="-mt-4 mb-8 text-sm text-ink-soft">
-        ≈ {totalText} of reading across {chapters.length} chapters. Every claim is graded A–D
-        against the research. See the <Link className="underline decoration-gold/60 underline-offset-2 hover:text-gold" href="/audit/">Verification Audit</Link>.
+        ≈ {totalText} of estimated reading across {chapters.length} chapters. Evidence grades describe cited claims,
+        not a guarantee that an exercise will work for everyone. See the <Link className="underline decoration-gold/60 underline-offset-2 hover:text-gold" href="/audit/">Verification Audit</Link>.
       </p>
+      <div className="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-line bg-card p-5">
+        <div><h2 className="font-display text-lg font-semibold">Prefer to learn by doing?</h2><p className="mt-1 text-sm text-ink-soft">Try a Pomodoro, a two-minute restart or a ready-made weekly plan.</p></div>
+        <Link href="/protocols/#ready-plans" className="inline-flex min-h-11 items-center rounded-lg bg-ink px-4 py-2 text-sm font-semibold text-paper">Choose a practice plan →</Link>
+      </div>
       <Suspense fallback={<ChapterListFallback chapters={chapters} />}>
         <ChapterList chapters={chapters} />
       </Suspense>

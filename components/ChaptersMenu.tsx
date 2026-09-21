@@ -52,7 +52,7 @@ export default function ChaptersMenu({
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-haspopup="menu"
-        className={`flex items-center gap-1.5 py-1 text-ink-soft transition-colors hover:text-gold ${
+        className={`flex min-h-11 items-center gap-1.5 py-1 text-ink-soft transition-colors hover:text-gold ${
           mobile ? "text-xs" : "text-sm"
         }`}
       >
@@ -70,7 +70,7 @@ export default function ChaptersMenu({
         <div
           id="chapters-menu"
           className={`mt-2 w-full rounded-xl border border-line bg-paper shadow-xl ${
-            mobile ? "" : "absolute left-0 top-full z-50 w-80"
+            mobile ? "absolute left-0 top-full z-50 min-w-[min(20rem,calc(100vw-2rem))]" : "absolute left-0 top-full z-50 w-80"
           }`}
         >
           <div className="max-h-[70vh] overflow-y-auto p-3">

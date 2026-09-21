@@ -11,6 +11,8 @@ export default function ChapterToc({ chapter }: { chapter: Chapter }) {
 
   const items = useMemo(
     () => [
+      { id: "chapter-guide", label: "In plain English" },
+      { id: "full-lesson", label: "Full lesson" },
       ...chapter.stats.sections.map((s) => ({
         id: `sec-${s.num}`,
         label: `${s.num} — ${s.title}`,
@@ -18,6 +20,7 @@ export default function ChapterToc({ chapter }: { chapter: Chapter }) {
       ...(chapter.stats.keyIdeas ? [{ id: "sec-keyideas", label: "Key Ideas" }] : []),
       ...(chapter.stats.applyToday ? [{ id: "sec-apply", label: "Apply Today" }] : []),
       ...(chapter.stats.theScience ? [{ id: "sec-science", label: "The Science" }] : []),
+      { id: "chapter-practice", label: "Try the guided plan" },
     ],
     [chapter]
   );
