@@ -34,7 +34,8 @@ export default function OnboardingWizard() {
   return (
     <PageShell>
       <div className="mx-auto max-w-xl">
-        <div className="mb-6 flex items-center justify-between">
+        <h1 className="mb-6 font-display text-3xl font-semibold text-ink">Set up Study Mode</h1>
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <p className="font-display text-xs font-semibold uppercase tracking-[0.25em] text-gold">
             {STEPS[step]} · Step {step + 1} of {STEPS.length}
           </p>

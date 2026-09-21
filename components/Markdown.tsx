@@ -24,6 +24,7 @@ function headingId(node: Element): string | undefined {
 }
 
 const components: Components = {
+  pre: ({ children }) => <pre tabIndex={0} aria-label="Scrollable code example">{children}</pre>,
   img: ({ src, alt, ...props }) => <img src={typeof src === "string" ? withPublicBasePath(src) : src} alt={alt ?? ""} loading="lazy" {...props} />,
   h2: ({ node, children }) => {
     const id = node ? headingId(node) : undefined;

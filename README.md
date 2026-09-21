@@ -199,4 +199,10 @@ records persist. GitHub Pages does not host Ollama or an application backend:
 optional local-model features need a separately running local Ollama installation
 and permitted browser access. The built-in deterministic fallback does not need it.
 
+**Release verification:** after starting the production preview, run
+`npx playwright install chromium` once, then `node verify-release.mjs`.
+Set `PLAYWRIGHT_BASE_URL=https://hustlenix.github.io/LevelUp` to check the live site.
+The checks use an isolated browser profile and cover route loading, mobile layout,
+search, quiz persistence, guided practice, goals/focus, and backup export/restore.
+
 **Tech stack:** Next.js 16, Tailwind v4, node:sqlite, MiniSearch, GitHub Pages

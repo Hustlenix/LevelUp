@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getSiteData } from "@/lib/content";
 import { GradeBadge, PageShell, SectionHeading } from "@/components/ui";
 import { canonical } from "@/lib/site";
@@ -81,9 +82,9 @@ export default function AuditPage() {
                   <span className="mt-0.5 block font-display text-base font-semibold text-ink">
                     {a.claim}
                   </span>
-                </span>
-                <span className="mt-1 shrink-0 text-xs uppercase tracking-wider text-ink-faint">
-                  {a.verdict}
+                  <span className="mt-2 block text-xs uppercase tracking-wider text-ink-faint">
+                    {a.verdict}
+                  </span>
                 </span>
                 <span className="mt-1 shrink-0 text-ink-faint transition-transform group-open:rotate-45">
                   +
@@ -103,7 +104,7 @@ export default function AuditPage() {
       </div>
 
       <p className="mt-8 text-sm text-ink-faint">
-        All {chapters.length} chapters cite these claims. Full research notes are on the <a className="text-gold underline-offset-2 hover:underline" href="/research/">Research</a> page.
+        All {chapters.length} chapters cite these claims. Full research notes are on the <Link className="text-gold underline-offset-2 hover:underline" href="/research/">Research</Link> page.
       </p>
     </PageShell>
   );

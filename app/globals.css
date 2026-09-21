@@ -164,9 +164,26 @@ body {
 }
 
 .book-prose {
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-size: calc(1.075rem * var(--reader-scale));
   line-height: var(--reader-lineheight, 1.85);
   font-family: var(--reader-font-family, var(--font-body));
+}
+
+.book-prose pre {
+  max-width: 100%;
+  overflow-x: auto;
+  margin-bottom: 1.35em;
+  padding: 1rem;
+  border: 1px solid var(--color-line);
+  border-radius: 0.5rem;
+  background: var(--color-paper-deep);
+}
+
+.book-prose pre code {
+  white-space: pre;
+  overflow-wrap: normal;
 }
 
 .book-prose p {

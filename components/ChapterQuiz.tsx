@@ -24,7 +24,18 @@ export default function ChapterQuiz({ quiz }: { quiz: ChapterQuiz }) {
     }
     setPicked(i);
     const correct = quiz.questions[idx].options[i].correct;
-    setResults((r) => [...r, correct]);
+    const nextResults = [...results, correct];
+    setResults(nextResults);
+    // The final answer immediately renders the summary, so persist here rather
+    // than behind a button in the question panel that is no longer mounted.
+    if (nextResults.length === quiz.questions.length) {
+      const finalScore = nextResults.filter(Boolean).length;
+      saveQuizResult(quiz.slug, finalScore, quiz.questions.length);
+      trackEvent(ANALYTICS_EVENTS.quizCompleted, {
+        chapter_slug: quiz.slug,
+        quiz_score: finalScore,
+      });
+    }
   };
 
   const next = () => {
@@ -36,14 +47,6 @@ export default function ChapterQuiz({ quiz }: { quiz: ChapterQuiz }) {
     setPicked(null);
     setResults([]);
     setIdx(0);
-  };
-
-  const finish = () => {
-    saveQuizResult(quiz.slug, score, quiz.questions.length);
-    trackEvent(ANALYTICS_EVENTS.quizCompleted, {
-      chapter_slug: quiz.slug,
-      quiz_score: score,
-    });
   };
 
   return (
@@ -97,21 +100,13 @@ export default function ChapterQuiz({ quiz }: { quiz: ChapterQuiz }) {
               {quiz.questions[idx].explanation && (
                 <p className="mt-1 text-sm text-ink-soft">{quiz.questions[idx].explanation}</p>
               )}
-              {idx + 1 < quiz.questions.length ? (
+              {idx + 1 < quiz.questions.length && (
                 <button
                   type="button"
                   onClick={next}
                   className="mt-3 rounded-full bg-gold px-5 py-2 text-sm font-semibold text-paper transition-colors cta-hover"
                 >
                   Next question
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={finish}
-                  className="mt-3 rounded-full bg-gold px-5 py-2 text-sm font-semibold text-paper transition-colors cta-hover"
-                >
-                  See my score
                 </button>
               )}
             </div>
