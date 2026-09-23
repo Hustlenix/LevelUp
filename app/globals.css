@@ -134,6 +134,8 @@ body {
 :where(h1, h2, h3) { text-wrap: balance; }
 :where(input, textarea, select, button, a) { -webkit-tap-highlight-color: transparent; }
 
+details:not([open]) > :not(summary) { display: none !important; }
+
 .editorial-hero {
   background: radial-gradient(ellipse at 100% 0%, color-mix(in srgb, var(--color-gold) 10%, transparent), transparent 60%), var(--color-card);
 }
