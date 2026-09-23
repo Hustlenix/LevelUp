@@ -18,6 +18,16 @@ function formatDateToICS(date: Date): string {
   return `${year}${month}${day}T${hours}${minutes}${seconds}Z`;
 }
 
+function escapeICS(value: string): string {
+  return value
+    .replace(/\\/g, "\\\\")
+    .replace(/;/g, "\\;")
+    .replace(/,/g, "\\,")
+    .replace(/\r\n/g, "\n")
+    .replace(/\r/g, "\n")
+    .replace(/\n/g, "\\n");
+}
+
 export function generateICSContent(
   blocks: { title: string; description: string; start: Date; end: Date }[]
 ): string {
@@ -34,8 +44,8 @@ export function generateICSContent(
       `DTSTAMP:${now}`,
       `DTSTART:${startStr}`,
       `DTEND:${endStr}`,
-      `SUMMARY:${b.title.replace(/[,;]/g, " ")}`,
-      `DESCRIPTION:${b.description.replace(/\n/g, "\\n")}`,
+      `SUMMARY:${escapeICS(b.title)}`,
+      `DESCRIPTION:${escapeICS(b.description)}`,
       "STATUS:CONFIRMED",
       "TRANSP:OPAQUE",
       "END:VEVENT",
