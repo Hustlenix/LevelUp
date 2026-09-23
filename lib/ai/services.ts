@@ -12,15 +12,18 @@ import {
 } from "./contracts.ts";
 import { createLocalProvider } from "./local-provider.ts";
 import { configuredOllamaEndpoint, createOllamaProvider } from "./ollama-provider.ts";
+import { createWebGpuProvider, type WebGpuProviderOptions } from "./webgpu-provider.ts";
 
 interface AiServiceOptions {
   endpoint?: string;
   fetchImpl?: typeof fetch;
   timeoutMs?: number;
+  webgpu?: WebGpuProviderOptions;
 }
 
 export function createAiServices(options: AiServiceOptions = {}) {
   const local = createLocalProvider();
+  const webgpu: AiProvider | null = createWebGpuProvider(options.webgpu ?? {});
   const ollama: AiProvider | null = createOllamaProvider({
     endpoint: options.endpoint ?? configuredOllamaEndpoint(),
     ...(options.fetchImpl ? { fetchImpl: options.fetchImpl } : {}),
@@ -33,6 +36,10 @@ export function createAiServices(options: AiServiceOptions = {}) {
     context: AiContext,
     refs: ContentReference[],
   ): Promise<AiServiceResult<TResult>> {
+    if (webgpu) {
+      const result = await webgpu[method](request as never, context, refs);
+      if (result.ok) return result as AiServiceResult<TResult>;
+    }
     if (ollama) {
       const result = await ollama[method](request as never, context, refs);
       if (result.ok) return result as AiServiceResult<TResult>;

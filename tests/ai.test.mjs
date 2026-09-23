@@ -24,6 +24,19 @@ import {
   createOllamaProvider,
   isLocalOllamaEndpoint,
 } from "../lib/ai/ollama-provider.ts";
+import { aiSourceLabel } from "../lib/ai/contracts.ts";
+import {
+  WEBGPU_MODEL,
+  createWebGpuProvider,
+  resetWebGpuEngine,
+  startWebGpuModel,
+} from "../lib/ai/webgpu-provider.ts";
+import {
+  cancelWebGpuDownload,
+  getWebGpuProvisionState,
+  optInWebGpu,
+  probeWebGpu,
+} from "../lib/ai/webgpu-provision.ts";
 
 const profile = {
   ...defaultProfile(),
@@ -298,4 +311,108 @@ test("AI plan reducer saves a bounded plan and advances one session at a time", 
   const completed = reduceAiPlanState(started, { type: "set-session-status", date: plan.date, sessionId: "session-1", status: "completed" });
   assert.equal(completed.plans[plan.date].sessions[0].status, "completed");
   assert.equal(completed.plans[plan.date].sessions[1].status, "pending");
+});
+
+function fakeWebGpuEngine(content) {
+  return {
+    chat: {
+      completions: {
+        create: async () => ({ choices: [{ message: { content } }] }),
+      },
+    },
+  };
+}
+
+function fakeWebGpuFactory(content) {
+  return async (model, { initProgressCallback }) => {
+    assert.equal(model, WEBGPU_MODEL);
+    initProgressCallback({ progress: 1, text: "test model loaded" });
+    return fakeWebGpuEngine(content);
+  };
+}
+
+const webGpuCoachJson = JSON.stringify({
+  answer: "Use the in-browser model as your next step.",
+  nextActions: ["Open the chapter"],
+  basis: ["The WebGPU tier answered first."],
+});
+
+test("aiSourceLabel names every AI source for the UI", () => {
+  assert.equal(aiSourceLabel("webgpu"), "In-browser WebGPU model");
+  assert.equal(aiSourceLabel("ollama"), "Ollama response");
+  assert.equal(aiSourceLabel("local"), "Deterministic local fallback");
+});
+
+test("WebGPU provider is node-safe and only attaches when WebGPU is available", () => {
+  resetWebGpuEngine();
+  assert.equal(probeWebGpu(), false);
+  assert.equal(createWebGpuProvider(), null);
+  assert.equal(getWebGpuProvisionState().available, false);
+});
+
+test("service layer prefers the WebGPU tier once the user opts in", async () => {
+  resetWebGpuEngine();
+  optInWebGpu();
+  const context = makeContext();
+  const refs = retrieveLevelUpContent(buildContentDocuments(siteData), "focus", 2);
+  const services = createAiServices({
+    endpoint: "http://127.0.0.1:11434/api/chat",
+    fetchImpl: async () => {
+      throw new Error("network down");
+    },
+    webgpu: { available: true, engineFactory: fakeWebGpuFactory(webGpuCoachJson) },
+  });
+  const result = await services.coach({ question: "What should I learn next?" }, context, refs);
+  resetWebGpuEngine();
+  assert.equal(result.ok, true);
+  assert.equal(result.source, "webgpu");
+  assert.equal(result.value.answer, "Use the in-browser model as your next step.");
+});
+
+test("service layer falls back locally when the WebGPU tier returns invalid output", async () => {
+  resetWebGpuEngine();
+  optInWebGpu();
+  const context = makeContext();
+  const refs = retrieveLevelUpContent(buildContentDocuments(siteData), "focus", 2);
+  const services = createAiServices({
+    endpoint: "http://127.0.0.1:11434/api/chat",
+    fetchImpl: async () => {
+      throw new Error("network down");
+    },
+    webgpu: { available: true, engineFactory: fakeWebGpuFactory("not json at all") },
+  });
+  const result = await services.coach({ question: "What should I focus on today?" }, context, refs);
+  resetWebGpuEngine();
+  assert.equal(result.ok, true);
+  assert.equal(result.source, "local");
+  assert.equal(result.fallbackReason, "ollama-unavailable");
+});
+
+test("startWebGpuModel loads the model on demand and reports ready", async () => {
+  resetWebGpuEngine();
+  const started = await startWebGpuModel({ available: true, engineFactory: fakeWebGpuFactory(webGpuCoachJson) });
+  assert.equal(started.started, true);
+  assert.equal(started.reason, undefined);
+  assert.equal(getWebGpuProvisionState().status, "ready");
+  assert.equal(getWebGpuProvisionState().optedIn, true);
+  resetWebGpuEngine();
+});
+
+test("cancelling the WebGPU download keeps the chain on other engines", async () => {
+  resetWebGpuEngine();
+  cancelWebGpuDownload();
+  const context = makeContext();
+  const refs = retrieveLevelUpContent(buildContentDocuments(siteData), "focus", 2);
+  const services = createAiServices({
+    endpoint: "http://127.0.0.1:11434/api/chat",
+    fetchImpl: async () => {
+      throw new Error("network down");
+    },
+    webgpu: { available: true, engineFactory: fakeWebGpuFactory(webGpuCoachJson) },
+  });
+  const result = await services.coach({ question: "What should I focus on today?" }, context, refs);
+  assert.equal(result.ok, true);
+  assert.equal(result.source, "local");
+  assert.equal(getWebGpuProvisionState().status, "cancelled");
+  resetWebGpuEngine();
 });

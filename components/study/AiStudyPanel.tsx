@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { AlertCircle, BookOpen, Check, Clock3, MessageCircle, Play, Sparkles } from "lucide-react";
 import type { Chapter, SearchDoc } from "@/lib/types";
+import { aiSourceLabel } from "@/lib/ai/contracts";
 import type { AiContext, AiSource, CoachResult, ContentReference, TutorResult } from "@/lib/ai/contracts";
 import { chapterReference } from "@/lib/ai/context";
 import { retrieveLevelUpContent } from "@/lib/ai/retrieval";
@@ -16,6 +17,14 @@ import {
   type OllamaStatus,
 } from "@/lib/ai/ollama-provider";
 import { saveAiPlan, setAiSessionStatus, useAiPlanStore } from "@/lib/ai/store";
+import { WEBGPU_MODEL, startWebGpuModel } from "@/lib/ai/webgpu-provider";
+import {
+  WEBGPU_PROVISION_SERVER,
+  cancelWebGpuDownload,
+  getWebGpuProvisionState,
+  subscribeWebGpuProvision,
+  type WebGpuProvisionState,
+} from "@/lib/ai/webgpu-provision";
 
 interface AiStudyPanelProps {
   context: AiContext;
@@ -27,10 +36,6 @@ type BusyOperation = "planner" | "coach" | "tutor" | null;
 
 const buttonClass = "inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-paper transition-colors hover:bg-gold-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold disabled:cursor-not-allowed disabled:opacity-50";
 const secondaryButtonClass = "inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-line bg-paper-deep px-3 py-2 text-sm font-medium text-ink-soft transition-colors hover:border-gold hover:text-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold disabled:cursor-not-allowed disabled:opacity-50";
-
-function sourceLabel(source: AiSource) {
-  return source === "ollama" ? "Ollama response" : "Deterministic local fallback";
-}
 
 function TypePill({ type }: { type: string }) {
   return <span className="rounded-full border border-line bg-paper-deep px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-ink-faint">{type}</span>;
@@ -44,7 +49,7 @@ function ResultSource({ source, note, fallbackReason }: { source: AiSource; note
       : "This answer was generated locally from your saved LevelUp state.";
   return (
     <div className="mt-3 rounded-lg border border-line/80 bg-paper-deep/60 px-3 py-2 text-xs text-ink-soft" role="status" aria-live="polite">
-      <span className="font-semibold text-ink">{sourceLabel(source)}.</span>{" "}
+      <span className="font-semibold text-ink">{aiSourceLabel(source)}.</span>{" "}
       {note ?? fallbackNote}
     </div>
   );
@@ -83,6 +88,89 @@ function OllamaStatusCard({ status, checking, onCheck }: { status: OllamaStatus;
   );
 }
 
+function WebGpuCard({ provision }: { provision: WebGpuProvisionState }) {
+  const [starting, setStarting] = useState(false);
+
+  async function start() {
+    setStarting(true);
+    await startWebGpuModel();
+    setStarting(false);
+  }
+
+  if (!provision.available) return null;
+
+  const isIdle = provision.status === "idle" || provision.status === "cancelled";
+  const working = starting || provision.status === "downloading";
+
+  return (
+    <div className="mt-5 rounded-xl border border-line bg-paper-deep/70 p-4" role="status" aria-live="polite">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold">In-browser AI engine</p>
+            <span className="rounded-full border border-line bg-paper-deep px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-ink-faint">webgpu engine</span>
+          </div>
+          {isIdle ? (
+            <>
+              <p className="mt-1 text-sm font-semibold text-ink">
+                {provision.status === "cancelled" ? "Download cancelled" : "Run the AI directly on this device"}
+              </p>
+              <p className="mt-1 max-w-2xl text-xs leading-relaxed text-ink-soft">
+                {provision.status === "cancelled"
+                  ? "The download stopped. Your question is still answered by the other engines."
+                  : "A small in-browser model (~1 GB) answers Coach, Planner, and Tutor on this device. Everything runs locally; nothing is sent to a remote AI service."}{" "}
+                Locked to <code className="rounded border border-line px-1">{WEBGPU_MODEL}</code>.
+              </p>
+            </>
+          ) : null}
+          {provision.status === "downloading" ? (
+            <>
+              <p className="mt-1 text-sm font-semibold text-ink">Downloading the in-browser model</p>
+              <p className="mt-1 max-w-2xl truncate text-xs leading-relaxed text-ink-soft">{provision.text || "Downloading…"}</p>
+              <div className="mt-3 flex items-center gap-2">
+                <div className="h-2 w-56 max-w-full overflow-hidden rounded-full bg-line" role="progressbar" aria-valuenow={Math.round(provision.progress * 100)} aria-valuemin={0} aria-valuemax={100}>
+                  <div className="h-full rounded-full bg-gold" style={{ width: `${Math.round(provision.progress * 100)}%` }}></div>
+                </div>
+                <span className="text-xs font-semibold text-ink">{Math.round(provision.progress * 100)}%</span>
+              </div>
+            </>
+          ) : null}
+          {provision.status === "ready" ? (
+            <>
+              <p className="mt-1 text-sm font-semibold text-ink">In-browser model ready</p>
+              <p className="mt-1 max-w-2xl text-xs leading-relaxed text-ink-soft">
+                {provision.text} Coach, Planner, and Tutor prefer this engine when it is ready.
+              </p>
+            </>
+          ) : null}
+          {provision.status === "error" && provision.error ? (
+            <>
+              <p className="mt-1 text-sm font-semibold text-ink">The in-browser model could not start</p>
+              <p className="mt-1 max-w-2xl text-xs leading-relaxed text-ink-soft">{provision.error.message}</p>
+            </>
+          ) : null}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <button type="button" onClick={() => void start()} disabled={working || provision.status === "ready"} className={provision.status === "idle" ? buttonClass : secondaryButtonClass}>
+            {working
+              ? "Downloading…"
+              : provision.status === "ready"
+                ? "Ready"
+                : provision.status === "cancelled"
+                  ? "Try again"
+                  : "Download the in-browser model"}
+          </button>
+          {provision.status === "downloading" ? (
+            <button type="button" onClick={cancelWebGpuDownload} className={secondaryButtonClass}>
+              Cancel download
+            </button>
+          ) : null}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ErrorMessage({ message }: { message: string }) {
   return (
     <div className="mt-3 flex items-start gap-2 rounded-lg border border-rose/30 bg-rose/5 px-3 py-2 text-sm text-ink" role="alert">
@@ -96,6 +184,7 @@ export default function AiStudyPanel({ context, documents, chapters }: AiStudyPa
   const planState = useAiPlanStore();
   const plan = planState.plans[context.date] ?? null;
   const services = useMemo(() => createAiServices(), []);
+  const webGpu = useSyncExternalStore(subscribeWebGpuProvision, getWebGpuProvisionState, () => WEBGPU_PROVISION_SERVER);
   const defaultChapter = context.progress.nextChapterSlug ?? chapters[0]?.slug ?? "";
   const [availableMinutes, setAvailableMinutes] = useState(String(context.profile.preferredMinutesPerDay || 30));
   const [objective, setObjective] = useState("");
@@ -202,6 +291,8 @@ export default function AiStudyPanel({ context, documents, chapters }: AiStudyPa
 
       <OllamaStatusCard status={ollamaStatus} checking={checkingOllama} onCheck={() => void refreshOllamaStatus()} />
 
+      <WebGpuCard provision={webGpu} />
+
       <div className="mt-6 grid gap-5 lg:grid-cols-2">
         <div className="rounded-xl border border-line bg-paper p-5">
           <div className="flex items-start justify-between gap-3">
@@ -248,7 +339,7 @@ export default function AiStudyPanel({ context, documents, chapters }: AiStudyPa
                   <p className="text-xs font-semibold uppercase tracking-wider text-ink-faint">{plan.priority}</p>
                   <p className="mt-1 font-display text-base font-semibold text-ink">{plan.objective}</p>
                 </div>
-                <TypePill type={sourceLabel(plan.source)} />
+                <TypePill type={aiSourceLabel(plan.source)} />
               </div>
               <ol className="mt-4 space-y-3">
                 {plan.sessions.map((session) => (

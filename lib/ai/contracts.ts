@@ -20,7 +20,15 @@ export const AI_LIMITS = {
 } as const;
 
 export type AiOperation = "coach" | "planner" | "tutor";
-export type AiSource = "local" | "ollama";
+export type AiSource = "local" | "ollama" | "webgpu";
+
+export function aiSourceLabel(source: AiSource): string {
+  return source === "webgpu"
+    ? "In-browser WebGPU model"
+    : source === "ollama"
+      ? "Ollama response"
+      : "Deterministic local fallback";
+}
 export type PlanSessionType = "learn" | "practice" | "review" | "focus" | "reflect";
 export type AiSessionStatus = "pending" | "started" | "completed";
 export type TutorMode = "explain" | "summarize" | "practice";
