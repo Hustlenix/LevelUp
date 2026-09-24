@@ -256,7 +256,7 @@ export default function CompanionLayer({ chapters }: { chapters: ChapterContext[
   const timeOfDay = now ? deriveTimeOfDay(now) : "day";
   const behaviour = selectCompanionBehaviour(state, {
     activeFocus: demoState ? state.currentActivity === "focusing" : activeFocus,
-    chapterPillar: demoState ? state.journal.at(-1)?.pillar ?? null : currentChapter?.pillar ?? null,
+    chapterPillar: demoState ? state.journal[state.journal.length - 1]?.pillar ?? null : currentChapter?.pillar ?? null,
     timeOfDay,
     idleTick,
     motion: effectiveMotion,
@@ -439,7 +439,7 @@ export default function CompanionLayer({ chapters }: { chapters: ChapterContext[
                   <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-ink-soft">
                     <dt>Behaviour</dt><dd className="text-right font-mono text-ink">{behaviour}</dd>
                     <dt>Route</dt><dd className="truncate text-right font-mono text-ink">{demoState ? "fixture" : pathname}</dd>
-                    <dt>Chapter</dt><dd className="truncate text-right text-ink">{demoState ? state.journal.at(-1)?.note ?? "—" : currentChapter?.title ?? "—"}</dd>
+                    <dt>Chapter</dt><dd className="truncate text-right text-ink">{demoState ? state.journal[state.journal.length - 1]?.note ?? "—" : currentChapter?.title ?? "—"}</dd>
                     <dt>Time</dt><dd className="text-right font-mono text-ink">{timeOfDay}</dd>
                     <dt>Storage</dt><dd className="text-right text-ink">local only</dd>
                   </dl>
