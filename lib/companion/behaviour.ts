@@ -4,6 +4,7 @@ import type {
   CompanionEventKind,
   CompanionTraits,
   CompanionTraitName,
+  CompanionState,
   TimeOfDay,
 } from "./types.ts";
 
@@ -249,4 +250,62 @@ export function applyTraitDeltas(traits: CompanionTraits, event: CompanionEvent)
 export function pickLine(prng: () => number, lines: readonly string[]): string {
   if (lines.length === 0) return "";
   return lines[Math.min(lines.length - 1, Math.floor(prng() * lines.length))];
+}
+
+export type CompanionVisualBehaviour =
+  | "idle"
+  | "walk"
+  | "sleep"
+  | "sit"
+  | "read"
+  | "work"
+  | "celebrate"
+  | "think"
+  | "stretch"
+  | "ledger"
+  | "letter"
+  | "wave"
+  | "recover";
+
+export interface CompanionBehaviourContext {
+  activeFocus?: boolean;
+  chapterPillar?: "health" | "wealth" | "love" | "self" | null;
+  timeOfDay?: TimeOfDay;
+  idleTick?: number;
+  motion?: "full" | "reduced" | "off";
+  transientPose?: string | null;
+}
+
+/**
+ * Pure visual behaviour selector used by the global companion layer.
+ * Important application state always outranks ambient behaviour. Idle choices
+ * are deterministic for a given seed + tick so tests and reviewer demos replay.
+ */
+export function selectCompanionBehaviour(
+  state: CompanionState,
+  context: CompanionBehaviourContext = {}
+): CompanionVisualBehaviour {
+  if (context.transientPose === "perk") return "celebrate";
+  if (context.transientPose === "wave") return "wave";
+  if (context.transientPose === "stretch") return "stretch";
+
+  if (context.activeFocus || state.currentActivity === "focusing") return "work";
+  if (state.currentActivity === "recovering") return "recover";
+
+  const tod = context.timeOfDay ?? deriveTimeOfDay(new Date());
+  if (tod === "night" && !context.activeFocus) return "sleep";
+
+  if (state.currentActivity === "reading") {
+    if (context.chapterPillar === "health") return "stretch";
+    if (context.chapterPillar === "wealth") return "ledger";
+    if (context.chapterPillar === "love") return "letter";
+    return "read";
+  }
+
+  if (context.motion === "off") return "sit";
+  const fullPool: readonly CompanionVisualBehaviour[] = ["idle", "sit", "think", "walk", "read", "stretch"];
+  const reducedPool: readonly CompanionVisualBehaviour[] = ["idle", "sit", "think", "read"];
+  const pool = context.motion === "reduced" ? reducedPool : fullPool;
+  const tick = Math.max(0, Math.floor(context.idleTick ?? 0));
+  return pool[(state.identity.seed + tick) % pool.length] ?? "idle";
 }
