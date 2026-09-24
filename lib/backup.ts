@@ -1,5 +1,12 @@
 import type { OSState } from "./os/types.ts";
 import { validateOSState } from "./os/migrations.ts";
+import { validateCompanionState } from "./companion/migrations.ts";
+import {
+  COMPANION_KEY,
+  COMPANION_PENDING_KEY,
+  type CompanionEvent,
+  type CompanionState,
+} from "./companion/types.ts";
 import type { PortfolioArtifact } from "./portfolio.ts";
 import { isPortfolioArtifact } from "./portfolio.ts";
 import type { NotificationState } from "./notifications.ts";
@@ -50,6 +57,8 @@ export interface BackupState {
   };
   studentProfile?: unknown; // validated via isStudentProfile at restore
   osState?: OSState;
+  companionState?: CompanionState;
+  companionPending?: CompanionEvent[];
   portfolio?: PortfolioArtifact[];
   notifications?: NotificationState;
   experiments?: Experiment[];
@@ -138,6 +147,12 @@ export function buildBackup(state: BackupState): { schema: number; exportedAt: s
   if (state.osState !== undefined) {
     result.osState = state.osState;
   }
+  if (state.companionState !== undefined) {
+    result.companionState = state.companionState;
+  }
+  if (state.companionPending !== undefined) {
+    result.companionPending = state.companionPending;
+  }
   if (state.portfolio !== undefined) {
     result.portfolio = state.portfolio;
   }
@@ -218,6 +233,28 @@ export function validateBackup(json: unknown): { ok: boolean; errors: string[]; 
       osState = checked.state;
     }
   }
+  let companionState: CompanionState | undefined;
+  if (json.companionState !== undefined) {
+    const checked = validateCompanionState(json.companionState);
+    if (!checked.ok || !checked.state) {
+      errors.push(...checked.errors.map((error) => `companionState: ${error}`));
+    } else {
+      companionState = checked.state;
+    }
+  }
+  let companionPending: CompanionEvent[] | undefined;
+  if (json.companionPending !== undefined) {
+    const isValidPending = (entry: unknown): entry is CompanionEvent =>
+      isRecord(entry) &&
+      typeof entry.id === "string" &&
+      typeof entry.kind === "string" &&
+      typeof entry.occurredAt === "string";
+    if (!Array.isArray(json.companionPending) || !json.companionPending.every(isValidPending)) {
+      errors.push("companionPending has an invalid shape.");
+    } else {
+      companionPending = json.companionPending as CompanionEvent[];
+    }
+  }
   let portfolio: PortfolioArtifact[] | undefined;
   if (json.portfolio !== undefined) {
     if (!Array.isArray(json.portfolio) || !json.portfolio.every(isPortfolioArtifact)) {
@@ -257,6 +294,12 @@ export function validateBackup(json: unknown): { ok: boolean; errors: string[]; 
   if (osState !== undefined) {
     outData.osState = osState;
   }
+  if (companionState !== undefined) {
+    outData.companionState = companionState;
+  }
+  if (companionPending !== undefined) {
+    outData.companionPending = companionPending;
+  }
   if (portfolio !== undefined) {
     outData.portfolio = portfolio;
   }
@@ -289,6 +332,8 @@ function entriesForBackup(data: BackupState): Record<string, string> {
     "levelup-streak-v1": JSON.stringify(data.streak ?? { current: 0, best: 0, last: "" }),
   };
   if (data.osState !== undefined) entries["levelup-os-state-v1"] = JSON.stringify(data.osState);
+  if (data.companionState !== undefined) entries[COMPANION_KEY] = JSON.stringify(data.companionState);
+  if (data.companionPending !== undefined) entries[COMPANION_PENDING_KEY] = JSON.stringify(data.companionPending);
   if (data.portfolio !== undefined) entries["levelup-portfolio-v1"] = JSON.stringify(data.portfolio);
   if (data.notifications !== undefined) entries["levelup-notifications-v1"] = JSON.stringify(data.notifications);
   if (data.experiments !== undefined) entries["levelup-experiments-v1"] = JSON.stringify(data.experiments);

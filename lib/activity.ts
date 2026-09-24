@@ -4,6 +4,7 @@ import { useSyncExternalStore } from "react";
 import type { HighlightEntry } from "@/lib/highlights";
 import type { QuizScore } from "@/lib/types";
 import { advanceStreak, type StreakState } from "@/lib/gamification";
+import { emitCompanionEvent } from "@/lib/companion";
 
 export type { StreakState };
 
@@ -73,6 +74,7 @@ export function addHighlight(entry: HighlightEntry) {
   const next = [...getHighlightsSnapshot(), entry];
   highlightsCache = next;
   writeJson(HIGHLIGHTS_KEY, next);
+  emitCompanionEvent("highlight_created");
   recordActivity();
 }
 
@@ -102,6 +104,8 @@ export function saveQuizResult(slug: string, score: number, total: number) {
   const next = { ...getQuizSnapshot(), [slug]: { score, total, ts: Date.now() } };
   quizCache = next;
   writeJson(QUIZ_KEY, next);
+  // Pass threshold: 60% (score * 5 >= total * 3).
+  emitCompanionEvent(score * 5 >= total * 3 ? "quiz_passed" : "quiz_failed");
   recordActivity();
 }
 
@@ -125,6 +129,7 @@ export function saveReflection(slug: string, text: string) {
   const next = { ...getReflectionsSnapshot(), [slug]: text };
   reflectionsCache = next;
   writeJson(REFLECTIONS_KEY, next);
+  emitCompanionEvent("reflection_saved");
   recordActivity();
 }
 
@@ -148,9 +153,15 @@ export function useStreakStore(): StreakState {
 
 export function recordActivity(now: Date = new Date()) {
   const today = localDate(now);
-  const next = advanceStreak(getStreakSnapshot(), today);
+  const previous = getStreakSnapshot();
+  const next = advanceStreak(previous, today);
   streakCache = next;
   writeJson(STREAK_KEY, next);
+  // A streak_continued event only fires when the streak actually advanced
+  // (day-over-day); same-day repeat activity never re-emits it.
+  if (next.current > previous.current) {
+    emitCompanionEvent("streak_continued", { value: next.current });
+  }
 }
 
 export function restoreStreak(streak: StreakState) {

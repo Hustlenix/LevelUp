@@ -8,7 +8,7 @@
     "build": "node scripts/build-data.mjs && next build",
     "start": "node scripts/serve-static.mjs out 3000",
     "lint": "eslint",
-    "test": "node scripts/build-data.mjs && node --test tests/data.test.mjs tests/features.test.mjs tests/gamification.test.mjs tests/studentProfile.test.mjs tests/ai.test.mjs tests/os.test.mjs tests/notifications.test.mjs tests/blueprint.test.mjs tests/paths.test.mjs tests/learning.test.mjs tests/calendarExport.test.mjs"
+    "test": "node scripts/build-data.mjs && node --test tests/data.test.mjs tests/features.test.mjs tests/gamification.test.mjs tests/studentProfile.test.mjs tests/ai.test.mjs tests/os.test.mjs tests/notifications.test.mjs tests/blueprint.test.mjs tests/paths.test.mjs tests/learning.test.mjs tests/calendarExport.test.mjs tests/companion.test.mjs"
   },
   "dependencies": {
     "@mlc-ai/web-llm": "^0.2.85",

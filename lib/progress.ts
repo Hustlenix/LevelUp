@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { recordActivity } from "@/lib/activity";
+import { emitCompanionEvent } from "@/lib/companion";
 
 export interface ChapterProgress {
   complete: boolean;
@@ -57,9 +58,13 @@ function write(map: ProgressMap) {
 export function markComplete(slug: string, complete: boolean) {
   const map = { ...getProgressSnapshot() };
   const entry = map[slug] ?? { complete: false, maxScroll: 0, updatedAt: 0 };
+  const wasComplete = entry.complete;
   map[slug] = { ...entry, complete, updatedAt: Date.now() };
   write(map);
-  if (complete) recordActivity();
+  if (complete) {
+    if (!wasComplete) emitCompanionEvent("chapter_completed");
+    recordActivity();
+  }
 }
 
 export function recordScroll(slug: string, maxScroll: number) {
