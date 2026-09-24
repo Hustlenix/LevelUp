@@ -16,6 +16,7 @@ import {
 } from "./types.ts";
 import type { Pillar } from "../types.ts";
 
+export const COMPANION_EVENT_SIGNAL = "levelup:companion-event";
 let pendingSeq = 0;
 
 /** Emit a companion event into the pending queue (client-side adapters). */
@@ -30,6 +31,9 @@ export function emitCompanionEvent(
   queue.push(event);
   if (queue.length > COMPANION_PENDING_MAX) queue.splice(0, queue.length - COMPANION_PENDING_MAX);
   writePending(queue, storage);
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent(COMPANION_EVENT_SIGNAL, { detail: { kind } }));
+  }
 }
 
 function readPending(storage: StorageLike): CompanionEvent[] {
