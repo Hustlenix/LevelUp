@@ -738,3 +738,11 @@ details:not([open]) > :not(summary) { display: none !important; }
     transition: none !important;
   }
 }
+
+
+.companion-root[data-motion="off"] .milo-avatar,
+.companion-root[data-motion="off"] .milo-stage,
+.companion-root[data-motion="off"] .room-change {
+  animation: none !important;
+  transition: none !important;
+}
