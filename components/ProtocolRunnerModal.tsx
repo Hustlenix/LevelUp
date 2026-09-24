@@ -11,6 +11,7 @@ import {
   ArrowRight
 } from "lucide-react";
 import type { Protocol } from "@/lib/types";
+import { emitCompanionEvent } from "@/lib/companion";
 import { 
   playBellChime, 
   logProtocolExecution, 
@@ -30,11 +31,13 @@ export default function ProtocolRunnerModal({ protocol, onClose, onCompleted }: 
   useEffect(() => {
     if (!protocol) return;
     trackEvent(ANALYTICS_EVENTS.protocolStarted, { protocol_id: protocol.num });
+    emitCompanionEvent("protocol_started", { note: protocol.num });
   }, [protocol]);
 
   if (!protocol) return null;
   const handleCompleted = () => {
     trackEvent(ANALYTICS_EVENTS.protocolCompleted, { protocol_id: protocol.num });
+    emitCompanionEvent("protocol_completed", { note: protocol.num });
     onCompleted?.();
   };
 
