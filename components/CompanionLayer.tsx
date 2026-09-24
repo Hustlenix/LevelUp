@@ -310,14 +310,17 @@ export default function CompanionLayer({ chapters }: { chapters: ChapterContext[
   }, [chaptersByPillar, handleReactions, osState]);
 
   useEffect(() => {
-    setSettings(readCompanionSettings(browserStorage()));
-    setNow(new Date());
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const syncClientState = window.setTimeout(() => {
+      setSettings(readCompanionSettings(browserStorage()));
+      setNow(new Date());
+      setSystemReducedMotion(motion.matches);
+    }, 0);
     const updateMotion = () => setSystemReducedMotion(motion.matches);
-    updateMotion();
     motion.addEventListener("change", updateMotion);
     const clock = window.setInterval(() => setNow(new Date()), 60_000);
     return () => {
+      window.clearTimeout(syncClientState);
       motion.removeEventListener("change", updateMotion);
       window.clearInterval(clock);
       if (poseTimer.current) window.clearTimeout(poseTimer.current);
@@ -332,8 +335,11 @@ export default function CompanionLayer({ chapters }: { chapters: ChapterContext[
   useEffect(() => {
     const onDomainEvent = () => flush();
     window.addEventListener(COMPANION_EVENT_SIGNAL, onDomainEvent);
-    flush();
-    return () => window.removeEventListener(COMPANION_EVENT_SIGNAL, onDomainEvent);
+    const initialPump = window.setTimeout(flush, 0);
+    return () => {
+      window.clearTimeout(initialPump);
+      window.removeEventListener(COMPANION_EVENT_SIGNAL, onDomainEvent);
+    };
   }, [flush]);
 
   useEffect(() => {
