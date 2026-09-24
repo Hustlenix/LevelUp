@@ -257,7 +257,7 @@ export default function CompanionLayer({ chapters }: { chapters: ChapterContext[
   const behaviour = selectCompanionBehaviour(state, {
     activeFocus: demoState ? state.currentActivity === "focusing" : activeFocus,
     chapterPillar: demoState ? state.journal[state.journal.length - 1]?.pillar ?? null : currentChapter?.pillar ?? null,
-    timeOfDay,
+    timeOfDay: demoState ? "day" : timeOfDay,
     idleTick,
     motion: effectiveMotion,
     transientPose,
@@ -272,12 +272,33 @@ export default function CompanionLayer({ chapters }: { chapters: ChapterContext[
       setLatestUnlock(room.itemId);
       window.setTimeout(() => setLatestUnlock(null), 2600);
     }
+    if (settings.sound && reactions.some((reaction) => reaction.priority === 1)) {
+      try {
+        const AudioContextCtor = window.AudioContext;
+        const audio = new AudioContextCtor();
+        const oscillator = audio.createOscillator();
+        const gain = audio.createGain();
+        oscillator.type = "sine";
+        oscillator.frequency.setValueAtTime(520, audio.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(680, audio.currentTime + 0.09);
+        gain.gain.setValueAtTime(0.0001, audio.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.045, audio.currentTime + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime + 0.13);
+        oscillator.connect(gain);
+        gain.connect(audio.destination);
+        oscillator.start();
+        oscillator.stop(audio.currentTime + 0.14);
+        oscillator.addEventListener("ended", () => void audio.close(), { once: true });
+      } catch {
+        // Sound is optional. Autoplay policies or unavailable Web Audio must never block the companion.
+      }
+    }
     if (pose?.poseId) {
       setTransientPose(pose.poseId);
       if (poseTimer.current) window.clearTimeout(poseTimer.current);
       poseTimer.current = window.setTimeout(() => setTransientPose(null), 2200);
     }
-  }, []);
+  }, [settings.sound]);
 
   const flush = useCallback(() => {
     const result = pumpCompanion({
@@ -440,7 +461,7 @@ export default function CompanionLayer({ chapters }: { chapters: ChapterContext[
                     <dt>Behaviour</dt><dd className="text-right font-mono text-ink">{behaviour}</dd>
                     <dt>Route</dt><dd className="truncate text-right font-mono text-ink">{demoState ? "fixture" : pathname}</dd>
                     <dt>Chapter</dt><dd className="truncate text-right text-ink">{demoState ? state.journal[state.journal.length - 1]?.note ?? "—" : currentChapter?.title ?? "—"}</dd>
-                    <dt>Time</dt><dd className="text-right font-mono text-ink">{timeOfDay}</dd>
+                    <dt>Time</dt><dd className="text-right font-mono text-ink">{demoState ? "day" : timeOfDay}</dd>
                     <dt>Storage</dt><dd className="text-right text-ink">local only</dd>
                   </dl>
                 </div>
