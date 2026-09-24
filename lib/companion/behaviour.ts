@@ -4,6 +4,7 @@ import type {
   CompanionEventKind,
   CompanionTraits,
   CompanionTraitName,
+  CompanionState,
   TimeOfDay,
 } from "./types.ts";
 
@@ -52,11 +53,11 @@ export const POSE_FOR_KIND: Partial<Record<CompanionEventKind, string>> = {
  */
 export const TRAIT_DELTAS: Record<CompanionEventKind, Readonly<Record<CompanionTraitName, number>>> = {
   focus_completed: { energy: -6, mood: 3, curiosity: 2, focus: 4, knowledge: 1, confidence: 2, relationship: 1 },
-  focus_interrupted: { energy: -2, mood: -1, curiosity: 0, focus: -2, knowledge: 0, confidence: -1, relationship: 0 },
+  focus_interrupted: { energy: -1, mood: 0, curiosity: 1, focus: 0, knowledge: 0, confidence: 0, relationship: 0 },
   chapter_started: { energy: 0, mood: 1, curiosity: 2, focus: 1, knowledge: 0, confidence: 0, relationship: 0 },
   chapter_completed: { energy: -3, mood: 4, curiosity: 3, focus: 3, knowledge: 5, confidence: 3, relationship: 2 },
   quiz_passed: { energy: -1, mood: 3, curiosity: 1, focus: 1, knowledge: 3, confidence: 3, relationship: 1 },
-  quiz_failed: { energy: -2, mood: -1, curiosity: 1, focus: 0, knowledge: 0, confidence: -1, relationship: 0 },
+  quiz_failed: { energy: -1, mood: 0, curiosity: 2, focus: 0, knowledge: 0, confidence: 0, relationship: 0 },
   highlight_created: { energy: 0, mood: 1, curiosity: 2, focus: 0, knowledge: 2, confidence: 1, relationship: 1 },
   reflection_saved: { energy: -1, mood: 2, curiosity: 1, focus: 1, knowledge: 2, confidence: 2, relationship: 1 },
   focus_started: { energy: -1, mood: 1, curiosity: 0, focus: 2, knowledge: 0, confidence: 1, relationship: 0 },
@@ -67,7 +68,7 @@ export const TRAIT_DELTAS: Record<CompanionEventKind, Readonly<Record<CompanionT
   protocol_started: { energy: -1, mood: 1, curiosity: 0, focus: 1, knowledge: 0, confidence: 0, relationship: 0 },
   protocol_completed: { energy: -3, mood: 3, curiosity: 1, focus: 3, knowledge: 1, confidence: 3, relationship: 1 },
   streak_continued: { energy: -1, mood: 3, curiosity: 0, focus: 1, knowledge: 0, confidence: 3, relationship: 1 },
-  streak_broken: { energy: 0, mood: -2, curiosity: 0, focus: 0, knowledge: 0, confidence: -1, relationship: -1 },
+  streak_broken: { energy: 1, mood: 0, curiosity: 0, focus: 0, knowledge: 0, confidence: 0, relationship: 0 },
   study_session_completed: { energy: -4, mood: 3, curiosity: 3, focus: 3, knowledge: 4, confidence: 2, relationship: 1 },
   task_completed: { energy: 0, mood: 2, curiosity: 0, focus: 1, knowledge: 0, confidence: 1, relationship: 0 },
   day_completed: { energy: -3, mood: 2, curiosity: 0, focus: 1, knowledge: 1, confidence: 1, relationship: 1 },
@@ -249,4 +250,62 @@ export function applyTraitDeltas(traits: CompanionTraits, event: CompanionEvent)
 export function pickLine(prng: () => number, lines: readonly string[]): string {
   if (lines.length === 0) return "";
   return lines[Math.min(lines.length - 1, Math.floor(prng() * lines.length))];
+}
+
+export type CompanionVisualBehaviour =
+  | "idle"
+  | "walk"
+  | "sleep"
+  | "sit"
+  | "read"
+  | "work"
+  | "celebrate"
+  | "think"
+  | "stretch"
+  | "ledger"
+  | "letter"
+  | "wave"
+  | "recover";
+
+export interface CompanionBehaviourContext {
+  activeFocus?: boolean;
+  chapterPillar?: "health" | "wealth" | "love" | "self" | null;
+  timeOfDay?: TimeOfDay;
+  idleTick?: number;
+  motion?: "full" | "reduced" | "off";
+  transientPose?: string | null;
+}
+
+/**
+ * Pure visual behaviour selector used by the global companion layer.
+ * Important application state always outranks ambient behaviour. Idle choices
+ * are deterministic for a given seed + tick so tests and reviewer demos replay.
+ */
+export function selectCompanionBehaviour(
+  state: CompanionState,
+  context: CompanionBehaviourContext = {}
+): CompanionVisualBehaviour {
+  if (context.transientPose === "perk") return "celebrate";
+  if (context.transientPose === "wave") return "wave";
+  if (context.transientPose === "stretch") return "stretch";
+
+  if (context.activeFocus || state.currentActivity === "focusing") return "work";
+  if (state.currentActivity === "recovering") return "recover";
+
+  const tod = context.timeOfDay ?? deriveTimeOfDay(new Date());
+  if (tod === "night" && !context.activeFocus) return "sleep";
+
+  if (state.currentActivity === "reading") {
+    if (context.chapterPillar === "health") return "stretch";
+    if (context.chapterPillar === "wealth") return "ledger";
+    if (context.chapterPillar === "love") return "letter";
+    return "read";
+  }
+
+  if (context.motion === "off") return "sit";
+  const fullPool: readonly CompanionVisualBehaviour[] = ["idle", "sit", "think", "walk", "read", "stretch"];
+  const reducedPool: readonly CompanionVisualBehaviour[] = ["idle", "sit", "think", "read"];
+  const pool = context.motion === "reduced" ? reducedPool : fullPool;
+  const tick = Math.max(0, Math.floor(context.idleTick ?? 0));
+  return pool[(state.identity.seed + tick) % pool.length] ?? "idle";
 }

@@ -11,8 +11,10 @@ import {
   emitCompanionEvent,
   migrateCompanionState,
   pumpCompanion,
+  readCompanionSettings,
   readCompanionState,
   restoreCompanionState,
+  selectCompanionBehaviour,
   stepCompanion,
   validateCompanionState,
   writeCompanionState,
@@ -336,4 +338,30 @@ test("restoring a backup writes the companion state and pending events under the
   assert.equal(writtenState.schemaVersion, 1);
   assert.equal(writtenState.identity.name, "Milo");
   assert.deepEqual(JSON.parse(storage.dump()[COMPANION_PENDING_KEY]), pending);
+});
+
+test("legacy companion settings migrate interaction without losing motion or dialogue", () => {
+  const storage = fakeStorage({
+    [COMPANION_SETTINGS_KEY]: JSON.stringify({ enabled: true, motion: "off", dialogue: "minimal", sound: false }),
+  });
+  const settings = readCompanionSettings(storage);
+  assert.equal(settings.motion, "off");
+  assert.equal(settings.dialogue, "minimal");
+  assert.equal(settings.interaction, true);
+});
+
+test("visual behaviour selector keeps important context above deterministic idle motion", () => {
+  const state = createEmptyCompanionState(NOW, 17);
+  assert.equal(selectCompanionBehaviour(state, { activeFocus: true, timeOfDay: "day" }), "work");
+
+  const reading = { ...state, currentActivity: "reading" };
+  assert.equal(selectCompanionBehaviour(reading, { chapterPillar: "health", timeOfDay: "day" }), "stretch");
+  assert.equal(selectCompanionBehaviour(reading, { chapterPillar: "wealth", timeOfDay: "day" }), "ledger");
+
+  assert.equal(selectCompanionBehaviour(state, { timeOfDay: "night" }), "sleep");
+
+  const first = selectCompanionBehaviour(state, { timeOfDay: "day", idleTick: 4, motion: "full" });
+  const replay = selectCompanionBehaviour(state, { timeOfDay: "day", idleTick: 4, motion: "full" });
+  assert.equal(replay, first);
+  assert.equal(selectCompanionBehaviour(state, { timeOfDay: "day", idleTick: 4, motion: "off" }), "sit");
 });

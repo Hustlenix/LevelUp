@@ -11,6 +11,7 @@ import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
 import BackupJournalNotice from "@/components/BackupJournalNotice";
 import MobileBottomNav from "@/components/workspace/MobileBottomNav";
+import CompanionLayer from "@/components/CompanionLayer";
 import { getSiteData } from "@/lib/content";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_AUTHOR } from "@/lib/site";
 
@@ -61,6 +62,8 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
+  const siteData = getSiteData();
+  const companionChapters = siteData.chapters.map(({ slug, title, pillar }) => ({ slug, title, pillar }));
   return (
     <html lang="en" className={`${fraunces.variable} ${source.variable}`} suppressHydrationWarning>
       <head>
@@ -94,7 +97,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to content
         </a>
         <SearchProvider>
-           <Nav chapters={getSiteData().chapters} />
+           <Nav chapters={siteData.chapters} />
            <BackupJournalNotice />
             <main id="main" className="flex-1">{children}</main>
            <Footer />
@@ -103,6 +106,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <BackToTop />
         <ServiceWorkerRegister />
         <AnalyticsProvider />
+        <CompanionLayer chapters={companionChapters} />
       </body>
     </html>
   );

@@ -9,6 +9,7 @@ import {
   getProfileAgeTier,
 } from "@/lib/studentProfile";
 import { levelFor } from "@/lib/gamification";
+import { emitCompanionEvent } from "@/lib/companion";
 
 export default function MissionCard({ xp }: { xp: number }) {
   const profile = useStudentProfile();
@@ -66,7 +67,10 @@ export default function MissionCard({ xp }: { xp: number }) {
       <div className="mt-5 flex flex-wrap items-center gap-3">
         <button
           type="button"
-          onClick={() => setSessionsToday((n) => n + 1)}
+          onClick={() => {
+            setSessionsToday((n) => n + 1);
+            emitCompanionEvent("study_session_completed", { value: mission.minutes, note: mission.label });
+          }}
           className="inline-flex items-center gap-2 rounded-lg bg-gold px-4 py-2 font-medium text-paper transition-colors hover:bg-gold-deep"
         >
           +1 session done
