@@ -53,11 +53,11 @@ export const POSE_FOR_KIND: Partial<Record<CompanionEventKind, string>> = {
  */
 export const TRAIT_DELTAS: Record<CompanionEventKind, Readonly<Record<CompanionTraitName, number>>> = {
   focus_completed: { energy: -6, mood: 3, curiosity: 2, focus: 4, knowledge: 1, confidence: 2, relationship: 1 },
-  focus_interrupted: { energy: -2, mood: -1, curiosity: 0, focus: -2, knowledge: 0, confidence: -1, relationship: 0 },
+  focus_interrupted: { energy: -1, mood: 0, curiosity: 1, focus: 0, knowledge: 0, confidence: 0, relationship: 0 },
   chapter_started: { energy: 0, mood: 1, curiosity: 2, focus: 1, knowledge: 0, confidence: 0, relationship: 0 },
   chapter_completed: { energy: -3, mood: 4, curiosity: 3, focus: 3, knowledge: 5, confidence: 3, relationship: 2 },
   quiz_passed: { energy: -1, mood: 3, curiosity: 1, focus: 1, knowledge: 3, confidence: 3, relationship: 1 },
-  quiz_failed: { energy: -2, mood: -1, curiosity: 1, focus: 0, knowledge: 0, confidence: -1, relationship: 0 },
+  quiz_failed: { energy: -1, mood: 0, curiosity: 2, focus: 0, knowledge: 0, confidence: 0, relationship: 0 },
   highlight_created: { energy: 0, mood: 1, curiosity: 2, focus: 0, knowledge: 2, confidence: 1, relationship: 1 },
   reflection_saved: { energy: -1, mood: 2, curiosity: 1, focus: 1, knowledge: 2, confidence: 2, relationship: 1 },
   focus_started: { energy: -1, mood: 1, curiosity: 0, focus: 2, knowledge: 0, confidence: 1, relationship: 0 },
@@ -68,7 +68,7 @@ export const TRAIT_DELTAS: Record<CompanionEventKind, Readonly<Record<CompanionT
   protocol_started: { energy: -1, mood: 1, curiosity: 0, focus: 1, knowledge: 0, confidence: 0, relationship: 0 },
   protocol_completed: { energy: -3, mood: 3, curiosity: 1, focus: 3, knowledge: 1, confidence: 3, relationship: 1 },
   streak_continued: { energy: -1, mood: 3, curiosity: 0, focus: 1, knowledge: 0, confidence: 3, relationship: 1 },
-  streak_broken: { energy: 0, mood: -2, curiosity: 0, focus: 0, knowledge: 0, confidence: -1, relationship: -1 },
+  streak_broken: { energy: 1, mood: 0, curiosity: 0, focus: 0, knowledge: 0, confidence: 0, relationship: 0 },
   study_session_completed: { energy: -4, mood: 3, curiosity: 3, focus: 3, knowledge: 4, confidence: 2, relationship: 1 },
   task_completed: { energy: 0, mood: 2, curiosity: 0, focus: 1, knowledge: 0, confidence: 1, relationship: 0 },
   day_completed: { energy: -3, mood: 2, curiosity: 0, focus: 1, knowledge: 1, confidence: 1, relationship: 1 },
