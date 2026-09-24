@@ -6,7 +6,7 @@ import { canonical } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Devlog",
-  description: "How this book was built: the design decisions, the rewrites, and the evidence.",
+  description: "How Level Up was built: product decisions, engineering tradeoffs, failures, and evidence.",
   alternates: { canonical: canonical("/devlog/") },
 };
 
@@ -17,8 +17,8 @@ export default function DevlogPage() {
     <PageShell>
       <SectionHeading
         eyebrow="Devlog"
-        title="How this book was built"
-        lede="A book about evidence should show its work. These entries record the decisions that shaped this site — what changed, why, and what the reader sees as a result."
+        title="How Level Up was built"
+        lede="A project about evidence should show its work. These entries record the product decisions, engineering tradeoffs, failures, and changes that shaped Level Up."
       />
       <div className="space-y-8">
         {entries.map((e) => (
