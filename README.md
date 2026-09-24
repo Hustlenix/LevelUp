@@ -1,176 +1,211 @@
-# Level Up Manual
+# LEVEL UP
 
-**A 28-chapter self-development book where every claim is graded against the
-evidence — built from a 20-hour video transcript, running entirely in your
-browser.**
+### Improve your life. Build a world alongside you.
 
-https://hustlenix.github.io/LevelUp/
+**Level Up is an offline-first self-improvement operating system with a persistent living companion. Reading, studying, focusing, completing goals, and applying protocols change how the companion behaves and how its tiny world develops — entirely on your device.**
 
----
-
-## Project Story
-
-Level Up Manual started with a single question: what if you could turn a
-20-hour self-development video into something you could actually read, search,
-and come back to? Not a summary, not a blog post — a real book, with every
-claim graded against the research it cites, running without accounts, APIs, or
-anyone tracking you.
-
-The result is 28 chapters across four pillars (Self 14, Wealth 8, Health 4,
-Love 2), roughly 32k words, a 30-claim evidence audit, 13 named protocols, a
-65-term glossary, and a 46-quote library. Your reading progress, quiz scores,
-highlights, streaks, and preferences all live in your browser's localStorage.
-Nothing leaves your machine.
+**Live:** https://hustlenix.github.io/LevelUp/
 
 ---
 
-## Inspiration
+## What is Level Up?
 
-The source material is a 20-hour video by a founder and content creator:
+Level Up began as a way to turn a 20-hour self-development video into something more useful than another summary. The source became a 28-chapter manual with evidence-graded claims, protocols, search, quizzes, highlights, and a 90-day roadmap.
 
-https://www.youtube.com/watch?v=wvaY5bG5p7A&t=65s
+Then the project grew into a Today-first operating system: goals become roadmaps, milestones, tasks, and bounded focus sessions; reviews keep a local record of what actually happened; Study Mode adds student workflows; progress, streaks, badges, and a portfolio make the record visible.
 
-The ideas in that video are worth organizing, but the format makes it hard to
-reference, search, or revisit specific claims. The original motivation was
-simple: make something the author would actually use — a book you could
-search, highlight, pick up where you left off, and verify for yourself.
+It worked, but it still felt like software.
 
-A secondary motivation was the state of self-development content online: most
-sites are designed to sell courses, not to be honest about what the evidence
-actually supports. Level Up Manual grades every notable claim on a letter scale
-(A through D/U) and shows its work.
+This version asks a different question:
 
-## What it does
+> What if progress did not only change a chart? What if it changed a place that was living beside you?
 
-Level Up Manual is a static book-like site with:
+That is the Living Companion Engine.
 
-- 28 chapters with key concepts, evidence grades, and named protocols
-- 30 audit claims graded A–D/U against a verified-facts file
-- 13 protocols — testable daily practices you can run one at a time
-- Plain-language companions, worked examples and small first actions for all 28 chapters
-- 13 additional guided practice templates, including a Pomodoro starter, two-minute restart and seven-day plan
-- Local practice records with separate labels for preparation, attempts and reviews; included in data backups
-- 65-term glossary and 46-quote library
-- 90-day roadmap for applying the content
-- Full-text search (MiniSearch) across all content
-- Knowledge checks at the end of each chapter (3 questions + reflection)
-- Progress tracking: chapter completion, quiz scores, XP, badges, streaks
-- Four reader themes: Light, Dark, Deep Work, Cyberpunk
-- Typography controls: font size, line-height, font family, high-contrast toggle
-- Text highlighting that persists across sessions
-- Keyboard navigation (J/K chapter flips, Escape to close)
-- Schema-validated JSON backup and restore
-- Devlog hub documenting the build
-- Optional local Ollama Coach, Planner, and Tutor locked to `llama3.1:latest`, with a deterministic fallback when Ollama is unavailable
+## The memorable part
 
-Everything runs locally. Your data stays in your browser. If you choose the optional model-powered Study Mode, it calls
-only Ollama on your own computer; the public site cannot use anyone else's Ollama process, and AI interactions are not
-sent to analytics or a remote AI service. See [`docs/AI-LOCAL-OLLAMA.md`](docs/AI-LOCAL-OLLAMA.md).
+Milo is not a chatbot pasted into the corner of the app.
 
-## How we built it
+Milo has persistent local state, an event journal, traits, activity, cooldowns, room state, and deterministic behaviour. Real Level Up actions feed that system.
 
-The transcript was ~20k lines. It got compacted into Claude until tokens ran
-out. Then Gemini ran out of tokens too. Opencode finished the summary across a
-few more passes. From there, the site was built in layers:
+Start a focus block and Milo works beside you.
 
-**Content pipeline.** `scripts/build-data.mjs` compiles Markdown chapters into
-SQLite using Node's built-in `node:sqlite`, then emits JSON data files and a
-~30KB MiniSearch index to `public/data/`. Every chapter, audit claim, protocol,
-glossary term, quote, quiz, and devlog entry flows through this pipeline.
+Open a Health chapter and the behaviour can shift toward stretching. Open Wealth and the room context can shift toward a ledger. Complete real progress and objects appear in the room.
 
-**Reader.** Next.js 16 static export to GitHub Pages. Tailwind v4 for styling.
-`useSyncExternalStore` for reactive local state in pure TypeScript modules with
-no React imports and SSR-safe fallbacks.
+Leave for a while and nothing bad happens. There is no starvation, sickness, guilt loop, or streak punishment. On return, the system simply continues.
 
-**Progress system.** LocalStorage under `levelup-*` keys: highlights, quiz
-scores, reflections, streaks, bookmarks, reader settings. A `backup.ts` module
-validates imports against a typed schema before writing anything.
+## How it works
 
-**Deploy.** GitHub Actions runs lint, tests, build, and deploy on every push to
-main. The build uses `NEXT_PUBLIC_BASE_PATH=/LevelUp` (the GitHub Pages path
-is case-sensitive, which was learned the hard way) and publishes via
-`actions/deploy-pages`.
+```text
+LEVEL UP ACTIONS
+       |
+       v
+ DOMAIN EVENTS
+       |
+       +-------------------+
+       |                   |
+       v                   v
+OS COMPLETION JOURNAL   PENDING EVENT QUEUE
+       |                   |
+       +---------+---------+
+                 |
+                 v
+          COMPANION PUMP
+                 |
+                 v
+       PURE STATE REDUCER
+                 |
+       +---------+----------+
+       |         |          |
+       v         v          v
+    TRAITS    UNLOCKS   EVENT JOURNAL
+       |         |          |
+       +---------+----------+
+                 |
+                 v
+        BEHAVIOUR SELECTOR
+                 |
+       +---------+----------+
+       |         |          |
+       v         v          v
+  ANIMATION   DIALOGUE   WORLD STATE
+```
 
-## Challenges we ran into
+The interesting engineering problem is not drawing a mascot. It is keeping one persistent creature aware of actions across an offline-first app with multiple local stores, without requiring a backend.
 
-**The QuoteCard CI spiral.** A React 19 client component was added to the home
-page. Locally: build green, 22/22 tests, eslint clean. GitHub Actions failed
-eight runs in a row with the same type error (`TS7006` — parameter implicitly
-has `any` type). Every fix pushed identically failed. It was never a code bug;
-it was the build environment disagreeing with us. The feature that caused it
-was deleted rather than shipped broken. It ate an entire day.
+See **[docs/COMPANION-ENGINE.md](docs/COMPANION-ENGINE.md)** for the architecture and testing contract.
 
-**Turbopack's quiet type-checking.** The dev server uses Turbopack, which does
-not run full type-checking. Three real type errors shipped in a PR that built
-locally but failed in CI. Same lesson: `tsc` locally, or CI will explain the
-difference between "builds" and "types."
+## Companion world
 
-**The header overflow.** A reported "distortion" in the nav turned out to be
-flexbox crushing the brand text into stacked words at mid-widths because the
-container was too narrow for a single row. Fix: a two-row desktop header with
-`shrink-0 whitespace-nowrap` on the brand. Verified across seven viewport
-widths.
+The room is a second representation of the same progress data used elsewhere in Level Up.
 
-**The empty line in the recap.** A Markdown file had a blank line before a
-bulleted list. React rendered the bullet as raw text (`* thing`) instead of a
-list. Caught in CI, fixed in one commit. Sometimes the smallest bugs look the
-most alarming.
+Current examples include:
 
-## Accomplishments that we're proud of
+- first completed chapter -> book
+- five completed focus sessions -> desk lamp
+- ten highlights -> corkboard
+- first roadmap milestone -> trophy shelf
+- completed pillars -> larger room changes
+- completed 90-day road -> expanded window view
 
-- **Honest grading.** Every notable claim is graded A–D/U against a single
-  verified-facts file. No invented citations. UCLA, not Stanford. The 5x flow
-  figure is folklore. The 23-minute refocus number is journalistic. The site
-  says so.
+Unlocks are threshold-based, persistent, and replay-safe. Refreshing the app cannot grant the same object twice.
 
-- **Zero tracking by design.** No accounts, no APIs, no analytics, no cookies.
-  Progress lives in localStorage. The data model is the entire user experience.
+The companion can be turned off completely. Motion supports **Full / Reduced / Off**, dialogue supports **Normal / Minimal / Off**, and interaction and sound have independent controls. A system `prefers-reduced-motion` request is respected automatically.
 
-- **Full-featured without a backend.** Search, quizzes, highlights, streaks,
-  badges, backup/restore, reader controls — all client-side, all offline-capable.
+## Reviewer demo
 
-- **A build pipeline that compiles content into SQLite.** The data layer is not
-  a pile of JSON files. It is a compiled artifact from Markdown, with a search
-  index, served statically.
+A reviewer should not need seven days of personal data to understand the system.
 
-- **The devlog.** Five entries documenting the build honestly, including the
-  day-long CI spiral and the decision to delete rather than keep fighting. A
-  book about evidence shows its own work.
+Open the Companion Space and choose **Experience reviewer demo**. The demo runs the production reducer against a disposable deterministic fixture:
 
-## What we learned
+1. start focus
+2. complete focus
+3. open a Health chapter
+4. complete the chapter
+5. reach a roadmap milestone
 
-- Turbopack is fast but does not replace `tsc`. If it builds locally and fails
-  in CI, the first thing to check is whether the dev server is actually running
-  the full type-check.
+The saved companion is not overwritten. The Engine view exposes current behaviour, traits, context, room state, and recent domain events.
 
-- GitHub Pages serves paths case-sensitively. `LevelUp` and `levelup` are
-  different. This is not obvious until it is too late.
+## The rest of Level Up
 
-- CI failures that reproduce identically across ten runs on a clean tree are
-  usually environment disagreements, not code bugs. Sometimes the right move is
-  to stop fixing and ship what you have.
+The companion sits on top of a substantial product rather than replacing it:
 
-- A feature that causes an eight-run CI spiral is a feature that is not ready.
-  Deleting it was the right call. The home page is better for it.
+- 28 self-development chapters across Self, Wealth, Health, and Love
+- evidence grades and a research audit
+- 13 named protocols
+- Today-first workflow
+- goals, roadmaps, milestones, tasks, and focus sessions
+- daily and weekly reviews
+- Study Mode and student planning tools
+- full-text search with MiniSearch
+- chapter quizzes and reflections
+- persistent highlights and bookmarks
+- XP, badges, streaks, and progress views
+- portfolio and roadmap views
+- local backup/restore with validation and rollback journal
+- offline/static-first deployment
+- optional local model features with deterministic fallbacks
+- devlogs and release verification scripts
 
-- React renders Markdown bullets as raw text if there is a blank line before
-  the list. This is technically correct behavior from the Markdown parser. It
-  is also deeply annoying.
+## Local-first by design
 
-## What's next for Level Up Manual
+Core Level Up works without an account, backend, or cloud AI.
 
-- Continued content refinement and protocol expansion
-- Additional reader features as they prove useful
-- Ongoing evidence grading as new research emerges
-- The devlog continues
+Progress and companion memory live in browser storage. Backup/restore includes companion state when present. The companion engine never needs an LLM to choose an animation or decide what an event means.
 
-## Try it out
+Optional local AI functionality is separate. See **[docs/AI-LOCAL-OLLAMA.md](docs/AI-LOCAL-OLLAMA.md)**.
 
-**Live site:** https://hustlenix.github.io/LevelUp/
+When a Google Analytics measurement ID is supplied at build time, Level Up can send only the explicitly whitelisted non-content events in `lib/analytics.ts`. Typed notes, reflections, highlight text, companion traits, companion journal entries, room state, and dialogue are not analytics payloads. Without a measurement ID, analytics is a no-op.
 
-**Source code:** https://github.com/Hustlenix/LevelUp
+## Companion design rules
 
-**Run locally:**
+The project deliberately avoids Tamagotchi-style pressure.
+
+Milo does **not** become sick, hungry, sad, or degraded because the user took a break. A failed quiz is calibration, not punishment. A broken streak does not create a guilt notification. The creature can live quietly while the user is away.
+
+The product must remain useful with the companion disabled.
+
+## Technical stack
+
+- Next.js 16 static export
+- React 19
+- TypeScript
+- Tailwind CSS v4
+- `useSyncExternalStore` local repositories
+- MiniSearch
+- Node `node:sqlite` content build pipeline
+- Playwright release checks
+- GitHub Actions + GitHub Pages
+- optional local Ollama / browser model experiments where supported
+
+No application server is required for the core experience.
+
+## Persistence model
+
+The main app and companion use versioned local schemas.
+
+The companion layer adds:
+
+- validated companion state
+- bounded event journal
+- pending event queue
+- adapter cursors
+- deterministic seed
+- room unlock ownership
+- cooldown state
+- settings migration
+
+The reducer is replay-safe by event ID. OS completion events are consumed exactly once. Existing backups remain compatible because companion data is additive and validated before restore.
+
+## Performance approach
+
+The companion is intentionally lightweight:
+
+- CSS/SVG character art rather than a large animation runtime
+- React renders state changes, not every animation frame
+- CSS owns ambient motion
+- event pumps write only when events exist
+- bounded event journals and pending queues
+- deterministic behaviour instead of continuous model calls
+- no remote character assets
+- reduced-motion path for lower animation cost and accessibility
+
+## Development story
+
+Level Up started as a book built from a long video transcript.
+
+The next version became an operating system with Today, goals, focus, reviews, study workflows, and local evidence of progress.
+
+But useful software can still be emotionally flat.
+
+The Living Companion Engine is an attempt to make the same progress data tangible. Reading, studying, focusing, completing goals, and applying protocols now alter a persistent local simulation. The visible character is only the surface; underneath it is a domain-event adapter, journal, pure reducer, unlock engine, behaviour selector, persistence layer, and deterministic reviewer fixture.
+
+That is the part of the project meant to make another hacker ask:
+
+> How did one creature stay aware of the whole app without a backend?
+
+## Run locally
+
 ```bash
 git clone https://github.com/Hustlenix/LevelUp.git
 cd LevelUp
@@ -178,31 +213,49 @@ npm install
 npm run dev
 ```
 
-**Preview a production build locally (Node.js 24):**
+Production preview:
+
 ```bash
 npm ci
 npm run build
 npm start
 ```
-Open `http://localhost:3000`. This app uses a static export, so production preview
-serves `out/` rather than using `next start`.
 
-**GitHub Pages:** pushes to `main` run lint, tests and the production build, then
-deploy to `https://hustlenix.github.io/LevelUp/`. The workflow sets
-`NEXT_PUBLIC_BASE_PATH=/LevelUp`; do not set that value for a root-path local preview.
-No GitHub token belongs in source files, frontend environment variables or build output.
+Then open `http://localhost:3000`.
 
-**Persistence and AI:** records are stored per browser and site origin. Use the
-Backup page to transfer progress between localhost and the public site. Unsaved
-practice notes and active timers reset when leaving the page; explicitly saved
-records persist. GitHub Pages does not host Ollama or an application backend:
-optional local-model features need a separately running local Ollama installation
-and permitted browser access. The built-in deterministic fallback does not need it.
+The public deployment uses the case-sensitive GitHub Pages base path:
 
-**Release verification:** after starting the production preview, run
-`npx playwright install chromium` once, then `node verify-release.mjs`.
-Set `PLAYWRIGHT_BASE_URL=https://hustlenix.github.io/LevelUp` to check the live site.
-The checks use an isolated browser profile and cover route loading, mobile layout,
-search, quiz persistence, guided practice, goals/focus, and backup export/restore.
+```text
+/LevelUp
+```
 
-**Tech stack:** Next.js 16, Tailwind v4, node:sqlite, MiniSearch, GitHub Pages
+Do not put GitHub tokens, API secrets, or private keys in source files, frontend environment variables, or build output.
+
+## Validate before shipping
+
+```bash
+npm run lint
+npm test
+npm run build
+```
+
+For production-route and responsive checks:
+
+```bash
+npx playwright install chromium
+node verify-release.mjs
+```
+
+To run the release checks against the public deployment:
+
+```bash
+PLAYWRIGHT_BASE_URL=https://hustlenix.github.io/LevelUp node verify-release.mjs
+```
+
+## Source
+
+**Repository:** https://github.com/Hustlenix/LevelUp
+
+The goal is not to maximize feature count.
+
+The goal is for Level Up to feel like a coherent, authored system whose progress is visible in two forms: the record you can inspect and the world you can watch change.
