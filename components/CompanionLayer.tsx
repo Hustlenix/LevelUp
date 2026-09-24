@@ -396,7 +396,7 @@ export default function CompanionLayer({ chapters }: { chapters: ChapterContext[
   }
 
   return (
-    <aside className="companion-root no-print" aria-label="Level Up companion">
+    <aside className="companion-root no-print" data-motion={effectiveMotion} aria-label="Level Up companion">
       {expanded ? (
         <section className="companion-panel" aria-label="Milo companion space">
           <header className="flex items-start justify-between gap-4 border-b border-line px-4 py-3">
