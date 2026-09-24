@@ -169,6 +169,7 @@ export interface CompanionSettings {
   motion: "full" | "reduced" | "off";
   dialogue: "normal" | "minimal" | "off";
   sound: boolean;
+  interaction: boolean;
 }
 
 export interface PumpResult {
