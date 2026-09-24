@@ -87,8 +87,47 @@ try {
     await page.setViewportSize({ width, height: 900 });
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1), false, `practice library width ${width}`);
   }
+  console.log("13-plan library and responsive widths verified.");
+
+  await page.setViewportSize({ width: 375, height: 900 });
+  await page.goto(`${base}/today/`, { waitUntil: "networkidle" });
+  const companionHome = page.getByRole("button", { name: /Open Milo companion space/ });
+  await companionHome.waitFor();
+  await companionHome.click();
+  await page.locator('section[aria-label="Milo companion space"]').waitFor();
+  await page.getByRole("button", { name: "Experience reviewer demo", exact: true }).click();
+
+  for (const [button, expectedEvent] of [
+    ["Start focus", "FOCUS_STARTED"],
+    ["Complete focus", "FOCUS_COMPLETED"],
+    ["Open health chapter", "CHAPTER_STARTED"],
+    ["Complete chapter", "CHAPTER_COMPLETED"],
+    ["Reach milestone", "ROADMAP_MILESTONE"],
+  ]) {
+    await page.getByRole("button", { name: button, exact: true }).click();
+    await page.getByText(expectedEvent, { exact: true }).first().waitFor();
+  }
+
+  await page.getByRole("button", { name: "room", exact: true }).click();
+  await page.locator(".room-lamp").waitFor();
+  await page.locator(".room-book").waitFor();
+  await page.locator(".room-trophy").waitFor();
+
+  await page.getByRole("button", { name: "settings", exact: true }).click();
+  const motionFieldset = page.getByRole("group", { name: "Motion" });
+  await motionFieldset.getByRole("button", { name: "off", exact: true }).click();
+  await page.locator('aside[aria-label="Level Up companion"][data-motion="off"]').waitFor();
+
+  await page.setViewportSize({ width: 320, height: 900 });
+  assert.equal(
+    await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1),
+    false,
+    "expanded companion remains inside a 320px viewport"
+  );
+  console.log("Companion visibility, deterministic demo, unlocks, motion-off and 320px layout verified.");
+
   assert.deepEqual(errors, [], "no runtime or required-resource HTTP errors");
-  console.log("PASS: 13-plan library, responsive widths, runtime and required resources.");
+  console.log("PASS: release routes, persistence, operating loop, backup, companion and responsive runtime.");
 } finally {
   await browser.close();
 }
