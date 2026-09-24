@@ -114,7 +114,7 @@ try {
   await page.locator(".room-trophy").waitFor();
 
   await page.getByRole("button", { name: "settings", exact: true }).click();
-  const motionFieldset = page.locator("fieldset").filter({ has: page.locator('legend:text-is("Motion")') });
+  const motionFieldset = page.getByRole("group", { name: "Motion" });
   await motionFieldset.getByRole("button", { name: "off", exact: true }).click();
   await page.locator('aside[aria-label="Level Up companion"][data-motion="off"]').waitFor();
 
