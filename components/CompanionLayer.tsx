@@ -344,16 +344,20 @@ export default function CompanionLayer({ chapters }: { chapters: ChapterContext[
     const mode = new URLSearchParams(window.location.search).get("milo");
     if (mode !== "open" && mode !== "demo") return;
 
-    setExpanded(true);
-    if (mode === "demo") {
-      const fixture = createEmptyCompanionState(DEMO_NOW, 4242);
-      fixture.stats.sessionsCompleted = 4;
-      fixture.flags.firstMeetDelivered = true;
-      setDemoState(fixture);
-      setDialogue("Reviewer demo loaded. This fixture is disposable and your saved companion stays untouched.");
-      setTransientPose("wave");
-      setView("engine");
-    }
+    const launch = window.setTimeout(() => {
+      setExpanded(true);
+      if (mode === "demo") {
+        const fixture = createEmptyCompanionState(DEMO_NOW, 4242);
+        fixture.stats.sessionsCompleted = 4;
+        fixture.flags.firstMeetDelivered = true;
+        setDemoState(fixture);
+        setDialogue("Reviewer demo loaded. This fixture is disposable and your saved companion stays untouched.");
+        setTransientPose("wave");
+        setView("engine");
+      }
+    }, 0);
+
+    return () => window.clearTimeout(launch);
   }, [pathname]);
 
   useEffect(() => {
