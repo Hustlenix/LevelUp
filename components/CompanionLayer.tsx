@@ -341,6 +341,22 @@ export default function CompanionLayer({ chapters }: { chapters: ChapterContext[
   }, []);
 
   useEffect(() => {
+    const mode = new URLSearchParams(window.location.search).get("milo");
+    if (mode !== "open" && mode !== "demo") return;
+
+    setExpanded(true);
+    if (mode === "demo") {
+      const fixture = createEmptyCompanionState(DEMO_NOW, 4242);
+      fixture.stats.sessionsCompleted = 4;
+      fixture.flags.firstMeetDelivered = true;
+      setDemoState(fixture);
+      setDialogue("Reviewer demo loaded. This fixture is disposable and your saved companion stays untouched.");
+      setTransientPose("wave");
+      setView("engine");
+    }
+  }, [pathname]);
+
+  useEffect(() => {
     const interval = window.setInterval(() => setIdleTick((tick) => tick + 1), effectiveMotion === "full" ? 12_000 : 24_000);
     return () => window.clearInterval(interval);
   }, [effectiveMotion]);
