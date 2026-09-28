@@ -12,6 +12,8 @@ import { isPortfolioArtifact } from "./portfolio.ts";
 import type { NotificationState } from "./notifications.ts";
 import type { Experiment } from "./experiments.ts";
 import { isExperiment } from "./experiments.ts";
+import type { LifeState } from "./life/types.ts";
+import { LIFE_SCHEMA_VERSION, LIFE_SKILLS } from "./life/types.ts";
 
 export interface BackupProgressEntry {
   complete: boolean;
@@ -62,6 +64,7 @@ export interface BackupState {
   portfolio?: PortfolioArtifact[];
   notifications?: NotificationState;
   experiments?: Experiment[];
+  lifeState?: LifeState;
 }
 
 export const BACKUP_SCHEMA = 1;
@@ -125,6 +128,15 @@ function isNotificationState(v: unknown): v is NotificationState {
   return typeof v.enabled === "boolean" && validTime(v.quietStart) && validTime(v.quietEnd) && Array.isArray(v.dismissedIds) && v.dismissedIds.every((id) => typeof id === "string") && Array.isArray(v.readIds) && v.readIds.every((id) => typeof id === "string");
 }
 
+function isLifeState(v: unknown): v is LifeState {
+  if (!isRecord(v) || v.schemaVersion !== LIFE_SCHEMA_VERSION || !isRecord(v.progression) || !isRecord(v.preferences)) return false;
+  const progression = v.progression;
+  if (typeof progression.totalXp !== "number" || !Array.isArray(progression.completions) || !isRecord(progression.skillXp)) return false;
+  const skillXp = progression.skillXp;
+  if (!LIFE_SKILLS.every((skill) => typeof skillXp[skill] === "number")) return false;
+  return v.profile === null || (isRecord(v.profile) && typeof v.profile.name === "string" && Array.isArray(v.profile.goals));
+}
+
 export function buildBackup(state: BackupState): { schema: number; exportedAt: string; [k: string]: unknown } {
   const result: { schema: number; exportedAt: string; [k: string]: unknown } = {
     schema: BACKUP_SCHEMA,
@@ -161,6 +173,9 @@ export function buildBackup(state: BackupState): { schema: number; exportedAt: s
   }
   if (state.experiments !== undefined) {
     result.experiments = state.experiments;
+  }
+  if (state.lifeState !== undefined) {
+    result.lifeState = state.lifeState;
   }
   return result;
 }
@@ -273,6 +288,11 @@ export function validateBackup(json: unknown): { ok: boolean; errors: string[]; 
     if (!Array.isArray(json.experiments) || !json.experiments.every(isExperiment)) errors.push("experiments has an invalid shape.");
     else experiments = json.experiments;
   }
+  let lifeState: LifeState | undefined;
+  if (json.lifeState !== undefined) {
+    if (!isLifeState(json.lifeState)) errors.push("lifeState has an invalid shape.");
+    else lifeState = json.lifeState;
+  }
 
   if (errors.length > 0) return { ok: false, errors };
   const outData: BackupState = {
@@ -309,6 +329,9 @@ export function validateBackup(json: unknown): { ok: boolean; errors: string[]; 
   if (experiments !== undefined) {
     outData.experiments = experiments;
   }
+  if (lifeState !== undefined) {
+    outData.lifeState = lifeState;
+  }
 
   return {
     ok: true,
@@ -337,6 +360,7 @@ function entriesForBackup(data: BackupState): Record<string, string> {
   if (data.portfolio !== undefined) entries["levelup-portfolio-v1"] = JSON.stringify(data.portfolio);
   if (data.notifications !== undefined) entries["levelup-notifications-v1"] = JSON.stringify(data.notifications);
   if (data.experiments !== undefined) entries["levelup-experiments-v1"] = JSON.stringify(data.experiments);
+  if (data.lifeState !== undefined) entries["levelup-life-state-v1"] = JSON.stringify(data.lifeState);
   if (data.actionState?.pillarsHistory) entries["levelup-pillar-floors-v1"] = JSON.stringify(data.actionState.pillarsHistory);
   if (data.actionState?.focusSessions) entries["levelup-focus-sessions-v1"] = JSON.stringify(data.actionState.focusSessions);
   if (data.actionState?.protocolLogs) entries["levelup-protocol-logs-v1"] = JSON.stringify(data.actionState.protocolLogs);

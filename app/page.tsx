@@ -1,27 +1,5 @@
-import { getSiteData } from "@/lib/content";
-import JsonLd from "@/components/JsonLd";
-import ReaderFrontDoor, { BOOK_ONE_LINER } from "@/components/ReaderFrontDoor";
-import { SITE_NAME, SITE_DESCRIPTION, SITE_AUTHOR, PUBLISHED_DATE } from "@/lib/site";
+import LaunchPage from "@/components/app/LaunchPage";
 
 export default function Home() {
-  const data = getSiteData();
-
-  return (
-    <div className="mx-auto max-w-6xl px-5 py-7 sm:px-8 sm:py-12">
-      <JsonLd
-        data={{
-          "@context": "https://schema.org",
-          "@type": "Book",
-          name: SITE_NAME,
-          abstract: BOOK_ONE_LINER,
-          description: SITE_DESCRIPTION,
-          inLanguage: "en",
-          author: { "@type": "Organization", name: SITE_AUTHOR },
-          datePublished: PUBLISHED_DATE,
-        }}
-      />
-
-      <ReaderFrontDoor chapters={data.chapters} />
-    </div>
-  );
+  return <LaunchPage />;
 }

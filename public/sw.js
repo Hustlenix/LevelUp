@@ -1,10 +1,14 @@
-const CACHE_NAME = "levelup-v1";
+const CACHE_NAME = "levelup-v2";
 const BASE = self.registration.scope.replace(/\/$/, "");
 
 const PRECACHE = [
   `${BASE}/`,
   `${BASE}/chapters/`,
+  `${BASE}/today/`,
+  `${BASE}/journey/`,
+  `${BASE}/coach/`,
   `${BASE}/progress/`,
+  `${BASE}/profile/`,
   `${BASE}/icon.svg`,
   `${BASE}/apple-icon.png`,
 ];
@@ -45,7 +49,7 @@ self.addEventListener("fetch", (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
           return res;
         })
-        .catch(() => caches.match(`${BASE}/`))
+        .catch(async () => (await caches.match(request)) || (await caches.match(`${BASE}/today/`)) || caches.match(`${BASE}/`))
     );
     return;
   }

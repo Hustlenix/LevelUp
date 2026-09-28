@@ -43,6 +43,10 @@ export interface AnalyticsParams {
   os_entity?: "goal" | "roadmap" | "milestone" | "task" | "session" | "review" | "experiment";
   review_kind?: "daily" | "weekly";
   recovery?: "session" | "goal";
+  skill?: string;
+  xp?: number;
+  quick_start?: boolean;
+  coach_action?: string;
 }
 
 /** Event names from spec §66, exported so callers cannot typo them. */
@@ -79,6 +83,23 @@ export const ANALYTICS_EVENTS = {
   bookmarkCreated: "bookmark_created",
   backupExported: "backup_exported",
   backupImported: "backup_imported",
+  onboardingStarted: "onboarding_started",
+  onboardingCompleted: "onboarding_completed",
+  goalSelected: "goal_selected",
+  missionViewed: "mission_viewed",
+  missionStarted: "mission_started",
+  missionCompleted: "mission_completed",
+  missionSkipped: "mission_skipped",
+  streakUpdated: "streak_updated",
+  levelUp: "level_up",
+  skillLevelUp: "skill_level_up",
+  journeyNodeCompleted: "journey_node_completed",
+  companionEvolved: "companion_evolved",
+  coachUsed: "coach_used",
+  weeklyReviewViewed: "weekly_review_viewed",
+  paywallViewed: "paywall_viewed",
+  trialStarted: "trial_started",
+  subscriptionStarted: "subscription_started",
 } as const;
 
 /** Push a command onto the GA4 dataLayer (creates it if needed). */

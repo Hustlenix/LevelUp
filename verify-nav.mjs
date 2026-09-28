@@ -8,20 +8,16 @@ function destinationUrl(path) {
   return new URL(path, base).href.replace(/\/+$/, "");
 }
 
-async function recordNavigation({ name, path, viewport, openMenu = false, mobile = false }) {
+async function recordNavigation({ name, path, viewport, mobile = false, tools = false }) {
   const page = await browser.newPage({ viewport });
   try {
     await page.goto(`${base}/`, { waitUntil: "networkidle" });
 
-    if (openMenu) {
-      await page.locator("header").getByRole("button", { name: /^More/ }).click();
-    }
-
     const scope = mobile
       ? page.getByRole("navigation", { name: "Primary mobile navigation" })
-      : openMenu
-        ? page.getByRole("menu")
-        : page.getByRole("navigation", { name: "Primary navigation" });
+      : tools
+        ? page.getByRole("navigation", { name: "App tools" })
+        : page.getByRole("navigation", { name: "Primary app navigation" });
     await scope.locator(`a[href="${path}"]`).click();
     await page.waitForURL((url) => url.href.replace(/\/+$/, "") === destinationUrl(path));
 
@@ -38,15 +34,15 @@ async function recordNavigation({ name, path, viewport, openMenu = false, mobile
   }
 }
 
-for (const path of ["/today/", "/chapters/", "/goals/", "/progress/"]) {
+for (const path of ["/today/", "/journey/", "/coach/", "/progress/", "/profile/"]) {
   await recordNavigation({ name: `desktop primary nav -> ${path}`, path, viewport: { width: 1440, height: 900 } });
 }
 
-for (const path of ["/focus/", "/review/", "/protocols/"]) {
-  await recordNavigation({ name: `desktop More menu -> ${path}`, path, viewport: { width: 1440, height: 900 }, openMenu: true });
+for (const path of ["/focus/", "/chapters/", "/settings/", "/backup/"]) {
+  await recordNavigation({ name: `desktop app tools -> ${path}`, path, viewport: { width: 1440, height: 900 }, tools: true });
 }
 
-for (const path of ["/today/", "/chapters/", "/goals/", "/progress/"]) {
+for (const path of ["/today/", "/journey/", "/coach/", "/progress/", "/profile/"]) {
   await recordNavigation({ name: `mobile bottom nav -> ${path}`, path, viewport: { width: 375, height: 812 }, mobile: true });
 }
 

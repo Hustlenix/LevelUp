@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date(PUBLISHED_DATE);
   const pages: MetadataRoute.Sitemap = [
     { url: `${SITE_URL}/`, lastModified },
+    { url: `${SITE_URL}/manual/`, lastModified },
     { url: `${SITE_URL}/chapters/`, lastModified },
     { url: `${SITE_URL}/audit/`, lastModified },
     { url: `${SITE_URL}/protocols/`, lastModified },

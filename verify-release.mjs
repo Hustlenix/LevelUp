@@ -6,7 +6,7 @@ import { readFileSync } from "node:fs";
 // isolated browser context, never the operator's existing browser data.
 const base = (process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000").replace(/\/$/, "");
 const site = JSON.parse(readFileSync(new URL("./public/data/site.json", import.meta.url), "utf8"));
-const routes = ["/", "/chapters/", "/protocols/", "/today/", "/dashboard/", "/goals/", "/focus/", "/review/", "/progress/", "/portfolio/", "/roadmap/", "/action/", "/audit/", "/research/", "/glossary/", "/quotes/", "/search/", "/settings/", "/backup/", "/privacy/", "/experiments/", "/playbook/", "/devlog/", "/study/", "/study/onboarding/", "/study/settings/", ...site.chapters.map((chapter) => `/chapters/${chapter.slug}/`)];
+const routes = ["/", "/onboarding/", "/today/", "/journey/", "/coach/", "/progress/", "/profile/", "/manual/", "/chapters/", "/protocols/", "/dashboard/", "/goals/", "/focus/", "/review/", "/portfolio/", "/roadmap/", "/action/", "/audit/", "/research/", "/glossary/", "/quotes/", "/search/", "/settings/", "/backup/", "/privacy/", "/experiments/", "/playbook/", "/devlog/", "/study/", "/study/onboarding/", "/study/settings/", ...site.chapters.map((chapter) => `/chapters/${chapter.slug}/`)];
 const browser = await chromium.launch();
 const errors = [];
 const context = await browser.newContext({ viewport: { width: 375, height: 900 }, reducedMotion: "reduce" });
@@ -57,14 +57,31 @@ try {
   await page.getByLabel("Goal", { exact: true }).fill("Release verification goal");
   await page.getByLabel("Why does it matter?").fill("Check the complete operating loop.");
   await page.getByRole("button", { name: "Create goal and first session" }).click();
-  await page.goto(`${base}/today/`, { waitUntil: "networkidle" });
-  await page.getByText("Release verification goal", { exact: false }).first().waitFor();
   await page.goto(`${base}/focus/`, { waitUntil: "networkidle" });
   await page.getByRole("button", { name: /Start block/ }).click();
   await page.getByRole("button", { name: "Pause", exact: true }).waitFor();
   await page.getByRole("button", { name: "Complete block", exact: true }).click();
   await page.getByText(/recorded/i).first().waitFor();
   console.log("Goal → Today → Focus → recorded completion verified.");
+
+  await page.goto(`${base}/onboarding/`, { waitUntil: "networkidle" });
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
+  await page.getByRole("button", { name: "Build my first day", exact: true }).click();
+  await page.waitForURL(`${base}/today/`);
+  await page.getByRole("button", { name: "Start mission", exact: true }).click();
+  await page.getByRole("button", { name: "I did the work", exact: true }).click();
+  await page.getByRole("button", { name: /Complete · \+/ }).click();
+  const lifeState = await page.evaluate(() => JSON.parse(localStorage.getItem("levelup-life-state-v1") || "null"));
+  assert.ok(lifeState?.progression?.totalXp > 0, "mission completion awards persistent XP");
+  assert.equal(lifeState?.progression?.completions?.length, 1, "mission completion records one proof");
+  for (const route of ["/journey/", "/coach/", "/progress/", "/profile/"]) {
+    await page.goto(`${base}${route}`, { waitUntil: "networkidle" });
+    assert.equal(await page.locator("h1").count(), 1, `${route} has one primary heading`);
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1), false, `${route} mobile overflow`);
+  }
+  console.log("Onboarding → mission → XP → Journey/Coach/Progress/Profile loop verified.");
 
   await page.goto(`${base}/backup/`, { waitUntil: "networkidle" });
   const downloaded = page.waitForEvent("download");
@@ -77,6 +94,7 @@ try {
   const backup = JSON.parse(buffer.toString("utf8"));
   assert.equal(backup.actionState.protocolLogs.length, 1);
   assert.equal(backup.quiz.hyperfocus.total, 3);
+  assert.ok(backup.lifeState.progression.totalXp > 0);
   await page.locator('input[type="file"]').setInputFiles({ name: "release-backup.json", mimeType: "application/json", buffer });
   await page.getByText(/Backup imported safely/).waitFor();
   console.log("Backup download and validated restore verified.");
