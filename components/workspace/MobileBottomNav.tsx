@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Sun, BookOpen, Target, TrendingUp } from "lucide-react";
+import { Sun, Compass, Sparkles, User, TrendingUp } from "lucide-react";
 
 const ITEMS = [
   { href: "/today/", label: "Today", icon: Sun },
-  { href: "/chapters/", label: "Learn", icon: BookOpen },
-  { href: "/goals/", label: "Goals", icon: Target },
+  { href: "/journey/", label: "Journey", icon: Compass },
+  { href: "/coach/", label: "Coach", icon: Sparkles },
+  { href: "/profile/", label: "Profile", icon: User },
   { href: "/progress/", label: "Progress", icon: TrendingUp },
 ] as const;
 
@@ -19,7 +20,7 @@ export default function MobileBottomNav() {
   const pathname = usePathname() ?? "";
   return (
     <nav aria-label="Primary mobile navigation" className="interface-font fixed inset-x-0 bottom-0 z-40 border-t border-line bg-card/95 px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-4px_24px_rgb(34_29_22/0.04)] backdrop-blur md:hidden no-print">
-      <div className="mx-auto grid max-w-lg grid-cols-4 gap-1">
+      <div className="mx-auto grid max-w-lg grid-cols-5 gap-1">
         {ITEMS.map((item) => {
           const isActive = active(pathname, item.href);
           const Icon = item.icon;

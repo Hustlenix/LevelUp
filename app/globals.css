@@ -16,6 +16,47 @@
   --color-love: #a4574f;
   --color-crimson: #c8102e;
   --color-self: #5b4b7a;
+
+  /* ---- semantic product tokens (theme-safe: resolve against the pillars above) ---- */
+  --color-bg: var(--color-paper);
+  --color-bg-deep: var(--color-paper-deep);
+  --color-surface: var(--color-card);
+  --color-surface-2: var(--color-paper-deep);
+  --color-border: var(--color-line);
+  --color-text: var(--color-ink);
+  --color-text-soft: var(--color-ink-soft);
+  --color-text-faint: var(--color-ink-faint);
+  --color-accent: var(--color-gold);
+  --color-accent-soft: var(--color-gold-soft);
+  --color-accent-deep: var(--color-gold-deep);
+  --color-success: var(--color-health);
+  --color-danger: var(--color-crimson);
+  --color-info: var(--color-self);
+  --color-warning: var(--color-wealth);
+
+  /* ---- skill colors (the seven skills of the real-life RPG) ---- */
+  --color-skill-focus: var(--color-gold);
+  --color-skill-learning: var(--color-self);
+  --color-skill-fitness: var(--color-health);
+  --color-skill-discipline: var(--color-crimson);
+  --color-skill-confidence: var(--color-love);
+  --color-skill-mind: var(--color-love);
+  --color-skill-career: var(--color-wealth);
+
+  /* ---- radii (new utilities: rounded-card, rounded-pop, rounded-pill) ---- */
+  --radius-card: 1rem;
+  --radius-pop: 1.25rem;
+  --radius-pill: 999px;
+
+  /* ---- elevation (new utilities: shadow-card, shadow-pop, shadow-float) ---- */
+  --shadow-card: 0 2px 4px rgb(34 29 22 / 2%), 0 16px 40px rgb(34 29 22 / 3%);
+  --shadow-pop: 0 18px 60px rgb(34 29 22 / 14%);
+  --shadow-float: 0 10px 24px rgb(34 29 22 / 10%);
+
+  /* ---- motion (new utilities: ease-standard, ease-emphasized) ---- */
+  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-emphasized: cubic-bezier(0.2, 1.5, 0.3, 1);
+
   --font-display: var(--font-fraunces);
   --font-body: var(--font-source);
 }

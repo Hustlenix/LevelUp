@@ -20,6 +20,9 @@ import { reloadActionToolsCaches } from "@/lib/actionTools";
 import { localToday } from "@/lib/dates";
 import { toBackupPayload, fromBackupPayload } from "@/lib/studentProfile";
 import { PillarTag } from "@/components/ui";
+import { useGamification } from "@/lib/useGamification";
+import { computeLifeosBadges, computeProgression } from "@/lib/progression";
+import { useClientToday } from "@/lib/clientToday";
 import GamificationPanel from "@/components/GamificationPanel";
 import { trackEvent, ANALYTICS_EVENTS } from "@/lib/analytics";
 import { getOSStateSnapshot, restoreOSState, useOSStore } from "@/lib/os/store";
@@ -35,6 +38,12 @@ const SCALE_KEY = "levelup-reader-scale";
 export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
   const map = useProgressStore();
   const osState = useOSStore();
+  const gamification = useGamification();
+  const date = useClientToday();
+  // computeProgression needs a real date (parseDay("") throws); useClientToday
+  // returns "" during static prerender, so derive once the client date snaps in.
+  const progression = date ? computeProgression(osState, gamification.state, date) : null;
+  const badges = progression ? computeLifeosBadges(progression) : null;
   const patterns = deriveLocalPatterns(osState, localToday());
   const stats = overallStats(map, chapters.length);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -161,11 +170,14 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
     reader.readAsText(file);
   };
 
+  const last7 = progression?.last7 ?? [];
+  const weekPeak = Math.max(1, ...last7.map((d) => d.xp));
+
   return (
     <div className="mx-auto max-w-3xl px-5 py-12">
       <WorkspaceHeader eyebrow="Progress" title="See the outcome, then the details" description="Reading, focus evidence, and mastery stay local to this browser. Start with the outcome and use the ledger below to choose the next useful action." />
 
-      <MetricStrip items={[{ label: "Reading", value: `${stats.pct}%`, detail: `${stats.done} of ${chapters.length} chapters complete` }, { label: "Mastery", value: Object.keys(osState.mastery.goals).length, detail: "goal records" }, { label: "Local only", value: "Yes", detail: "no sync or hosted backend" }]} />
+      <MetricStrip items={[{ label: "Reading", value: `${stats.pct}%`, detail: `${stats.done} of ${chapters.length} chapters complete` }, { label: "Level", value: progression ? String(progression.level) : "—", detail: progression ? progression.name : "computing…" }, { label: "Streak", value: progression ? String(progression.streak.current) : "—", detail: progression && progression.streak.best > progression.streak.current ? `best ${progression.streak.best}` : undefined }, { label: "Mastery", value: Object.keys(osState.mastery.goals).length, detail: "goal records" }, { label: "XP", value: progression ? String(progression.xp) : "—", detail: progression ? `${progression.weekSum.xp} this week` : "computing…" }, { label: "Local only", value: "Yes", detail: "no sync or hosted backend" }]} />
 
       <div className="mt-8 rounded-xl border border-line bg-card p-6">
         <div className="flex items-baseline justify-between">
@@ -178,6 +190,110 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
           <div className="h-full rounded-full bg-gold transition-all" style={{ width: `${stats.pct}%` }} />
         </div>
       </div>
+
+      {progression ? (
+        <>
+          <section className="mt-8 rounded-xl border border-line bg-card p-6" aria-labelledby="progression-heading">
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h2 id="progression-heading" className="font-display text-2xl font-bold tracking-tight text-ink">
+                {progression.title}
+              </h2>
+              <p className="text-sm text-ink-soft">
+                {progression.xp} XP · {progression.totalSessions} sessions · {Math.round(progression.totalMinutes / 60)}h focused
+              </p>
+            </div>
+            <div className="mt-3 h-3 overflow-hidden rounded-full bg-line">
+              <div className="h-full rounded-full bg-gold transition-all" style={{ width: `${progression.bounds.pct}%` }} />
+            </div>
+            {progression.bounds.next !== null ? (
+              <p className="mt-2 text-xs text-ink-faint">
+                {progression.bounds.into} of {progression.bounds.next - progression.bounds.floor} XP into level{" "}
+                {progression.level + 1}
+              </p>
+            ) : (
+              <p className="mt-2 text-xs text-ink-faint">Maximum level reached.</p>
+            )}
+
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              <div>
+                <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">Skills</p>
+                <ul className="mt-3 space-y-3">
+                  {progression.skills.slice(0, 3).map((skill) => (
+                    <li key={skill.id}>
+                      <div className="flex items-baseline justify-between gap-2 text-sm">
+                        <span className="font-medium text-ink">{skill.label}</span>
+                        <span className="text-xs text-ink-faint">
+                          Lv {skill.level} · {skill.xp} XP
+                        </span>
+                      </div>
+                      <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-line">
+                        <div className="h-full rounded-full bg-gold/70" style={{ width: `${skill.pct}%` }} />
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">
+                  Last 7 days
+                </p>
+                <div className="mt-3 flex h-24 items-end gap-1.5" role="img" aria-label="XP earned per day over the last 7 days">
+                  {last7.map((day) => (
+                    <div key={day.date} className="flex flex-1 flex-col items-center gap-1">
+                      <div
+                        className={`w-full rounded-sm ${day.xp > 0 ? "bg-gold/80" : "bg-line"}`}
+                        style={{ height: `${Math.max(4, Math.round((day.xp / weekPeak) * 64))}px` }}
+                        title={`${day.date}: ${day.xp} XP`}
+                      />
+                      <span className="text-[9px] text-ink-faint">{day.date.slice(8)}</span>
+                    </div>
+                  ))}
+                </div>
+                {progression.weekSum.xp > 0 ? (
+                  <p className="mt-2 text-xs text-ink-soft">
+                    This week: {progression.weekSum.xp} XP · {progression.weekSum.sessions} sessions ·{" "}
+                    {progression.weekSum.minutes} minutes
+                  </p>
+                ) : null}
+              </div>
+            </div>
+          </section>
+
+          {badges ? (
+            <section className="mt-8 rounded-xl border border-line bg-card p-6" aria-labelledby="lifeos-badges-heading">
+              <h2 id="lifeos-badges-heading" className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">
+                LifeOS badges
+              </h2>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {badges.map((b) => (
+                  <div
+                    key={b.id}
+                    className={`rounded-lg border p-3 transition-colors ${
+                      b.unlocked ? "border-gold/50 bg-paper-deep/60" : "border-line bg-paper opacity-60"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="font-display text-sm font-semibold text-ink">{b.name}</p>
+                      <span className={`text-[10px] uppercase tracking-wider ${b.unlocked ? "text-gold" : "text-ink-faint"}`}>
+                        {b.unlocked ? "Earned" : "Locked"}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-xs text-ink-soft">{b.blurb}</p>
+                    <p className="mt-1 text-[10px] text-ink-faint">{b.rule}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          ) : null}
+        </>
+      ) : (
+        <div className="mt-8 rounded-xl border border-line bg-card p-6">
+          <p className="text-sm text-ink-faint" role="status">
+            Deriving your LifeOS progression…
+          </p>
+        </div>
+      )}
 
       <GamificationPanel />
 

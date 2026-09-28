@@ -10,14 +10,9 @@ import ContinueReading from "@/components/ContinueReading";
 import ChaptersMenu from "@/components/ChaptersMenu";
 import type { Chapter } from "@/lib/types";
 
-const PRIMARY_ITEMS = [
-  { href: "/today/", label: "Today" },
-  { href: "/chapters/", label: "Learn" },
-  { href: "/goals/", label: "Goals" },
-  { href: "/progress/", label: "Progress" },
-] as const;
-
 const MORE_ITEMS = [
+  { href: "/goals/", label: "Goals" },
+  { href: "/study/", label: "Study Mode" },
   { href: "/focus/", label: "Focus" },
   { href: "/review/", label: "Review" },
   { href: "/roadmap/", label: "Roadmap" },
@@ -30,7 +25,6 @@ const MORE_ITEMS = [
   { href: "/settings/", label: "Settings" },
   { href: "/privacy/", label: "Privacy" },
   { href: "/backup/", label: "Backup" },
-  { href: "/study/", label: "Study Mode" },
   { href: "/glossary/", label: "Glossary" },
   { href: "/quotes/", label: "Quotes" },
 ] as const;
@@ -46,7 +40,6 @@ export default function Nav({ chapters }: { chapters: Chapter[] }) {
   const { setOpen } = useSearch();
   const pathname = usePathname() ?? "";
   const [moreOpen, setMoreOpen] = useState(false);
-  const moreDesktopRef = useRef<HTMLDivElement>(null);
   const moreMobileRef = useRef<HTMLDivElement>(null);
   const moreTriggerRef = useRef<HTMLButtonElement | null>(null);
 
@@ -59,7 +52,7 @@ export default function Nav({ chapters }: { chapters: Chapter[] }) {
     if (!moreOpen) return;
     const onPointerDown = (event: PointerEvent) => {
       const target = event.target as Node;
-      if (!moreDesktopRef.current?.contains(target) && !moreMobileRef.current?.contains(target)) setMoreOpen(false);
+      if (!moreMobileRef.current?.contains(target)) setMoreOpen(false);
     };
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -100,21 +93,6 @@ export default function Nav({ chapters }: { chapters: Chapter[] }) {
         </div>
       </div>
 
-      <nav aria-label="Primary navigation" className="hidden border-t border-line md:block">
-        <div className="mx-auto flex max-w-6xl items-center gap-1 overflow-visible px-4 py-2 sm:px-5">
-          <div className="mr-2 shrink-0"><ChaptersMenu chapters={chapters} /></div>
-          {PRIMARY_ITEMS.map((item) => <Link key={item.href} href={item.href} aria-current={isActive(pathname, item.href) ? "page" : undefined} className={linkClass(isActive(pathname, item.href))}>{item.label}</Link>)}
-          <div ref={moreDesktopRef} className="relative ml-auto shrink-0">
-            <button type="button" onClick={toggleMore} aria-expanded={moreOpen} aria-controls="more-menu" aria-haspopup="menu" className={linkClass(moreOpen)}>
-              More <ChevronDown aria-hidden="true" className={`h-3.5 w-3.5 transition-transform duration-200 ${moreOpen ? "rotate-180" : ""}`} />
-            </button>
-            {moreOpen ? <div id="more-menu" role="menu" aria-label="More tools" className="absolute right-0 top-full z-50 mt-2 grid max-h-[calc(100dvh-10rem)] w-[24rem] grid-cols-2 gap-1 overflow-y-auto overscroll-contain rounded-xl border border-line bg-card p-3 shadow-xl">
-              <button type="button" role="menuitem" onClick={() => { setOpen(true); setMoreOpen(false); }} className="rounded-lg px-3 py-2 text-left text-sm font-medium text-ink-soft transition-colors hover:bg-paper-deep hover:text-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold">Search</button>
-              {MORE_ITEMS.map((item) => <Link key={item.href} role="menuitem" href={item.href} aria-current={isActive(pathname, item.href) ? "page" : undefined} onClick={() => setMoreOpen(false)} className="rounded-lg px-3 py-2 text-sm font-medium text-ink-soft transition-colors hover:bg-paper-deep hover:text-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold">{item.label}</Link>)}
-            </div> : null}
-          </div>
-        </div>
-      </nav>
       <div className="border-t border-line px-4 py-2 md:hidden">
         <div className="flex items-center justify-between gap-2 text-xs text-ink-soft">
           <ChaptersMenu chapters={chapters} mobile />

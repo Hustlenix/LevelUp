@@ -3,6 +3,7 @@ import { Fraunces, Source_Serif_4 } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import Nav from "@/components/Nav";
+import SidebarNav from "@/components/SidebarNav";
 import Footer from "@/components/Footer";
 import SearchProvider from "@/components/SearchProvider";
 import BackToTop from "@/components/BackToTop";
@@ -97,11 +98,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to content
         </a>
         <SearchProvider>
-           <Nav chapters={siteData.chapters} />
-           <BackupJournalNotice />
-            <main id="main" className="flex-1">{children}</main>
-           <Footer />
-           <MobileBottomNav />
+          <div className="flex flex-1">
+            <SidebarNav />
+            <div className="flex min-w-0 flex-1 flex-col">
+              <Nav chapters={siteData.chapters} />
+              <BackupJournalNotice />
+              <main id="main" className="flex-1">{children}</main>
+              <Footer />
+            </div>
+          </div>
+          <MobileBottomNav />
         </SearchProvider>
         <BackToTop />
         <ServiceWorkerRegister />
