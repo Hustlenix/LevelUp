@@ -232,6 +232,7 @@ function DemoControls({
 
 export default function CompanionLayer({ chapters }: { chapters: ChapterContext[] }) {
   const pathname = usePathname();
+  const isOnboarding = pathname.split("/").filter(Boolean).at(-1) === "onboarding";
   const osState = useOSStore();
   const progress = useProgressStore();
   const savedState = useCompanionStore();
@@ -419,6 +420,11 @@ export default function CompanionLayer({ chapters }: { chapters: ChapterContext[
     setTransientPose("wave");
     setView("engine");
   }
+
+  // Onboarding has a sticky mobile action bar and already introduces Milo in
+  // the product story. Keep the floating companion out of this focused setup
+  // flow so its animated artwork can never cover or intercept the next action.
+  if (isOnboarding) return null;
 
   if (!settings.enabled && !expanded) {
     return (

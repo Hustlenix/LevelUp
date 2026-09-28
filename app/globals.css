@@ -532,6 +532,13 @@ details:not([open]) > :not(summary) { display: none !important; }
   pointer-events: auto;
 }
 
+/* Animated artwork may extend past the companion button while it moves. The
+   button remains interactive, but decorative descendants must not steal taps
+   from nearby mobile controls outside the button's own hit area. */
+.companion-home * {
+  pointer-events: none;
+}
+
 .companion-panel {
   width: min(360px, calc(100vw - 1.5rem));
   overflow: hidden;
