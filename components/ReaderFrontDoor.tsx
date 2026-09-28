@@ -15,7 +15,7 @@ import type { Chapter, Pillar } from "@/lib/types";
 import { SITE_NAME } from "@/lib/site";
 
 export const BOOK_ONE_LINER =
-  "Twenty-eight evidence-audited chapters on belief, identity, and the science of getting better.";
+  "An offline-first self-improvement system with 28 evidence-audited chapters, a daily execution workspace, and a living companion that grows from real progress.";
 
 const PILLAR_ORDER: Pillar[] = ["health", "wealth", "love", "self"];
 
@@ -70,6 +70,7 @@ export default function ReaderFrontDoor({ chapters }: { chapters: Chapter[] }) {
             Start reading
           </Link>
           <Link href="/today/" className="inline-flex min-h-12 items-center gap-2 px-1 text-sm font-semibold text-ink-soft hover:text-gold">Open Today <ArrowRight className="h-4 w-4" /></Link>
+          <Link href="/today/?milo=demo" className="inline-flex min-h-12 items-center gap-2 px-1 text-sm font-semibold text-gold hover:text-gold-deep">Meet Milo <ArrowRight className="h-4 w-4" /></Link>
         </div>
         <p className="mt-5 text-xs leading-relaxed text-ink-faint">Begin with Chapter {start.number} · {start.duration} read</p>
         </div>
@@ -81,6 +82,81 @@ export default function ReaderFrontDoor({ chapters }: { chapters: Chapter[] }) {
           </div>
           <Link href="/audit/" className="mt-5 hidden min-h-11 items-center gap-2 text-xs font-semibold text-gold lg:inline-flex">See how the evidence is graded <ArrowRight className="h-3.5 w-3.5" /></Link>
         </aside>
+        </div>
+      </section>
+
+      {/* The product beyond the manual */}
+      <section className="rounded-2xl border border-line bg-card p-6 shadow-xs sm:p-8">
+        <div className="max-w-3xl">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">
+            From reading to doing
+          </span>
+          <h2 className="mt-2 font-display text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
+            The manual is only layer one.
+          </h2>
+          <p className="mt-3 text-sm leading-7 text-ink-soft">
+            Level Up turns ideas into goals, bounded focus sessions, completion events, reviews, and a tiny world that changes from the work you actually do. The core experience is local-first and works without an account or cloud AI.
+          </p>
+        </div>
+
+        <div className="mt-6 grid gap-4 md:grid-cols-3">
+          <Link
+            href="/today/"
+            className="group rounded-xl border border-line bg-paper p-5 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-1 hover:border-gold/60 hover:shadow-md motion-reduce:hover:translate-y-0"
+          >
+            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gold/10 text-gold">
+              <LayoutDashboard className="h-4 w-4" />
+            </span>
+            <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-gold">Today workspace</p>
+            <h3 className="mt-1 font-display text-lg font-semibold text-ink">Protect one outcome.</h3>
+            <p className="mt-2 text-sm leading-6 text-ink-soft">
+              Goals become tasks and sessions. Finishing the work creates durable progress instead of another disposable checklist.
+            </p>
+            <span className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-gold">
+              Open Today <ChevronRight className="h-3 w-3" />
+            </span>
+          </Link>
+
+          <Link
+            href="/focus/"
+            className="group rounded-xl border border-line bg-paper p-5 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-1 hover:border-gold/60 hover:shadow-md motion-reduce:hover:translate-y-0"
+          >
+            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gold/10 text-gold">
+              <Zap className="h-4 w-4" />
+            </span>
+            <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-gold">Focus engine</p>
+            <h3 className="mt-1 font-display text-lg font-semibold text-ink">Do the next real block.</h3>
+            <p className="mt-2 text-sm leading-6 text-ink-soft">
+              Run bounded focus sessions, record interruptions, and keep evidence of completed work so tomorrow can adapt.
+            </p>
+            <span className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-gold">
+              Start a focus block <ChevronRight className="h-3 w-3" />
+            </span>
+          </Link>
+
+          <Link
+            href="/today/?milo=demo"
+            className="group rounded-xl border border-gold/35 bg-gold/5 p-5 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-1 hover:border-gold hover:shadow-md motion-reduce:hover:translate-y-0"
+          >
+            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gold text-paper">
+              <Brain className="h-4 w-4" />
+            </span>
+            <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-gold">Living companion</p>
+            <h3 className="mt-1 font-display text-lg font-semibold text-ink">Meet Milo.</h3>
+            <p className="mt-2 text-sm leading-6 text-ink-soft">
+              Milo reads the same local event journal as the app. Real focus, reading, goals, and milestones change behaviour and unlock the room.
+            </p>
+            <span className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-gold">
+              Run the reviewer demo <ChevronRight className="h-3 w-3" />
+            </span>
+          </Link>
+        </div>
+
+        <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-4 text-[11px] text-ink-faint">
+          <span>Local-first core</span>
+          <span>No account required</span>
+          <span>Deterministic companion engine</span>
+          <span>Backup / restore included</span>
         </div>
       </section>
 

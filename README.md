@@ -96,7 +96,9 @@ The companion can be turned off completely. Motion supports **Full / Reduced / O
 
 A reviewer should not need seven days of personal data to understand the system.
 
-Open the Companion Space and choose **Experience reviewer demo**. The demo runs the production reducer against a disposable deterministic fixture:
+**One-click live demo:** https://hustlenix.github.io/LevelUp/today/?milo=demo
+
+That URL opens the Companion Space directly in reviewer mode. You can also open Milo normally and choose **Experience reviewer demo**. The demo runs the production reducer against a disposable deterministic fixture:
 
 1. start focus
 2. complete focus
