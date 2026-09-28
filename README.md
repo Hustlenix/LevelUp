@@ -1,65 +1,45 @@
 # Level Up
 
-Level Up is a website I made to turn a long self-improvement video into something I could actually use instead of just watching once and forgetting.
+Level Up is a website I built to make a long self-improvement video easier to learn from and actually use.
 
-**Live site:** https://hustlenix.github.io/LevelUp/
+Live website: https://hustlenix.github.io/LevelUp/
 
 ## Description
 
-The project started with a roughly 20-hour self-development video. I went through the material and turned it into 28 readable chapters, then kept adding tools that made the information more useful in day-to-day life.
+I originally made Level Up because I had a long video with a lot of useful information in it, but going back through a 20-hour video every time I wanted to find something was not practical.
 
-You can read the chapters, search through them, take quizzes, save highlights, track progress, use focus sessions, set goals, review your work, and use the built-in Study Mode.
+So I started turning the ideas into readable chapters.
 
-I also added a small companion called **Milo**. Milo is connected to the things you actually do in Level Up. For example, completing focus sessions, reading chapters, or reaching milestones can change what Milo is doing and unlock things in his room.
+After that I kept adding things I wanted for myself, like search, quizzes, highlights, goals, focus sessions, progress tracking and study tools.
 
-Most of the app works locally in your browser. You do not need to create an account just to use the main features.
+The project now has 28 chapters and a bunch of tools around them. It also has a small companion called Milo. Milo reacts to things you do inside the website, such as finishing focus sessions or making progress.
 
-If you only want to see the Milo system quickly, there is a reviewer demo here:
+Most of the important data is stored locally in the browser, so the main app does not need an account.
 
-https://hustlenix.github.io/LevelUp/today/?milo=demo
-
-### Screenshots
+### Screenshot
 
 ![Level Up homepage](public/devlog/after-home.png)
-
-## Main Features
-
-- 28 self-improvement chapters
-- chapter search
-- quizzes and reflections
-- highlights and bookmarks
-- progress tracking
-- goals and roadmaps
-- focus sessions
-- daily and weekly reviews
-- Study Mode
-- streaks, XP and badges
-- local backup and restore
-- Milo, the persistent companion
-- GitHub Pages deployment
 
 ## Getting Started
 
 ### Dependencies
 
-To run Level Up locally you will need:
+You need:
 
 - Node.js
 - npm
 - Git
 
-The project uses Next.js, React, TypeScript and Tailwind CSS.
-
 ### Installing
 
-Clone the repository:
+Clone the project:
 
 ```bash
 git clone https://github.com/Hustlenix/LevelUp.git
 cd LevelUp
 ```
 
-Install the dependencies:
+Install the packages:
 
 ```bash
 npm install
@@ -67,70 +47,69 @@ npm install
 
 ### Executing program
 
-Start the development server:
+Run the development server:
 
 ```bash
 npm run dev
 ```
 
-Then open:
+Open this in your browser:
 
 ```text
 http://localhost:3000
 ```
 
-To make a production build:
+To test a production build:
 
 ```bash
 npm run build
 npm start
 ```
 
-## Testing
+## Useful Commands
 
-Before I ship changes I normally run:
+Run the linter:
 
 ```bash
 npm run lint
-npm test
-npm run build
 ```
 
-There are also Playwright checks for the deployed site.
+Run the tests:
 
 ```bash
-npx playwright install chromium
-PLAYWRIGHT_BASE_URL=https://hustlenix.github.io/LevelUp node verify-release.mjs
+npm test
+```
+
+Build the project:
+
+```bash
+npm run build
 ```
 
 ## Help
 
-If the project does not start, first make sure the dependencies installed correctly:
+If the project is not starting, try installing the dependencies again:
 
 ```bash
 npm install
 ```
 
-If the local build looks different from the GitHub Pages version, remember that the deployed site uses the case-sensitive base path:
+If the GitHub Pages version is not loading correctly, check that links and asset paths work with the `/LevelUp` base path.
 
-```text
-/LevelUp
-```
-
-You can also check the repository's GitHub Actions runs if the public site did not deploy after a push.
+You can also check the Actions tab on GitHub to see if the latest build or deployment failed.
 
 ## Why I Made This
 
-I originally wanted a better way to learn from one very long video without constantly scrubbing through it again.
+I did not want this to be another website where I read something once and then forget about it.
 
-Once the reading version worked, I started experimenting with ways to make the project more useful: progress tracking, study tools, focus sessions, goals, and eventually Milo.
+The goal was to make the information easier to return to and give myself tools to actually do something with it.
 
-The project has changed a lot from the first version, but the main idea is still the same: make useful information easier to come back to and actually apply.
+Level Up has grown a lot since the first version, and I am still improving it.
 
 ## License
 
-The written site content is licensed under the **Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0)**.
+The written content in this project is licensed under the Creative Commons Attribution-NonCommercial 4.0 International license.
 
-See the [LICENSE](LICENSE) file for the full details.
+See [LICENSE](LICENSE) for the full details.
 
-The source code is not included under that content license unless explicitly stated.
+The source code is not included under that content license unless it is explicitly stated.
