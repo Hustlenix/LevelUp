@@ -68,10 +68,10 @@ export function getCompanionStateSnapshot(): CompanionState {
   return cache;
 }
 
-const SERVER_EMPTY_STATE = Object.freeze(createEmptyCompanionState("1970-01-01T00:00:00.000Z"));
+export const EMPTY_COMPANION_STATE = Object.freeze(createEmptyCompanionState("1970-01-01T00:00:00.000Z"));
 
 export function useCompanionStore(): CompanionState {
-  return useSyncExternalStore(subscribeCompanionState, getCompanionStateSnapshot, () => SERVER_EMPTY_STATE);
+  return useSyncExternalStore(subscribeCompanionState, getCompanionStateSnapshot, () => EMPTY_COMPANION_STATE);
 }
 
 /** Write to storage and refresh the React-visible snapshot. Used by the pump. */

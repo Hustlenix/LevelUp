@@ -8,6 +8,7 @@ import { useProgressStore } from "@/lib/progress";
 import {
   COMPANION_EVENT_SIGNAL,
   DEFAULT_COMPANION_SETTINGS,
+  EMPTY_COMPANION_STATE,
   browserStorage,
   createEmptyCompanionState,
   deriveTimeOfDay,
@@ -244,15 +245,20 @@ export default function CompanionLayer({ chapters }: { chapters: ChapterContext[
   const [now, setNow] = useState<Date | null>(null);
   const [systemReducedMotion, setSystemReducedMotion] = useState(false);
   const [demoState, setDemoState] = useState<CompanionState | null>(null);
+  const [hydrated, setHydrated] = useState(false);
   const previousOS = useRef<typeof osState | null>(null);
   const lastChapter = useRef<string | null>(null);
   const poseTimer = useRef<number | null>(null);
 
   const chaptersByPillar = useMemo(() => pillarProgress(chapters, progress), [chapters, progress]);
   const currentChapter = useMemo(() => chapterFromPath(pathname, chapters), [pathname, chapters]);
-  const activeFocus = Object.values(osState.sessions).some((session) => session.status === "in-progress");
+  // Until the mount effect runs, the hydration render must match the server
+  // bake exactly. Render the deterministic empty shell instead of whatever
+  // localStorage holds on this client (companion, OS, and progress stores all
+  // hydrate from per-visitor storage that the server never sees).
+  const activeFocus = hydrated && Object.values(osState.sessions).some((session) => session.status === "in-progress");
   const effectiveMotion = systemReducedMotion && settings.motion === "full" ? "reduced" : settings.motion;
-  const state = demoState ?? savedState;
+  const state = !hydrated ? EMPTY_COMPANION_STATE : demoState ?? savedState;
   const timeOfDay = now ? deriveTimeOfDay(now) : "day";
   const behaviour = selectCompanionBehaviour(state, {
     activeFocus: demoState ? state.currentActivity === "focusing" : activeFocus,
@@ -325,6 +331,13 @@ export default function CompanionLayer({ chapters }: { chapters: ChapterContext[
       window.clearInterval(clock);
       if (poseTimer.current) window.clearTimeout(poseTimer.current);
     };
+  }, []);
+
+  useEffect(() => {
+    // Flipping this after the hydration commit re-renders the shell with the
+    // visitor's real persisted state — a normal post-mount render, not hydration.
+    const tick = window.setTimeout(() => setHydrated(true), 0);
+    return () => window.clearTimeout(tick);
   }, []);
 
   useEffect(() => {

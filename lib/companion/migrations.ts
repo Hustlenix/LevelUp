@@ -101,7 +101,7 @@ function emptyState(now: string, seed: number): CompanionState {
   };
 }
 
-export function createEmptyCompanionState(now = new Date().toISOString(), seed = Math.floor(Math.random() * 0xffffffff)): CompanionState {
+export function createEmptyCompanionState(now = new Date().toISOString(), seed = 0): CompanionState {
   return emptyState(now, seed);
 }
 
