@@ -20,7 +20,7 @@ export default function PrivacyPage() {
       <SectionHeading
         eyebrow="Privacy"
         title="Your data stays on your device"
-        lede="Progress, notes, and highlights live in your browser's local storage. This site is a static export — no accounts, no login, no server of ours. By default it sends nothing to anyone."
+        lede="Progress, notes, and highlights live in browser storage. This site is a static export — no accounts, no login, no hidden sync server. By default it sends nothing to anyone."
       />
 
       <div className="space-y-8">
@@ -29,8 +29,9 @@ export default function PrivacyPage() {
             The short version
           </h2>
           <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-ink-soft">
-            <li>Reading progress, quiz results, reflections, protocol runs, highlights, and points are stored only in your browser&apos;s local storage — on this device, in this browser.</li>
-            <li>Nothing is uploaded. There is no account, no sync, no server-side database.</li>
+            <li>Reading progress, missions, quiz results, reflections, protocol runs, highlights, and points are stored in browser storage — on this device, in this browser.</li>
+            <li>Nothing is uploaded automatically. There is no account, hosted sync relay, or server-side personal database.</li>
+            <li>Open tabs can reconcile locally. Cross-device transfer happens only when you explicitly export and import an encrypted Nexus packet or a backup.</li>
             <li>Backups are files you download and re-import yourself; they never leave your machine unless you move them.</li>
             <li>Analytics is {analyticsOn ? (
               <span className="font-semibold text-ink">enabled in this build</span>
@@ -45,11 +46,11 @@ export default function PrivacyPage() {
             Where your data lives
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-            Everything you create here — chapters marked complete, scroll progress, quiz answers, reflections,
-            protocol runs, highlights, and gamification points — is stored in your browser&apos;s local storage on the
-            device and browser you are using. It is not sent to any server and is not shared between devices or
-            browsers. If you use the site in a different browser or on a different machine, you start fresh (unless
-            you export a backup and import it there).
+            Everything you create here — missions, skill progress, chapters marked complete, scroll progress, quiz
+            answers, reflections, protocol runs, highlights, and points — is stored in browser storage on the device
+            and browser you are using. Core LifeOS progress uses a synchronous local copy plus an IndexedDB mirror.
+            It is not sent to a LevelUp server. A different browser starts fresh unless you explicitly move an
+            encrypted Nexus packet or export a backup and import it there.
           </p>
           <p className="mt-3 text-sm leading-relaxed text-ink-soft">
             Deleting your browser&apos;s data for this site permanently removes everything — there is no way to recover
@@ -58,6 +59,24 @@ export default function PrivacyPage() {
               progress page
             </Link>
             , which includes backup buttons).
+          </p>
+        </section>
+
+        <section>
+          <h2 className="border-b-2 border-gold/60 pb-1 font-display text-2xl font-bold text-ink">
+            Nexus local sync
+          </h2>
+          <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+            Mission progress is represented as an append-only local operation log. Open LevelUp tabs on the same
+            origin exchange those operations through the browser&apos;s BroadcastChannel and storage events. This traffic
+            stays inside your browser profile and is not an internet sync service.
+          </p>
+          <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+            The <Link className="text-gold underline-offset-2 hover:underline" href="/sync-lab/">Nexus Sync Lab</Link> can
+            create a cross-device transfer file. Its contents are encrypted in your browser with AES-GCM using a key
+            derived from the phrase you enter. The phrase is never stored or sent. LevelUp cannot recover a forgotten
+            phrase. The packet still exposes non-secret format metadata such as its version, encryption settings, and
+            creation time.
           </p>
         </section>
 
@@ -95,7 +114,8 @@ export default function PrivacyPage() {
             The backup feature downloads a small JSON file containing your progress, quiz results, reflections,
             protocol runs, and highlights, and lets you import such a file again. The download goes to your own
             machine, and an import only happens when you choose a file. Neither action transmits your data over the
-            network.
+            network. Full JSON backups are not encrypted; they can include mission proof and other private text. Store
+            them accordingly, or use the encrypted Nexus packet when you only need to move LifeOS progress.
           </p>
         </section>
 

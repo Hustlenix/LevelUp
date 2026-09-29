@@ -15,7 +15,7 @@ export default function ServiceWorkerRegister() {
     ) {
       return;
     }
-    navigator.serviceWorker.register(`${BASE}/sw.js?v=1`).catch(() => {
+    navigator.serviceWorker.register(`${BASE}/sw.js?v=3`).catch(() => {
       /* service worker failure is graceful - the site works without it */
     });
   }, []);

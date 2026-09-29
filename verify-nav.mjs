@@ -38,7 +38,7 @@ for (const path of ["/today/", "/journey/", "/coach/", "/progress/", "/profile/"
   await recordNavigation({ name: `desktop primary nav -> ${path}`, path, viewport: { width: 1440, height: 900 } });
 }
 
-for (const path of ["/focus/", "/chapters/", "/settings/", "/backup/"]) {
+for (const path of ["/focus/", "/chapters/", "/settings/", "/backup/", "/sync-lab/"]) {
   await recordNavigation({ name: `desktop app tools -> ${path}`, path, viewport: { width: 1440, height: 900 }, tools: true });
 }
 

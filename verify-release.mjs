@@ -6,7 +6,7 @@ import { readFileSync } from "node:fs";
 // isolated browser context, never the operator's existing browser data.
 const base = (process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000").replace(/\/$/, "");
 const site = JSON.parse(readFileSync(new URL("./public/data/site.json", import.meta.url), "utf8"));
-const routes = ["/", "/onboarding/", "/today/", "/journey/", "/coach/", "/progress/", "/profile/", "/manual/", "/chapters/", "/protocols/", "/dashboard/", "/goals/", "/focus/", "/review/", "/portfolio/", "/roadmap/", "/action/", "/audit/", "/research/", "/glossary/", "/quotes/", "/search/", "/settings/", "/backup/", "/privacy/", "/experiments/", "/playbook/", "/devlog/", "/study/", "/study/onboarding/", "/study/settings/", ...site.chapters.map((chapter) => `/chapters/${chapter.slug}/`)];
+const routes = ["/", "/onboarding/", "/today/", "/journey/", "/coach/", "/progress/", "/profile/", "/sync-lab/", "/manual/", "/chapters/", "/protocols/", "/dashboard/", "/goals/", "/focus/", "/review/", "/portfolio/", "/roadmap/", "/action/", "/audit/", "/research/", "/glossary/", "/quotes/", "/search/", "/settings/", "/backup/", "/privacy/", "/experiments/", "/playbook/", "/devlog/", "/study/", "/study/onboarding/", "/study/settings/", ...site.chapters.map((chapter) => `/chapters/${chapter.slug}/`)];
 const browser = await chromium.launch();
 const errors = [];
 const context = await browser.newContext({ viewport: { width: 375, height: 900 }, reducedMotion: "reduce" });
@@ -83,6 +83,19 @@ try {
   }
   console.log("Onboarding → mission → XP → Journey/Coach/Progress/Profile loop verified.");
 
+  await page.goto(`${base}/sync-lab/`, { waitUntil: "networkidle" });
+  await page.getByRole("button", { name: "Write mission on A", exact: true }).click();
+  await page.getByRole("button", { name: "Write mission on B", exact: true }).click();
+  await page.getByText("DIVERGED", { exact: true }).waitFor();
+  await page.getByRole("button", { name: "Reconnect + merge", exact: true }).click();
+  await page.getByText("CONVERGED", { exact: true }).waitFor();
+  await page.getByLabel("Sync phrase").fill("release-check-phrase");
+  const packetDownload = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export encrypted packet", exact: true }).click();
+  const packet = await packetDownload;
+  assert.match(packet.suggestedFilename(), /\.nexus$/);
+  console.log("Nexus partition convergence and authenticated packet export verified.");
+
   await page.goto(`${base}/backup/`, { waitUntil: "networkidle" });
   const downloaded = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export full backup", exact: true }).click();
@@ -95,6 +108,7 @@ try {
   assert.equal(backup.actionState.protocolLogs.length, 1);
   assert.equal(backup.quiz.hyperfocus.total, 3);
   assert.ok(backup.lifeState.progression.totalXp > 0);
+  assert.ok(backup.nexusReplica.operations.length > 0 || backup.nexusReplica.checkpoint);
   await page.locator('input[type="file"]').setInputFiles({ name: "release-backup.json", mimeType: "application/json", buffer });
   await page.getByText(/Backup imported safely/).waitFor();
   console.log("Backup download and validated restore verified.");

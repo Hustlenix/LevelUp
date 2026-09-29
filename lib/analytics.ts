@@ -47,6 +47,7 @@ export interface AnalyticsParams {
   xp?: number;
   quick_start?: boolean;
   coach_action?: string;
+  nexus_result?: "accepted" | "duplicate" | "rejected";
 }
 
 /** Event names from spec §66, exported so callers cannot typo them. */
@@ -100,6 +101,9 @@ export const ANALYTICS_EVENTS = {
   paywallViewed: "paywall_viewed",
   trialStarted: "trial_started",
   subscriptionStarted: "subscription_started",
+  nexusPacketExported: "nexus_packet_exported",
+  nexusPacketImported: "nexus_packet_imported",
+  nexusCompacted: "nexus_compacted",
 } as const;
 
 /** Push a command onto the GA4 dataLayer (creates it if needed). */

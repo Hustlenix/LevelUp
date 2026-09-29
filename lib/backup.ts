@@ -14,6 +14,7 @@ import type { Experiment } from "./experiments.ts";
 import { isExperiment } from "./experiments.ts";
 import type { LifeState } from "./life/types.ts";
 import { LIFE_SCHEMA_VERSION, LIFE_SKILLS } from "./life/types.ts";
+import { replicaIsValid, type NexusReplica } from "./nexus/index.ts";
 
 export interface BackupProgressEntry {
   complete: boolean;
@@ -65,6 +66,7 @@ export interface BackupState {
   notifications?: NotificationState;
   experiments?: Experiment[];
   lifeState?: LifeState;
+  nexusReplica?: NexusReplica;
 }
 
 export const BACKUP_SCHEMA = 1;
@@ -176,6 +178,9 @@ export function buildBackup(state: BackupState): { schema: number; exportedAt: s
   }
   if (state.lifeState !== undefined) {
     result.lifeState = state.lifeState;
+  }
+  if (state.nexusReplica !== undefined) {
+    result.nexusReplica = state.nexusReplica;
   }
   return result;
 }
@@ -293,6 +298,11 @@ export function validateBackup(json: unknown): { ok: boolean; errors: string[]; 
     if (!isLifeState(json.lifeState)) errors.push("lifeState has an invalid shape.");
     else lifeState = json.lifeState;
   }
+  let nexusReplica: NexusReplica | undefined;
+  if (json.nexusReplica !== undefined) {
+    if (!replicaIsValid(json.nexusReplica)) errors.push("nexusReplica failed its schema, checksum, or hash-chain validation.");
+    else nexusReplica = json.nexusReplica;
+  }
 
   if (errors.length > 0) return { ok: false, errors };
   const outData: BackupState = {
@@ -332,6 +342,9 @@ export function validateBackup(json: unknown): { ok: boolean; errors: string[]; 
   if (lifeState !== undefined) {
     outData.lifeState = lifeState;
   }
+  if (nexusReplica !== undefined) {
+    outData.nexusReplica = nexusReplica;
+  }
 
   return {
     ok: true,
@@ -361,6 +374,7 @@ function entriesForBackup(data: BackupState): Record<string, string> {
   if (data.notifications !== undefined) entries["levelup-notifications-v1"] = JSON.stringify(data.notifications);
   if (data.experiments !== undefined) entries["levelup-experiments-v1"] = JSON.stringify(data.experiments);
   if (data.lifeState !== undefined) entries["levelup-life-state-v1"] = JSON.stringify(data.lifeState);
+  if (data.nexusReplica !== undefined) entries["levelup-nexus-replica-v1"] = JSON.stringify(data.nexusReplica);
   if (data.actionState?.pillarsHistory) entries["levelup-pillar-floors-v1"] = JSON.stringify(data.actionState.pillarsHistory);
   if (data.actionState?.focusSessions) entries["levelup-focus-sessions-v1"] = JSON.stringify(data.actionState.focusSessions);
   if (data.actionState?.protocolLogs) entries["levelup-protocol-logs-v1"] = JSON.stringify(data.actionState.protocolLogs);

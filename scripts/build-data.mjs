@@ -1,8 +1,9 @@
 import { DatabaseSync } from "node:sqlite";
-import { readFileSync, readdirSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync, writeFileSync, mkdirSync, existsSync, renameSync, rmSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse } from "yaml";
+import { stableShuffle } from "./deterministic.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const contentDir = join(root, "content");
@@ -166,15 +167,6 @@ function pickDistractors(pool, correct, count) {
   return out;
 }
 
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
 function buildQuizzes(chapters) {
   const allConcepts = chapters.flatMap((c) => c.keyConcepts);
   const allProtocols = [...new Set(chapters.flatMap((c) => c.protocols))];
@@ -189,10 +181,10 @@ function buildQuizzes(chapters) {
         if (distractors.length >= 3) {
           questions.push({
             q: "Which of these is a key concept of this chapter?",
-            options: shuffle([
+            options: stableShuffle([
               { t: concept, correct: true },
               ...distractors.map((d) => ({ t: d, correct: false })),
-            ]),
+            ], `${c.slug}:concept`),
             explanation: `"${concept}" is listed in this chapter's key concepts.`,
           });
         }
@@ -204,10 +196,10 @@ function buildQuizzes(chapters) {
         if (distractors.length >= 3) {
           questions.push({
             q: `What evidence grade does "${study.name}" receive in this chapter?`,
-            options: shuffle([
+            options: stableShuffle([
               { t: primary, correct: true },
               ...distractors.map((d) => ({ t: d, correct: false })),
-            ]),
+            ], `${c.slug}:grade`),
             explanation: `The evidence review grades ${study.name} ${study.grade}.`,
           });
         }
@@ -218,10 +210,10 @@ function buildQuizzes(chapters) {
         if (distractors.length >= 3) {
           questions.push({
             q: "Which protocol belongs to this chapter?",
-            options: shuffle([
+            options: stableShuffle([
               { t: protocol, correct: true },
               ...distractors.map((d) => ({ t: d, correct: false })),
-            ]),
+            ], `${c.slug}:protocol`),
             explanation: `This chapter references the protocol "${protocol}".`,
           });
         }
@@ -268,12 +260,17 @@ if (new Set(uniqueNumbers).size !== chapters.length) {
 }
 
 const dbPath = join(root, "data", "levelup.db");
+const nextDbPath = `${dbPath}.next`;
 mkdirSync(dirname(dbPath), { recursive: true });
-const db = new DatabaseSync(dbPath);
+rmSync(nextDbPath, { force: true });
+const db = new DatabaseSync(nextDbPath);
 const counts = seedDatabase(db, chapters, audit, protocolsJson, glossary, quotesJson, roadmapJson);
 console.log("Seeded SQLite:", counts);
 const emitted = emitJson(db, chapters, buildQuizzes(chapters));
 console.log("Emitted JSON:", emitted);
 const idx = buildSearchIndex(chapters, audit, protocolsJson, glossary, quotesJson);
 console.log("Search index docs:", idx);
+db.close();
+rmSync(dbPath, { force: true });
+renameSync(nextDbPath, dbPath);
 if (existsSync(dbPath)) console.log("DB file:", dbPath);

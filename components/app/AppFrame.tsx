@@ -11,6 +11,7 @@ import {
   Compass,
   Crosshair,
   Database,
+  Network,
   Search,
   Settings,
   Sparkles,
@@ -36,12 +37,13 @@ const SECONDARY = [
   { href: "/chapters/", label: "Manual", icon: BookOpen },
   { href: "/settings/", label: "Settings", icon: Settings },
   { href: "/backup/", label: "Backup", icon: Database },
+  { href: "/sync-lab/", label: "Nexus sync", icon: Network },
 ] as const;
 
 const APP_PREFIXES = [
   "/today", "/journey", "/coach", "/progress", "/profile", "/onboarding",
   "/goals", "/focus", "/review", "/playbook", "/portfolio", "/experiments",
-  "/settings", "/backup", "/study", "/action",
+  "/settings", "/backup", "/sync-lab", "/study", "/action",
 ];
 
 function active(pathname: string, href: string) {
@@ -54,6 +56,7 @@ function pageTitle(pathname: string) {
   if (pathname.startsWith("/coach")) return "Coach";
   if (pathname.startsWith("/progress")) return "Progress";
   if (pathname.startsWith("/profile") || pathname.startsWith("/settings") || pathname.startsWith("/backup")) return "Profile";
+  if (pathname.startsWith("/sync-lab")) return "Nexus sync lab";
   if (pathname.startsWith("/focus")) return "Focus room";
   if (pathname.startsWith("/onboarding")) return "Set your direction";
   return "Today";

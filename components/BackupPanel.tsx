@@ -13,7 +13,7 @@ import { trackEvent, ANALYTICS_EVENTS } from "@/lib/analytics";
 import { getPortfolioSnapshot, restorePortfolioArtifacts } from "@/lib/portfolio";
 import { getNotificationStateSnapshot, restoreNotificationState } from "@/lib/notifications";
 import { getExperimentsSnapshot, restoreExperiments } from "@/lib/experiments";
-import { getLifeStateSnapshot, reloadLifeStateCache } from "@/lib/life";
+import { getLifeStateSnapshot, getNexusReplicaSnapshot, NEXUS_REPLICA_KEY, reloadLifeStateCache } from "@/lib/life";
 
 const THEME_KEY = "levelup-theme";
 const SCALE_KEY = "levelup-reader-scale";
@@ -40,7 +40,7 @@ export default function BackupPanel() {
     } catch {
       /* keep the backup usable even if an older action key is malformed */
     }
-    const state: BackupState = { theme: document.documentElement.getAttribute("data-theme"), readerScale: document.documentElement.getAttribute("data-reader-scale"), progress: getProgressSnapshot(), bookmarks: [...getBookmarksSnapshot()], highlights: getHighlightsSnapshot(), quiz: getQuizSnapshot(), reflections: getReflectionsSnapshot(), streak: getStreakSnapshot(), studentProfile: toBackupPayload() ?? undefined, actionState, osState: getOSStateSnapshot(), portfolio: getPortfolioSnapshot(), notifications: getNotificationStateSnapshot(), experiments: getExperimentsSnapshot(), lifeState: getLifeStateSnapshot() };
+    const state: BackupState = { theme: document.documentElement.getAttribute("data-theme"), readerScale: document.documentElement.getAttribute("data-reader-scale"), progress: getProgressSnapshot(), bookmarks: [...getBookmarksSnapshot()], highlights: getHighlightsSnapshot(), quiz: getQuizSnapshot(), reflections: getReflectionsSnapshot(), streak: getStreakSnapshot(), studentProfile: toBackupPayload() ?? undefined, actionState, osState: getOSStateSnapshot(), portfolio: getPortfolioSnapshot(), notifications: getNotificationStateSnapshot(), experiments: getExperimentsSnapshot(), lifeState: getLifeStateSnapshot(), nexusReplica: getNexusReplicaSnapshot() };
     const blob = new Blob([JSON.stringify(buildBackup(state), null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
@@ -54,6 +54,7 @@ export default function BackupPanel() {
   function onImportFile(file: File) {
     setImportError(null);
     setImported(false);
+    if (file.size > 20_000_000) { setImportError("That backup is larger than the 20 MB safety limit."); return; }
     const reader = new FileReader();
     reader.onload = () => {
       let parsed: unknown;
@@ -74,7 +75,8 @@ export default function BackupPanel() {
       if (data.portfolio !== undefined) restorePortfolioArtifacts(data.portfolio);
       if (data.notifications !== undefined) restoreNotificationState(data.notifications);
       if (data.experiments !== undefined) restoreExperiments(data.experiments);
-      if (data.lifeState !== undefined) reloadLifeStateCache();
+      if (data.nexusReplica === undefined && data.lifeState !== undefined) localStorage.removeItem(NEXUS_REPLICA_KEY);
+      if (data.lifeState !== undefined || data.nexusReplica !== undefined) reloadLifeStateCache();
       if (data.actionState) reloadActionToolsCaches();
       if (data.theme) { document.documentElement.setAttribute("data-theme", data.theme); localStorage.setItem(THEME_KEY, data.theme); }
       if (data.readerScale) { document.documentElement.setAttribute("data-reader-scale", data.readerScale); localStorage.setItem(SCALE_KEY, data.readerScale); }

@@ -4,6 +4,7 @@ import { applyMissionCompletion, achievementsFor, companionStage, levelSummary, 
 import { createEmptyLifeState, isLifeState } from "../lib/life/store.ts";
 import { buildBackup, validateBackup } from "../lib/backup.ts";
 import { hasEntitlement } from "../lib/entitlements.ts";
+import { appendOperation, createReplica } from "../lib/nexus/index.ts";
 
 const profile = {
   name: "Builder",
@@ -70,11 +71,13 @@ test("levels, skill levels, companion stages and achievements use real progress"
 
 test("life state survives full backup validation", () => {
   const lifeState = { ...createEmptyLifeState(), profile };
+  const nexusReplica = appendOperation(createReplica("backup-test", "backup-workspace"), { kind: "profile.set", entityId: "profile", payload: { profile } }, profile.updatedAt).replica;
   assert.equal(isLifeState(lifeState), true);
-  const backup = buildBackup({ theme: "light", readerScale: "1", progress: {}, bookmarks: [], highlights: [], quiz: {}, reflections: {}, streak: null, lifeState });
+  const backup = buildBackup({ theme: "light", readerScale: "1", progress: {}, bookmarks: [], highlights: [], quiz: {}, reflections: {}, streak: null, lifeState, nexusReplica });
   const result = validateBackup(backup);
   assert.equal(result.ok, true);
   assert.deepEqual(result.data?.lifeState, lifeState);
+  assert.deepEqual(result.data?.nexusReplica, nexusReplica);
 });
 
 test("free entitlement boundary keeps the improvement loop complete", () => {

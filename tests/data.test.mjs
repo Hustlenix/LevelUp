@@ -4,6 +4,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse } from "yaml";
+import { stableShuffle } from "../scripts/deterministic.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -14,6 +15,13 @@ function readJson(rel) {
 function gradeParts(grade) {
   return grade.split("/").map((p) => p.trim().split(" ")[0].toUpperCase());
 }
+
+test("generated quiz order is seeded and reproducible", () => {
+  const values = ["a", "b", "c", "d", "e"];
+  assert.deepEqual(stableShuffle(values, "chapter:concept"), stableShuffle(values, "chapter:concept"));
+  assert.notDeepEqual(stableShuffle(values, "chapter:concept"), stableShuffle(values, "another:concept"));
+  assert.deepEqual(values, ["a", "b", "c", "d", "e"], "input remains immutable");
+});
 
 test("28 chapters exist with valid frontmatter", () => {
   const dir = join(root, "content", "chapters");

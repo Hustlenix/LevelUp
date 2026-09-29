@@ -1,4 +1,4 @@
-const CACHE_NAME = "levelup-v2";
+const CACHE_NAME = "levelup-v3";
 const BASE = self.registration.scope.replace(/\/$/, "");
 
 const PRECACHE = [
@@ -9,6 +9,7 @@ const PRECACHE = [
   `${BASE}/coach/`,
   `${BASE}/progress/`,
   `${BASE}/profile/`,
+  `${BASE}/sync-lab/`,
   `${BASE}/icon.svg`,
   `${BASE}/apple-icon.png`,
 ];

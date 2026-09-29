@@ -6,7 +6,7 @@
 ![Last commit](https://img.shields.io/github/last-commit/Hustlenix/LevelUp)
 ![Repo size](https://img.shields.io/github/repo-size/Hustlenix/LevelUp)
 
-**LevelUp is a local-first self-improvement app.** It turns a person's goals and available time into a small daily mission plan, then records the real work as XP, skill progress, streaks, journey nodes, and changes to a persistent companion called Milo. It also includes the original 28-chapter evidence-audited manual, focus tools, reviews, backups, and study features.
+**LevelUp is a local-first self-improvement app with its own offline replication engine.** It turns a person's goals and available time into a small daily mission plan, then records the real work as XP, skill progress, streaks, journey nodes, and changes to a persistent companion called Milo. It also includes the original 28-chapter evidence-audited manual, focus tools, reviews, backups, and study features.
 
 **Live site:** https://hustlenix.github.io/LevelUp/
 
@@ -32,7 +32,9 @@ The existing goals, focus sessions, reviews, portfolio, experiments, roadmaps, b
 
 Milo sits across the app as a persistent local companion. Focus sessions, chapter activity, goals, milestones, and other Level Up events can change what Milo is doing and unlock parts of the room.
 
-The core experience does not require an account or application server.
+The core experience does not require an account or application server. Mission progress is stored as an event-sourced operation log rather than scattered counter updates. The Nexus engine de-duplicates retries, resolves concurrent offline changes deterministically, reconciles open tabs, creates compacted checkpoints, and can move a workspace between devices in an authenticated encrypted packet.
+
+The **Nexus Sync Lab** makes that work inspectable. It shows the live replica and version vector, audits the hash chains, and includes a two-node sandbox where reviewers can partition replicas, write on both sides, reconnect them, and watch the state converge. See [`docs/NEXUS-PROTOCOL.md`](docs/NEXUS-PROTOCOL.md) for the data model, merge algorithm, security boundary, and failure behavior.
 
 ## Current project data
 
@@ -46,8 +48,8 @@ These numbers were read from the generated data and release checks on the curren
 | Glossary entries | 65 |
 | Quotes | 46 |
 | Chapter quizzes | 28 |
-| Devlogs | 8 |
-| Public routes checked by the release smoke test | 59 |
+| Devlogs | 9 |
+| Public routes checked by the release smoke test | 60 |
 
 The content counts come from `public/data/site.json` and `public/data/devlog.json`. The route count comes from `verify-release.mjs`.
 
@@ -70,6 +72,8 @@ The content counts come from `public/data/site.json` and `public/data/devlog.jso
 - Track progress, XP, streaks, and badges.
 - Use Study Mode with a personal plan, daily mission, XP, and optional local Ollama help.
 - Export and restore local data from the Backup page.
+- Inspect the real Nexus operation ledger, checkpoint it, and test offline convergence in the Sync Lab.
+- Move progress between devices with PBKDF2-derived AES-GCM encrypted packets.
 - Use Milo, the persistent companion linked to real activity inside the app.
 - Run without a login for the core experience.
 - Install/use the static site from GitHub Pages.
@@ -152,11 +156,11 @@ npx playwright install chromium
 PLAYWRIGHT_BASE_URL=https://hustlenix.github.io/LevelUp node verify-release.mjs
 ```
 
-The current smoke test checks every public route plus search, quiz persistence, practice records, the Goals → Today → Focus flow, backup/restore, the 13-plan protocol library, responsive layouts, and Milo's deterministic demo.
+The current smoke test checks every public route plus search, quiz persistence, practice records, the Goals → Today → Focus flow, mission XP, Nexus partition/convergence, encrypted packet export, backup/restore, the 13-plan protocol library, responsive layouts, and Milo's deterministic demo.
 
 ## Local data and privacy
 
-Most personal state is stored on the device in browser storage.
+Most personal state is stored on the device in browser storage. Core LifeOS progress uses an append-only Nexus log, a synchronous local write-ahead copy, and an IndexedDB durability mirror. Open tabs reconcile through `BroadcastChannel` and storage events.
 
 The app supports exporting and restoring that state from the Backup page.
 
@@ -185,6 +189,7 @@ The badges at the top of this README show the current workflow status directly f
 /coach/              Contextual local coaching
 /progress/           Mission, skill, streak and reading evidence
 /profile/            Identity, achievements and preferences
+/sync-lab/           Replica inspector, encrypted transfer and partition lab
 /manual/             Manual front door
 /chapters/           All chapters
 /goals/              Goals and roadmaps
