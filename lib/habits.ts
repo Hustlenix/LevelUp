@@ -282,7 +282,17 @@ export function seedStarterStore(store: HabitStore, mkId: () => string): HabitSt
   return { ...store, habits };
 }
 
+/**
+ * Append a habit, or replace the one already holding that id.
+ *
+ * The habit is re-validated with isHabit before it is emitted, for the same
+ * reason a patch is: the type is only a compile-time promise, and a habit the
+ * guard rejects (`days: []` from a form that saved no day, a repeated day) would
+ * build a store loadHabitStore discards on the next visit. An invalid habit is a
+ * no-op that hands back the input store, the same as an invalid patch.
+ */
 export function addHabit(store: HabitStore, habit: Habit): HabitStore {
+  if (!isHabit(habit)) return store;
   const index = store.habits.findIndex((existing) => existing.id === habit.id);
   if (index === -1) return { ...store, habits: [...store.habits, habit] };
   const habits = [...store.habits];
@@ -354,8 +364,18 @@ export function entryForValue(habit: Habit, value: number): HabitDayLog {
   return { status: value >= (habit.target ?? 0) ? "done" : "partial", value, updatedAt: nowIso() };
 }
 
-/** Write (or with `null`, remove) one day's entry for one habit. */
+/**
+ * Write (or with `null`, remove) one day's entry for one habit.
+ *
+ * A non-null entry is re-validated with isHabitDayLog before it is written, for
+ * the same reason a patch is: `NaN` is a number and `"done"` is not a `HabitStatus`,
+ * so a log can type-check and still be one the guard rejects — which would build
+ * a store loadHabitStore discards on the next visit. An invalid entry is a no-op
+ * that hands back the input store. `null` deletes, and a delete cannot break the
+ * guard.
+ */
 export function setDayLog(store: HabitStore, habitId: HabitId, dateKey: string, log: HabitDayLog | null): HabitStore {
+  if (log !== null && !isHabitDayLog(log)) return store;
   const days = { ...daysFor(store.log, habitId) };
   if (log === null) {
     if (!Object.hasOwn(days, dateKey)) return store;

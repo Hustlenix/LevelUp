@@ -428,6 +428,91 @@ test("updateHabit ignores a patch that would produce a habit the guard rejects",
   assert.equal(updateHabit(renamed, "missing", { name: "x" }), renamed, "unknown id is still a no-op");
 });
 
+test("addHabit ignores a habit the guard rejects and hands back the identical store", () => {
+  // The store one of these would build is exactly what the next page load
+  // answers with an empty one, so the write has to refuse it here. `days: []`
+  // type-checks as HabitDay[] and is reachable by creating a habit with no day
+  // picked, so the check is not theoretical.
+  assert.equal(isHabitStore(store([habit({ days: [] })])), false);
+  assert.equal(isHabitStore(store([habit({ days: [1, 1] })])), false);
+
+  const base = addHabit(emptyHabitStore(), habit());
+  const invalid = [
+    habit({ id: "bad", days: [] }),
+    habit({ id: "bad", days: [1, 1] }),
+    habit({ id: "bad", days: [0, 7] }),
+    habit({ id: "bad", days: "daily" }),
+    habit({ id: "bad", name: "" }),
+    habit({ id: "bad", name: 7 }),
+    habit({ id: "bad", kind: "timer" }),
+    habit({ id: "bad", archived: "yes" }),
+    habit({ id: "bad", target: "25" }),
+    habit({ id: "bad", link: "sleep" }),
+    habit({ id: "", name: "No id" }),
+  ];
+  for (const bad of invalid) {
+    const next = addHabit(base, bad);
+    assert.equal(next, base, `${JSON.stringify(bad)} must be a no-op`);
+    assert.equal(next.habits.length, 1, "and must not append or replace");
+    assert.ok(isHabitStore(next), "and must never leave a store the guard rejects");
+  }
+  assert.equal(base.habits[0].id, "h1", "input store must not be mutated");
+
+  // A valid habit still appends, and re-adding a known id still replaces.
+  const appended = addHabit(base, habit({ id: "h2", name: "Second" }));
+  assert.deepEqual(appended.habits.map((h) => h.id), ["h1", "h2"]);
+  assert.ok(isHabitStore(appended));
+  const replaced = addHabit(appended, habit({ id: "h2", name: "Second renamed" }));
+  assert.equal(replaced.habits.length, 2);
+  assert.equal(replaced.habits[1].name, "Second renamed");
+  assert.equal(appended.habits[1].name, "Second", "input store must not be mutated");
+});
+
+test("setDayLog ignores a log the guard rejects and hands back the identical store", () => {
+  // `value: NaN` is a number and a bad `status` is any string, so both type-check
+  // as HabitDayLog while building a store the next page load throws away.
+  assert.equal(
+    isHabitStore(store([habit()], { h1: { [THU]: { status: "partial", value: NaN, updatedAt: "" } } })),
+    false,
+  );
+  assert.equal(isHabitStore(store([habit()], { h1: { [THU]: { status: "maybe", updatedAt: "" } } })), false);
+
+  const base = setDayLog(
+    addHabit(emptyHabitStore(), habit({ kind: "quantity", unit: "min", target: 25 })),
+    "h1",
+    WED,
+    at("done", 25),
+  );
+  const invalid = [
+    { status: "partial", value: NaN, updatedAt: "2026-09-24T09:00:00.000Z" },
+    { status: "partial", value: Infinity, updatedAt: "2026-09-24T09:00:00.000Z" },
+    { status: "partial", value: "10", updatedAt: "2026-09-24T09:00:00.000Z" },
+    { status: "maybe", updatedAt: "2026-09-24T09:00:00.000Z" },
+    { status: "done", updatedAt: 12345 },
+    { updatedAt: "2026-09-24T09:00:00.000Z" },
+    "done",
+  ];
+  for (const bad of invalid) {
+    const next = setDayLog(base, "h1", THU, bad);
+    assert.equal(next, base, `${JSON.stringify(bad)} must be a no-op`);
+    assert.equal(Object.hasOwn(next.log.h1, THU), false, "and must not write");
+    assert.ok(isHabitStore(next), "and must never leave a store the guard rejects");
+  }
+  assert.equal(base.log.h1[WED].value, 25, "input store must not be mutated");
+
+  // Valid entries still write and replace, and null still deletes — the delete
+  // path is a different one and a delete cannot break the guard.
+  const written = setDayLog(base, "h1", THU, at("partial", 10));
+  assert.equal(written.log.h1[THU].status, "partial");
+  assert.equal(written.log.h1[THU].value, 10);
+  assert.equal(setDayLog(written, "h1", THU, at("done", 25)).log.h1[THU].value, 25);
+  const cleared = setDayLog(written, "h1", THU, null);
+  assert.equal(Object.hasOwn(cleared.log.h1, THU), false);
+  assert.deepEqual(cleared.log.h1, { [WED]: at("done", 25) });
+  assert.equal(setDayLog(base, "h1", FRI, null), base, "removing an absent entry is still a no-op");
+  assert.ok(isHabitStore(cleared));
+});
+
 // --- streaks --------------------------------------------------------------
 
 test("consecutive done days grow the streak; a pending today does not break it", () => {
