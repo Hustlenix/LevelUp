@@ -131,7 +131,7 @@ export default function LifeOSOnboarding() {
             Your study profile is ready
           </h1>
           <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink-soft">
-            You've already completed setup. Head to Today to see your mission, or open Profile to
+            You&apos;ve already completed setup. Head to Today to see your mission, or open Profile to
             adjust anything.
           </p>
           <div className="mt-5 flex flex-wrap gap-2">
@@ -327,7 +327,7 @@ export default function LifeOSOnboarding() {
       {step === 3 ? (
         <SectionCard>
           <h2 className="font-display text-lg font-semibold text-ink">Ready when you are</h2>
-          <p className="mt-1 text-sm text-ink-soft">Here's the study OS you're about to switch on.</p>
+          <p className="mt-1 text-sm text-ink-soft">Here&apos;s the study OS you&apos;re about to switch on.</p>
           <dl className="mt-4 grid gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
             <div>
               <dt className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-faint">Name</dt>

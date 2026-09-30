@@ -222,7 +222,6 @@ export function computeProgression(os: OSState, gamification: GamificationState,
     if (goal.status === "completed") goalsCompleted += 1;
   }
 
-  const sortedDays = [...dayMap.values()].sort((a, b) => (a.date < b.date ? -1 : 1));
   const history: DayStat[] = [];
   for (let i = HISTORY_DAYS - 1; i >= 0; i -= 1) {
     const date = new Date(parseDay(today) - i * 86400000).toISOString().slice(0, 10);

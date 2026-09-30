@@ -88,7 +88,7 @@ test("empty OS falls back to a first-goal mission plus two distinct rituals", ()
 test("primary mission is the earliest-due task; secondary fills with other tasks and one ritual", () => {
   const os = makeOS();
   addGoal(os, "g1");
-  const r = addRoadmap(os, "g1", "r1");
+  addRoadmap(os, "g1", "r1");
   const m1 = addMilestone(os, "r1", "m1");
   const m2 = addMilestone(os, "r1", "m2");
   addTask(os, m1.id, "t-late", { title: "Late task", dueDate: "2026-09-30", createdAt: "2026-08-10T00:00:00.000Z" });
@@ -114,7 +114,7 @@ test("primary mission is the earliest-due task; secondary fills with other tasks
 test("secondary skips duplicate milestones when a different milestone task exists", () => {
   const os = makeOS();
   addGoal(os, "g1");
-  const r = addRoadmap(os, "g1", "r1");
+  addRoadmap(os, "g1", "r1");
   const m1 = addMilestone(os, "r1", "m1");
   const m2 = addMilestone(os, "r1", "m2");
   addTask(os, m1.id, "t1", { title: "Task one", dueDate: "2026-09-10" });
@@ -130,7 +130,7 @@ test("secondary skips duplicate milestones when a different milestone task exist
 test("completed and in-progress tasks stay in the queue; finished ones leave it", () => {
   const os = makeOS();
   addGoal(os, "g1");
-  const r = addRoadmap(os, "g1", "r1");
+  addRoadmap(os, "g1", "r1");
   const m = addMilestone(os, "r1", "m1");
   addTask(os, m.id, "t-ip", { title: "In progress", status: "in-progress", dueDate: "2026-09-10" });
   addTask(os, m.id, "t-todo", { title: "Todo", status: "todo", dueDate: "2026-09-11" });

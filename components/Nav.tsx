@@ -29,11 +29,6 @@ const MORE_ITEMS = [
   { href: "/quotes/", label: "Quotes" },
 ] as const;
 
-function isActive(pathname: string, href: string) {
-  if (href === "/today/") return ["/today", "/today/", "/dashboard", "/dashboard/"].includes(pathname);
-  return pathname === href.replace(/\/$/, "") || pathname.startsWith(href);
-}
-
 const linkClass = (active: boolean) => `inline-flex min-h-11 items-center gap-2 shrink-0 rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold ${active ? "bg-gold/10 text-gold" : "text-ink-soft hover:bg-paper-deep hover:text-gold"}`;
 
 export default function Nav({ chapters }: { chapters: Chapter[] }) {
