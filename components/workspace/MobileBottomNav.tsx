@@ -2,15 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Sun, Compass, Sparkles, User, TrendingUp } from "lucide-react";
+import { WORKSPACE_LINKS } from "@/lib/navigation";
 
-const ITEMS = [
-  { href: "/today/", label: "Today", icon: Sun },
-  { href: "/journey/", label: "Journey", icon: Compass },
-  { href: "/coach/", label: "Coach", icon: Sparkles },
-  { href: "/profile/", label: "Profile", icon: User },
-  { href: "/progress/", label: "Progress", icon: TrendingUp },
-] as const;
+const ITEMS = WORKSPACE_LINKS;
 
 function active(pathname: string, href: string) {
   return href === "/today/" ? ["/today", "/today/", "/dashboard", "/dashboard/"].includes(pathname) : pathname === href.replace(/\/$/, "") || pathname.startsWith(href);
@@ -18,6 +12,7 @@ function active(pathname: string, href: string) {
 
 export default function MobileBottomNav() {
   const pathname = usePathname() ?? "";
+  if (pathname === "/") return null;
   return (
     <nav aria-label="Primary mobile navigation" className="interface-font fixed inset-x-0 bottom-0 z-40 border-t border-line bg-card/95 px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-4px_24px_rgb(34_29_22/0.04)] backdrop-blur md:hidden no-print">
       <div className="mx-auto grid max-w-lg grid-cols-5 gap-1">

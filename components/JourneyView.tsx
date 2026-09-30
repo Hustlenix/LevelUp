@@ -41,7 +41,7 @@ export default function JourneyView() {
   const progression = date ? computeProgression(os, gamification.state, date) : null;
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-4 pb-24 sm:px-6 lg:max-w-5xl lg:px-8">
+    <div className="mx-auto w-full max-w-6xl px-5 py-8 sm:px-8 sm:py-12">
       <WorkspaceHeader
         eyebrow="Journey"
         title={greetingFor(profile.identity.name ?? null, hours)}

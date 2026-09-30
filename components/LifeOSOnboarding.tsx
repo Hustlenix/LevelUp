@@ -154,9 +154,9 @@ export default function LifeOSOnboarding() {
       />
 
       <nav aria-label="Setup steps" className="mb-6">
-        <ol className="flex items-center gap-2">
+        <ol className="flex flex-wrap items-center gap-2">
           {STEP_LABELS.map((label, i) => (
-            <li key={label} className="flex items-center gap-2" aria-current={i === step ? "step" : undefined}>
+            <li key={label} className="flex min-w-0 items-center gap-2" aria-current={i === step ? "step" : undefined}>
               <span
                 aria-hidden="true"
                 className={`h-2.5 w-2.5 rounded-full ${i <= step ? "bg-gold" : "bg-line"}`}

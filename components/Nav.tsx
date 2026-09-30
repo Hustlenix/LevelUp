@@ -1,106 +1,47 @@
 "use client";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Search, ChevronDown } from "lucide-react";
+import { ArrowUpRight, Menu, Search, X } from "lucide-react";
 import { useSearch } from "@/components/SearchProvider";
 import ThemeToggle from "@/components/ThemeToggle";
-import ContinueReading from "@/components/ContinueReading";
-import ChaptersMenu from "@/components/ChaptersMenu";
-import type { Chapter } from "@/lib/types";
+import Brand from "@/components/Brand";
+import { WORKSPACE_LINKS, COACH_LINK, RESOURCE_GROUPS, ACCOUNT_LINKS, isNavActive } from "@/lib/navigation";
 
-const MORE_ITEMS = [
-  { href: "/goals/", label: "Goals" },
-  { href: "/study/", label: "Study Mode" },
-  { href: "/focus/", label: "Focus" },
-  { href: "/review/", label: "Review" },
-  { href: "/roadmap/", label: "Roadmap" },
-  { href: "/playbook/", label: "Playbook" },
-  { href: "/portfolio/", label: "Portfolio" },
-  { href: "/experiments/", label: "Experiments" },
-  { href: "/protocols/", label: "Protocols" },
-  { href: "/audit/", label: "Evidence" },
-  { href: "/research/", label: "Research" },
-  { href: "/settings/", label: "Settings" },
-  { href: "/privacy/", label: "Privacy" },
-  { href: "/backup/", label: "Backup" },
-  { href: "/glossary/", label: "Glossary" },
-  { href: "/quotes/", label: "Quotes" },
-] as const;
-
-const linkClass = (active: boolean) => `inline-flex min-h-11 items-center gap-2 shrink-0 rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold ${active ? "bg-gold/10 text-gold" : "text-ink-soft hover:bg-paper-deep hover:text-gold"}`;
-
-export default function Nav({ chapters }: { chapters: Chapter[] }) {
+export default function Nav() {
   const { setOpen } = useSearch();
   const pathname = usePathname() ?? "";
-  const [moreOpen, setMoreOpen] = useState(false);
-  const moreMobileRef = useRef<HTMLDivElement>(null);
-  const moreTriggerRef = useRef<HTMLButtonElement | null>(null);
-
-  function toggleMore(event: React.MouseEvent<HTMLButtonElement>) {
-    moreTriggerRef.current = event.currentTarget;
-    setMoreOpen((open) => !open);
-  }
-
+  const home = pathname === "/";
+  const [menuOpen, setMenuOpen] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+  const current = [...WORKSPACE_LINKS, COACH_LINK, ...RESOURCE_GROUPS.flatMap(g => [...g.items]), ...ACCOUNT_LINKS].find(item => isNavActive(pathname, item.href));
   useEffect(() => {
-    if (!moreOpen) return;
-    const onPointerDown = (event: PointerEvent) => {
-      const target = event.target as Node;
-      if (!moreMobileRef.current?.contains(target)) setMoreOpen(false);
-    };
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setMoreOpen(false);
-        moreTriggerRef.current?.focus();
-      }
-      if (["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) {
-        const container = moreTriggerRef.current?.parentElement;
-        const items = Array.from(container?.querySelectorAll<HTMLElement>('[role="menuitem"]') ?? []);
-        if (!items.length || !container?.contains(document.activeElement)) return;
-        event.preventDefault();
-        const index = items.indexOf(document.activeElement as HTMLElement);
-        const next = event.key === "Home" ? 0 : event.key === "End" ? items.length - 1 : event.key === "ArrowDown" ? (index + 1) % items.length : (index - 1 + items.length) % items.length;
-        items[next]?.focus();
-      }
-    };
-    document.addEventListener("pointerdown", onPointerDown);
-    document.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.removeEventListener("pointerdown", onPointerDown);
-      document.removeEventListener("keydown", onKeyDown);
-    };
-  }, [moreOpen]);
-
-  return (
-    <header className="interface-font sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur no-print">
-      <div className="mx-auto flex min-h-16 max-w-6xl items-center gap-3 px-4 sm:px-5">
-        <Link href="/" className="flex min-w-0 shrink-0 items-baseline gap-2 font-display focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold">
-          <span className="text-lg font-bold tracking-tight text-ink">Level Up <span className="text-gold">LifeOS</span></span>
-          <span className="interface-font ml-3 hidden border-l border-line pl-5 text-[10px] uppercase tracking-[0.18em] text-ink-faint lg:inline">Learn. Practice. Grow.</span>
-        </Link>
-        <div className="ml-auto flex items-center gap-2">
-          <button type="button" onClick={() => setOpen(true)} className="flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg border border-line bg-card px-3 text-sm text-ink-soft transition-colors hover:border-gold hover:text-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold" aria-label="Search">
-            <Search aria-hidden="true" className="h-4 w-4" /><span className="hidden sm:inline">Search</span><kbd className="hidden rounded border border-line bg-paper px-1.5 text-[10px] text-ink-faint lg:inline">Ctrl K</kbd>
-          </button>
-          <ContinueReading />
-          <ThemeToggle />
+    if (!menuOpen) return;
+    const dismiss = (event: PointerEvent) => { if (!root.current?.contains(event.target as Node)) setMenuOpen(false); };
+    const keyboard = (event: KeyboardEvent) => { if (event.key === "Escape") { setMenuOpen(false); trigger.current?.focus(); } };
+    document.addEventListener("pointerdown", dismiss);
+    document.addEventListener("keydown", keyboard);
+    return () => { document.removeEventListener("pointerdown", dismiss); document.removeEventListener("keydown", keyboard); };
+  }, [menuOpen]);
+  return <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur-xl no-print">
+    <div className={`mx-auto flex min-h-20 items-center gap-3 px-5 sm:px-8 ${home ? "max-w-7xl" : "max-w-6xl"}`}>
+      <div className={home ? "" : "md:hidden"}><Brand /></div>
+      {!home && <div className="hidden items-center gap-3 text-sm md:flex"><span className="text-ink-faint">Workspace</span><span className="text-line">/</span><span className="font-medium text-ink">{current?.label ?? "LevelUp"}</span></div>}
+      {home && <nav aria-label="Website navigation" className="ml-12 hidden items-center gap-7 text-sm font-medium text-ink-soft lg:flex"><Link href="/chapters/" className="hover:text-gold">Learn</Link><Link href="/protocols/" className="hover:text-gold">Practice</Link><Link href="/#how-it-works" className="hover:text-gold">How it works</Link><Link href="/audit/" className="hover:text-gold">The evidence</Link></nav>}
+      <div className="ml-auto flex items-center gap-2">
+        <button type="button" onClick={() => setOpen(true)} aria-label="Search" className="flex h-11 min-w-11 items-center justify-center gap-3 rounded-lg px-2 text-ink-faint hover:bg-paper-deep"><Search size={18} /><span className="hidden text-xs xl:inline">Search anything</span><kbd className="hidden rounded border border-line px-1.5 py-0.5 text-[10px] xl:inline">Ctrl K</kbd></button>
+        <div className="hidden sm:block"><ThemeToggle /></div>
+        {home && <Link href="/today/" className="ml-2 hidden min-h-11 items-center gap-3 rounded-lg bg-ink px-4 text-sm font-semibold text-paper sm:inline-flex">Open workspace <ArrowUpRight size={16} /></Link>}
+        <div ref={root} className={home ? "relative lg:hidden" : "relative md:hidden"}>
+          <button ref={trigger} type="button" aria-label={menuOpen ? "Close navigation" : "Open navigation"} aria-expanded={menuOpen} aria-controls="site-navigation" onClick={() => setMenuOpen(!menuOpen)} className="flex h-11 w-11 items-center justify-center rounded-lg hover:bg-paper-deep">{menuOpen ? <X size={20} /> : <Menu size={20} />}</button>
+          {menuOpen && <nav id="site-navigation" aria-label="All navigation" className="absolute right-0 top-full mt-4 max-h-[calc(100dvh-12rem)] w-[min(24rem,calc(100vw-2rem))] overflow-y-auto overscroll-contain rounded-2xl border border-line bg-card p-4 shadow-pop">
+            <div className="grid grid-cols-2 gap-1">{[...WORKSPACE_LINKS, COACH_LINK].map(item => <Link key={item.href} href={item.href} onClick={() => setMenuOpen(false)} aria-current={isNavActive(pathname, item.href) ? "page" : undefined} className="sidebar-link"><item.icon size={17} />{item.label}</Link>)}</div>
+            {[...RESOURCE_GROUPS, { label: "Your space", items: ACCOUNT_LINKS }].map(group => <div key={group.label} className="mt-4 border-t border-line pt-4"><p className="mb-2 px-3 text-xs font-semibold text-ink-faint">{group.label}</p><div className="grid grid-cols-2 gap-1">{group.items.map(item => <Link key={item.href} href={item.href} onClick={() => setMenuOpen(false)} className="sidebar-link text-xs">{item.label}</Link>)}</div></div>)}
+            <div className="mt-3 flex items-center justify-between border-t border-line pt-3 text-xs text-ink-faint">Appearance<ThemeToggle /></div>
+          </nav>}
         </div>
       </div>
-
-      <div className="border-t border-line px-4 py-2 md:hidden">
-        <div className="flex items-center justify-between gap-2 text-xs text-ink-soft">
-          <ChaptersMenu chapters={chapters} mobile />
-          <span className="truncate text-ink-faint">{pathname === "/" ? "Start with Today" : "Local workspace"}</span>
-          <div ref={moreMobileRef} className="relative shrink-0">
-            <button type="button" onClick={toggleMore} aria-expanded={moreOpen} aria-controls="more-menu-mobile" aria-haspopup="menu" className={`${linkClass(moreOpen)} px-2 text-xs`}>More <ChevronDown aria-hidden="true" className="h-3.5 w-3.5" /></button>
-            {moreOpen ? <div id="more-menu-mobile" role="menu" aria-label="More tools" className="absolute right-0 top-full z-50 mt-2 grid max-h-[calc(100dvh-14rem)] w-[min(22rem,calc(100vw-2rem))] grid-cols-2 gap-1 overflow-y-auto overscroll-contain rounded-xl border border-line bg-card p-3 shadow-xl">
-              <button type="button" role="menuitem" onClick={() => { setOpen(true); setMoreOpen(false); }} className="rounded-lg px-3 py-2 text-left text-sm font-medium text-ink-soft hover:bg-paper-deep hover:text-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold">Search</button>
-              {MORE_ITEMS.map((item) => <Link key={item.href} role="menuitem" href={item.href} onClick={() => setMoreOpen(false)} className="rounded-lg px-3 py-2 text-sm font-medium text-ink-soft hover:bg-paper-deep hover:text-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold">{item.label}</Link>)}
-            </div> : null}
-          </div>
-        </div>
-      </div>
-    </header>
-  );
+    </div>
+  </header>;
 }

@@ -1,176 +1,52 @@
 import Link from "next/link";
-import {
-  ArrowRight,
-  BookOpen,
-  Brain,
-  ChevronRight,
-  Coins,
-  Heart,
-  LayoutDashboard,
-  ShieldCheck,
-  Zap,
-} from "lucide-react";
-import type { LucideIcon } from "lucide-react";
-import type { Chapter, Pillar } from "@/lib/types";
-import { SITE_NAME } from "@/lib/site";
+import { ArrowRight, ArrowUpRight, BookOpen, Check, Circle, Fingerprint, Heart, Lightbulb, MoveUpRight, ShieldCheck, Timer, TrendingUp, Users } from "lucide-react";
+import type { Chapter } from "@/lib/types";
+import { PRACTICE_PLANS } from "@/lib/practicePlans";
 
-export const BOOK_ONE_LINER =
-  "Twenty-eight evidence-audited chapters on belief, identity, and the science of getting better.";
-
-const PILLAR_ORDER: Pillar[] = ["health", "wealth", "love", "self"];
-
-const PILLAR_META: Record<Pillar, { icon: LucideIcon; color: string }> = {
-  health: { icon: Heart, color: "text-health" },
-  wealth: { icon: Coins, color: "text-wealth" },
-  love: { icon: Zap, color: "text-love" },
-  self: { icon: Brain, color: "text-self" },
-};
-
-interface PillarEntry {
-  ch: Chapter;
-  meta: { icon: LucideIcon; color: string };
-}
-
+export const BOOK_ONE_LINER = "Evidence-informed lessons and practical tools for a more intentional life.";
+const areas = [
+  { pillar: "self", label: "Understand yourself", description: "Beliefs, identity & a clearer mind.", icon: Lightbulb, className: "area-self" },
+  { pillar: "wealth", label: "Make meaningful progress", description: "Focus, ambition & work that matters.", icon: TrendingUp, className: "area-wealth" },
+  { pillar: "health", label: "Protect your energy", description: "Sustainable habits & everyday capacity.", icon: Heart, className: "area-health" },
+  { pillar: "love", label: "Show up for your people", description: "Connection, care & a more balanced life.", icon: Users, className: "area-love" },
+];
 export default function ReaderFrontDoor({ chapters }: { chapters: Chapter[] }) {
-  const sorted = [...chapters].sort((a, b) => a.number - b.number);
-  const start = sorted[0];
-
-  const lowestByPillar = (pillar: Pillar): Chapter | undefined =>
-    chapters
-      .filter((c) => c.pillar === pillar)
-      .sort((a, b) => a.number - b.number)[0];
-
-  const entries: PillarEntry[] = PILLAR_ORDER.flatMap((p) => {
-    const ch = lowestByPillar(p);
-    return ch ? [{ ch, meta: PILLAR_META[p] }] : [];
-  });
-
-  return (
-    <div className="interface-font space-y-10 sm:space-y-12">
-      {/* Book hero */}
-      <section className="editorial-hero panel-shadow overflow-hidden rounded-2xl border border-line">
-        <div className="grid lg:grid-cols-[1.65fr_1fr]">
-        <div className="p-6 sm:p-10 lg:py-14">
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/40 bg-gold/10 px-3 py-1 text-[11px] font-semibold text-gold">
-          <ShieldCheck className="h-3.5 w-3.5" />
-          Evidence-Audited
-        </span>
-        <h1 className="mt-6 max-w-xl font-display text-[2.6rem] font-semibold leading-[1.08] tracking-[-0.04em] text-ink sm:text-6xl">
-          {SITE_NAME}
-        </h1>
-        <p className="mt-5 max-w-lg text-sm leading-7 text-ink-soft sm:text-base">
-          {BOOK_ONE_LINER}
-        </p>
-        <div className="mt-8 flex flex-wrap items-center gap-4">
-          <Link
-            href={`/chapters/${start.slug}/`}
-            className="inline-flex min-h-12 items-center gap-2 rounded-lg bg-gold px-5 py-3 text-sm font-semibold text-paper shadow-xs transition-colors cta-hover"
-          >
-            <BookOpen className="h-4 w-4" />
-            Start reading
-          </Link>
-          <Link href="/today/" className="inline-flex min-h-12 items-center gap-2 px-1 text-sm font-semibold text-ink-soft hover:text-gold">Open Today <ArrowRight className="h-4 w-4" /></Link>
-        </div>
-        <p className="mt-5 text-xs leading-relaxed text-ink-faint">Begin with Chapter {start.number} · {start.duration} read</p>
-        </div>
-        <aside className="border-t border-line bg-paper-deep/35 p-6 sm:p-10 lg:flex lg:flex-col lg:justify-center lg:border-t-0 lg:border-l" aria-label="About the manual">
-          <p className="hidden text-[10px] font-semibold uppercase tracking-[0.22em] text-gold lg:block">A field guide to getting better</p>
-          <p className="mt-5 hidden font-display text-2xl leading-snug tracking-tight text-ink sm:text-3xl lg:block">Read with curiosity.<br />Act with intention.</p>
-          <div className="grid grid-cols-3 gap-3 lg:mt-7 lg:border-y lg:border-line lg:py-5">
-            {[[String(chapters.length), "Chapters"], ["4", "Life pillars"], ["A–D", "Evidence grades"]].map(([value, label]) => <div key={label}><p className="font-display text-2xl font-semibold text-ink">{value}</p><p className="mt-1 text-[10px] leading-relaxed text-ink-faint">{label}</p></div>)}
-          </div>
-          <Link href="/audit/" className="mt-5 hidden min-h-11 items-center gap-2 text-xs font-semibold text-gold lg:inline-flex">See how the evidence is graded <ArrowRight className="h-3.5 w-3.5" /></Link>
-        </aside>
-        </div>
-      </section>
-
-      {/* Guided entry point: one card per pillar */}
-      <section>
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-          <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">
-            Begin Wherever You Are
-          </span>
-          <h2 className="mt-2 font-display text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
-            Pick a pillar
-          </h2>
-          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-soft">
-            Start with the part of life you want to give more attention.
-          </p>
-          </div>
-          <Link href="/chapters/" className="inline-flex min-h-11 items-center gap-2 text-xs font-semibold text-gold">Browse all chapters <ArrowRight className="h-3.5 w-3.5" /></Link>
-        </div>
-
-        <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {entries.map(({ ch, meta }) => {
-            const Icon = meta.icon;
-            return (
-              <Link
-                key={ch.slug}
-                href={`/chapters/${ch.slug}/`}
-                className="group flex flex-col justify-between rounded-xl border border-line bg-card p-5 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-1 hover:border-gold/60 hover:shadow-md motion-reduce:hover:translate-y-0 sm:min-h-72 sm:p-6"
-              >
-                <div>
-                  <div className="flex items-center justify-between text-xs text-ink-faint">
-                    <span className="inline-flex items-center gap-2 font-medium capitalize">
-                      <span className={`flex h-8 w-8 items-center justify-center rounded-lg bg-paper-deep/70 ${meta.color}`}><Icon className="h-4 w-4" /></span>
-                      {ch.pillar}
-                    </span>
-                    <span className="text-[10px] tabular-nums text-ink-faint">{String(ch.number).padStart(2, "0")}</span>
-                  </div>
-                  <h3 className="mt-5 font-display text-xl font-semibold leading-snug tracking-tight text-ink transition-colors group-hover:text-gold">
-                    {ch.title}
-                  </h3>
-                  <p className="mt-3 line-clamp-3 text-sm leading-6 text-ink-soft">
-                    {ch.teaser}
-                  </p>
-                </div>
-
-                <div className="mt-4 flex items-center justify-between border-t border-line pt-3 text-[11px] text-ink-faint">
-                  <span>{ch.duration} read</span>
-                  <span className="inline-flex items-center gap-1 font-semibold text-gold">
-                    Explore <ChevronRight className="h-3 w-3" />
-                  </span>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Trust strip */}
-      <section className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-line/80 bg-card px-5 py-5 text-xs leading-relaxed text-ink-soft">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <span className="font-display font-bold text-ink">{chapters.length} chapters</span>
-          <span className="hidden text-ink-faint sm:inline">·</span>
-          <span>Every notable claim graded A–D against published research.</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <Link
-            href="/audit/"
-            className="inline-flex items-center gap-1 font-semibold text-gold hover:underline"
-          >
-            Verification Audit <ArrowRight className="h-3 w-3" />
-          </Link>
-          <Link
-            href="/research/"
-            className="inline-flex items-center gap-1 font-semibold text-gold hover:underline"
-          >
-            Research Notes <ArrowRight className="h-3 w-3" />
-          </Link>
-        </div>
-      </section>
-
-      {/* Quiet dashboard entry */}
-      <div className="flex justify-end border-t border-line pt-5">
-        <Link
-          href="/dashboard/"
-          className="inline-flex items-center gap-1.5 py-1 text-xs font-semibold text-ink-soft transition-colors hover:text-gold"
-        >
-          <LayoutDashboard className="h-3.5 w-3.5" />
-          Open your dashboard
-        </Link>
+  return <div className="landing">
+    <section className="landing-hero" aria-labelledby="home-title">
+      <div className="hero-copy">
+        <p className="eyebrow"><span className="h-1.5 w-1.5 rounded-full bg-gold" />A little intention. Every day.</p>
+        <h1 id="home-title">Good intentions.<br />Meet <span>real progress.</span></h1>
+        <p className="hero-description">A calmer place to work on yourself. Learn something useful, turn it into a small action, and build a life that feels more like you.</p>
+        <div className="mt-8 flex flex-wrap items-center gap-3"><Link href="/today/" className="button-solid">Start with today <ArrowRight size={17} /></Link><Link href="/chapters/" className="button-outline">Explore the lessons</Link></div>
+        <p className="mt-5 flex items-center gap-2 text-xs text-ink-faint"><Fingerprint size={15} className="shrink-0" />No account needed. Your progress stays on this device.</p>
       </div>
-    </div>
-  );
+      <div className="hero-product">
+        <div className="flex items-center justify-between text-xs text-[#d0ddd5]"><span className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-[#d7eab0]" />A CLEARER PLAN. A CALMER DAY.</span><MoveUpRight size={17} /></div>
+        <div className="day-preview">
+          <div className="flex items-center justify-between border-b border-[#e5e9e4] pb-5"><span className="text-sm font-semibold text-[#253b31]">Your daily space</span><span className="rounded-full bg-[#eff3ee] px-2.5 py-1 text-[10px] font-medium text-[#5d6b62]">Example day</span></div>
+          <p className="mt-6 text-xs text-[#647168]">One thing at a time</p><h2 className="mt-2 text-2xl font-semibold leading-tight tracking-tight text-[#20382c]">Make room for<br />what matters.</h2>
+          <div className="preview-task mt-6"><span className="preview-check"><Check size={13} /></span><div><p className="text-sm font-medium text-[#344d3e]">Choose one meaningful outcome</p><p className="mt-1 text-xs text-[#69766e]">Less on the list. More intention.</p></div></div>
+          <div className="preview-focus"><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#dbe9d1]"><Timer size={18} /></span><div className="flex-1"><p className="text-sm font-semibold">A little uninterrupted time</p><p className="mt-1 text-xs text-[#53634e]">Focus on the next small step</p></div><span className="text-xl font-semibold tracking-tight">25<span className="ml-1 text-xs font-normal">min</span></span></div>
+          <div className="preview-task"><Circle size={17} className="shrink-0 text-[#a4afa5]" /><div><p className="text-sm font-medium text-[#344d3e]">Notice what worked</p><p className="mt-1 text-xs text-[#69766e]">Keep a little evidence for tomorrow.</p></div></div>
+          <Link href="/protocols/#ready-plans" className="mt-6 flex min-h-11 items-center justify-between border-t border-[#e5e9e4] pt-4 text-xs font-semibold text-[#215640]">Try a guided practice <ArrowRight size={15} /></Link>
+        </div>
+        <div className="mt-6 flex items-center gap-3 text-sm text-[#e3eddd]"><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/20"><Check size={15} /></span>Small is a perfectly good place to start.</div>
+      </div>
+    </section>
+    <div className="landing-proof" aria-label="What's inside"><span><BookOpen size={17} /><strong>{chapters.length}</strong> thoughtful lessons</span><span><Timer size={17} /><strong>{PRACTICE_PLANS.length}</strong> ready-to-use plans</span><span><ShieldCheck size={17} />Evidence you can inspect</span><span><Fingerprint size={17} />Local-first by design</span></div>
+    <section id="how-it-works" className="landing-section scroll-mt-28">
+      <div className="section-intro"><div><p className="eyebrow">FROM KNOWING TO DOING</p><h2>A simple rhythm.<br />A useful way forward.</h2></div><p>You don’t need another overhaul. Just a good idea, a manageable next step, and a moment to see what changed.</p></div>
+      <div className="rhythm-grid">{[
+        { number: "01", title: "Find an idea that clicks.", description: "Plain-language guides, real examples and research notes make the lessons easier to understand.", href: "/chapters/", cta: "Find your next lesson", icon: BookOpen },
+        { number: "02", title: "Make it a small action.", description: "Start a Pomodoro, plan your morning, or try a two-minute reset. The first steps are already laid out.", href: "/protocols/#ready-plans", cta: "Choose a practice", icon: Timer },
+        { number: "03", title: "Learn from your own life.", description: "Record what happened. Keep what helps, adjust what doesn’t, and take that clarity into tomorrow.", href: "/review/", cta: "Make time to reflect", icon: TrendingUp }
+      ].map(step => <article key={step.number} className="rhythm-item"><div className="flex items-center justify-between"><step.icon size={22} strokeWidth={1.5} /><span className="text-xs tabular-nums text-ink-faint">{step.number}</span></div><h3>{step.title}</h3><p>{step.description}</p><Link href={step.href}>{step.cta}<ArrowUpRight size={15} /></Link></article>)}</div>
+    </section>
+    <section className="landing-section" aria-labelledby="areas-title">
+      <div className="section-intro"><div><p className="eyebrow">START WHERE YOU ARE</p><h2 id="areas-title">What could use<br />a little more attention?</h2></div><Link href="/chapters/" className="text-link">Browse all lessons <ArrowRight size={16} /></Link></div>
+      <div className="area-grid">{areas.map(area => <Link key={area.pillar} href={`/chapters/?pillar=${area.pillar}`} className={`area-card ${area.className}`}><span className="area-icon"><area.icon size={27} strokeWidth={1.4} /></span><span className="area-content"><span className="mb-2 block text-[11px] font-medium uppercase tracking-widest opacity-65">{area.pillar}</span><h3>{area.label}</h3><p>{area.description}</p></span><ArrowUpRight size={19} className="shrink-0 self-end" /></Link>)}</div>
+    </section>
+    <section className="evidence-panel"><div className="evidence-grades" aria-label="Evidence grades A through D">{["A", "B", "C", "D"].map((grade, index) => <span key={grade} style={{ opacity: 1 - index * .16 }}>{grade}</span>)}<span className="mt-4 block text-xs text-ink-faint">Confidence, not certainty.</span></div><div><p className="eyebrow">CURIOUS, NOT CREDULOUS</p><h2>Good ideas should<br />stand up to questions.</h2><p>Self-development has plenty of big claims. Here, the research and its limitations stay visible. Evidence grades describe the claims—not a promise that an exercise will work for everyone.</p><Link href="/audit/" className="text-link">See how we check the evidence <ArrowRight size={16} /></Link></div></section>
+    <section className="landing-close"><div><p className="eyebrow">NO PERFECT ROUTINE REQUIRED</p><h2>Your next chapter<br />starts with one small step.</h2></div><div><Link href="/today/" className="button-solid">Make today a little better <ArrowRight size={17} /></Link><p className="mt-4 text-xs text-ink-faint">Read a lesson. Try a practice. Begin again.</p></div></section>
+  </div>;
 }

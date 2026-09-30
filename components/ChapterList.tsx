@@ -124,7 +124,7 @@ export default function ChapterList({ chapters }: { chapters: Chapter[] }) {
         ))}
       </div>
     ) : (
-      <div className="grid gap-4">
+      <div className="grid gap-4 xl:grid-cols-2">
         {list.map((c) => (
           <ChapterCard
             key={c.slug}
@@ -275,7 +275,7 @@ export default function ChapterList({ chapters }: { chapters: Chapter[] }) {
           ))}
         </div>
       ) : (
-        <div className="grid gap-4">
+        <div className="grid gap-4 xl:grid-cols-2">
           {shown.map((c) => (
             <ChapterCard
               key={c.slug}

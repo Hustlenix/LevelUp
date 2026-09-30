@@ -9,7 +9,7 @@ import type { Chapter } from "@/lib/types";
 import { BOOK_GROUPS } from "@/lib/groups";
 
 export const metadata: Metadata = {
-  title: "Table of Contents",
+  title: "Lesson library",
   description: "All 28 chapters of The Level Up Manual, grouped into four parts.",
   alternates: { canonical: canonical("/chapters/") },
 };
@@ -33,7 +33,7 @@ function ChapterListFallback({ chapters }: { chapters: Chapter[] }) {
                 </span>
               </div>
               <p className="mb-4 font-display text-sm italic text-ink-faint">{g.message}</p>
-              <div className="grid gap-4">
+              <div className="grid gap-4 xl:grid-cols-2">
                 {groupChapters.map((c) => (
                   <ChapterCard key={c.slug} chapter={c} />
                 ))}
@@ -59,9 +59,9 @@ export default async function ChaptersPage() {
   return (
     <PageShell>
       <SectionHeading
-        eyebrow="Table of Contents"
-        title="Twenty-eight lessons, one manual"
-        lede="Read in order, or start with a question you have today. Every chapter now includes a plain-language guide, a worked example and a small action to try."
+        eyebrow="The lesson library"
+        title="Ideas worth putting into practice."
+        lede="Start with a question you have today. Each lesson gives you a clear explanation, a worked example, and one small action to try."
       />
       <p className="-mt-4 mb-8 text-sm text-ink-soft">
         ≈ {totalText} of estimated reading across {chapters.length} chapters. Evidence grades describe cited claims,

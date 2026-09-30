@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
+import { MessageCircle } from "lucide-react";
 import type { ChapterMeta, Pillar } from "@/lib/types";
 import { useOSStore } from "@/lib/os/store";
 import { useProgressStore } from "@/lib/progress";
@@ -400,6 +401,9 @@ export default function CompanionLayer({ chapters }: { chapters: ChapterContext[
     setView("engine");
   }
 
+  // Keep the public introduction quiet; the companion remains in the workspace.
+  if (pathname === "/") return null;
+
   if (!settings.enabled && !expanded) {
     return (
       <button
@@ -526,12 +530,12 @@ export default function CompanionLayer({ chapters }: { chapters: ChapterContext[
         <button
           type="button"
           onClick={() => { interact(); setExpanded(true); }}
-          className={"companion-home companion-home-" + behaviour}
+          className="pointer-events-auto inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-card px-4 text-xs font-medium text-ink-soft shadow-float transition-colors hover:border-gold hover:text-gold"
           aria-label={"Open Milo companion space. Milo is " + activityLabel(behaviour) + "."}
           title={"Milo is " + activityLabel(behaviour)}
         >
-          <Milo behaviour={behaviour} />
-          <span className="companion-home-label">{activeFocus ? "focus buddy" : "Milo"}</span>
+          <MessageCircle size={17} aria-hidden="true" />
+          <span>{activeFocus ? "Focus buddy" : "Milo"}</span>
         </button>
       ) : null}
     </aside>

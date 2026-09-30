@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Source_Serif_4 } from "next/font/google";
+import { DM_Sans, Source_Serif_4 } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import Nav from "@/components/Nav";
@@ -16,8 +16,8 @@ import CompanionLayer from "@/components/CompanionLayer";
 import { getSiteData } from "@/lib/content";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_AUTHOR } from "@/lib/site";
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+const sans = DM_Sans({
+  variable: "--font-interface",
   subsets: ["latin"],
   style: ["normal", "italic"],
 });
@@ -66,13 +66,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   const siteData = getSiteData();
   const companionChapters = siteData.chapters.map(({ slug, title, pillar }) => ({ slug, title, pillar }));
   return (
-    <html lang="en" className={`${fraunces.variable} ${source.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${sans.variable} ${source.variable}`} suppressHydrationWarning>
       <head>
         <Script id="theme-init" strategy="beforeInteractive">
           {`(function(){try{var t=window.localStorage.getItem("levelup-theme");if(t==="dark"||t==="light"||t==="deepwork"||t==="cyberpunk"){document.documentElement.setAttribute("data-theme",t);}else if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches){document.documentElement.setAttribute("data-theme","dark");}else{document.documentElement.setAttribute("data-theme","light");}var s=window.localStorage.getItem("levelup-reader-scale");if(s==="0.85"||s==="1"||s==="1.15"||s==="1.3"){document.documentElement.setAttribute("data-reader-scale",s);}else{document.documentElement.setAttribute("data-reader-scale","1");}}catch(e){document.documentElement.setAttribute("data-theme","light");document.documentElement.setAttribute("data-reader-scale","1");}})();`}
         </Script>
       </head>
-      <body className="min-h-dvh flex flex-col pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0">
+      <body className="min-h-dvh flex flex-col">
         <JsonLd
           data={[
             {
@@ -101,7 +101,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <div className="flex flex-1">
             <SidebarNav />
             <div className="flex min-w-0 flex-1 flex-col">
-              <Nav chapters={siteData.chapters} />
+              <Nav />
               <BackupJournalNotice />
               <main id="main" className="flex-1">{children}</main>
               <Footer />

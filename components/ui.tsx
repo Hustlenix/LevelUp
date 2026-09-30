@@ -51,34 +51,32 @@ interface ChapterCardProps {
 export function ChapterCard({ chapter, completed, bookmarked, onToggleBookmark }: ChapterCardProps) {
   const num = String(chapter.number).padStart(2, "0");
   return (
-    <div className="relative">
+    <div className="relative h-full">
       <Link
         href={`/chapters/${chapter.slug}/`}
-        className={`group flex gap-4 rounded-xl border bg-card p-4 pr-12 transition-all hover:border-gold hover:shadow-md hover:shadow-gold/10 ${
+        className={`group flex h-full flex-col gap-4 rounded-xl border bg-card p-5 transition-colors hover:border-gold sm:p-6 ${
           completed ? "border-gold/60" : "border-line"
         }`}
       >
-        <div className="flex w-12 shrink-0 flex-col items-center justify-center">
-          <span className="font-display text-2xl font-bold text-gold transition-colors group-hover:text-gold">
-            {num}
-          </span>
+        <div className="flex items-center gap-3 pr-10">
+          <span className="text-xs font-medium tabular-nums text-ink-faint">LESSON {num}</span>
+          <PillarTag pillar={chapter.pillar} />
         </div>
-        <div className="min-w-0">
+        <div className="flex min-w-0 flex-1 flex-col">
           <div className="flex flex-wrap items-center gap-2">
-            <h2 className="font-display text-lg font-semibold leading-snug text-ink">
+            <h3 className="font-display text-xl font-semibold leading-snug tracking-tight text-ink">
               {chapter.title}
-            </h2>
+            </h3>
             {completed && (
               <span aria-label="Completed" title="Completed" className="font-display text-gold">
                 ✓
               </span>
             )}
-            <PillarTag pillar={chapter.pillar} />
           </div>
-          <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-ink-soft">
+          <p className="mt-3 mb-5 line-clamp-2 text-sm leading-6 text-ink-soft">
             {chapter.teaser}
           </p>
-          <div className="mt-2 flex items-center gap-3 text-[11px] uppercase tracking-wider text-ink-faint">
+          <div className="mt-auto flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-line pt-4 text-xs text-ink-faint">
             <span>~{chapter.duration} read</span>
             <span>·</span>
             <span>{chapter.keyConcepts.length} concepts</span>
@@ -101,7 +99,7 @@ export function ChapterCard({ chapter, completed, bookmarked, onToggleBookmark }
           aria-pressed={bookmarked}
           aria-label={`Bookmark ${chapter.title}`}
           title="Bookmark this chapter"
-          className={`absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full text-base no-print transition-colors ${
+          className={`absolute right-2 top-2 z-10 flex h-11 w-11 items-center justify-center rounded-lg text-xl no-print transition-colors hover:bg-paper-deep ${
             bookmarked ? "text-gold" : "text-ink-faint hover:text-gold"
           }`}
         >
