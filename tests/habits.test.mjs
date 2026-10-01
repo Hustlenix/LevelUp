@@ -9,6 +9,8 @@ import {
   emptyHabitStore,
   entryForValue,
   hasHabits,
+  historyCells,
+historyEntries,
   isHabitStore,
   isScheduledOn,
   loadHabitStore,
@@ -265,7 +267,7 @@ test("weekdayOf reads local weekdays from the key", () => {
 
 // --- hostile ids and values ----------------------------------------------
 // A store is only as trustworthy as the weakest write path: one malformed value
-// makes isHabitStore fail, and loadHabitStore answers that with an empty store —
+// makes isHabitStore fail, and loadHabitStore answers that with an empty store â€”
 // so these guard the invariant that no write can produce a store its own guard
 // would reject. Habit ids are untrusted too (a restored backup may hold any
 // string), and several names on Object.prototype are ids a user could reach.
@@ -292,7 +294,7 @@ test("a habit id that collides with an inherited key still takes and reads back 
   assert.equal(Object.hasOwn(base.log, "__proto__"), false, "input store must not be mutated");
   assert.equal(Object.getPrototypeOf(base.log), Object.prototype);
 
-  // It has to survive the guard, JSON and a reload — the log is persisted.
+  // It has to survive the guard, JSON and a reload â€” the log is persisted.
   assert.equal(isHabitStore(logged), true);
   const reloaded = JSON.parse(JSON.stringify(logged));
   assert.equal(Object.hasOwn(reloaded.log, "__proto__"), true);
@@ -371,7 +373,7 @@ test("entryForValue refuses a non-finite value instead of writing an entry the g
     false,
   );
 
-  // A check habit is still exactly {status, updatedAt} — never a value key.
+  // A check habit is still exactly {status, updatedAt} â€” never a value key.
   const check = entryForValue(habit({ kind: "check" }), 5);
   assert.equal(check.status, "done");
   assert.equal(Object.hasOwn(check, "value"), false);
@@ -500,7 +502,7 @@ test("setDayLog ignores a log the guard rejects and hands back the identical sto
   }
   assert.equal(base.log.h1[WED].value, 25, "input store must not be mutated");
 
-  // Valid entries still write and replace, and null still deletes — the delete
+  // Valid entries still write and replace, and null still deletes â€” the delete
   // path is a different one and a delete cannot break the guard.
   const written = setDayLog(base, "h1", THU, at("partial", 10));
   assert.equal(written.log.h1[THU].status, "partial");
@@ -668,6 +670,181 @@ test("weekView is a Monday-start week with per-cell state and x/y footers", () =
   const nextWeek = weekView(next, SUN);
   assert.equal(nextWeek.startKey, MON);
   assert.deepEqual(weekView(next, NEXT_MON).startKey, NEXT_MON);
+});
+
+test("historyCells returns one cell per key, marks off days, and reads a missing log as none", () => {
+  const daily = habit({ id: "daily", name: "Pillar floors", kind: "check" });
+  const weekday = habit({ id: "weekday", name: "One protocol", days: [1, 2, 3, 4, 5] });
+
+  let next = store([daily, weekday]);
+  next = setDayLog(next, "daily", MON, at("done"));
+  next = setDayLog(next, "daily", TUE, at("partial", 10));
+  next = setDayLog(next, "daily", WED, at("skipped"));
+  next = setDayLog(next, "weekday", MON, at("done"));
+
+  // Seven keys in, seven cells out â€” the caller's order, never re-sorted.
+  const keys = [MON, TUE, WED, THU, FRI, SAT, SUN];
+  const dailyCells = historyCells(next, "daily", keys);
+  assert.equal(dailyCells.length, 7);
+  assert.deepEqual(dailyCells, ["done", "partial", "skipped", "none", "none", "none", "none"]);
+
+  // Weekday-only: the weekend is off, not a miss.
+  assert.deepEqual(historyCells(next, "weekday", keys), ["done", "none", "none", "none", "none", "off", "off"]);
+
+  // A log on an unscheduled day must not resurrect the day as done.
+  const loggedOffDay = setDayLog(next, "weekday", SAT, at("done"));
+  assert.equal(historyCells(loggedOffDay, "weekday", keys)[5], "off", "schedule wins over a stray log");
+});
+
+test("historyCells covers the rolling window a Monday-start week cannot", () => {
+  const daily = habit({ id: "daily", name: "Pillar floors", kind: "check" });
+
+  // Today plus the previous six days, oldest first â€” Thu 09-18 .. Thu 09-24.
+  const rolling = [-6, -5, -4, -3, -2, -1, 0].map((offset) => dayKey(THU, offset));
+  let next = store([daily]);
+  next = setDayLog(next, "daily", rolling[0], at("done"));
+  next = setDayLog(next, "daily", rolling[2], at("done"));
+
+  const cells = historyCells(next, "daily", rolling);
+  assert.equal(cells.length, 7);
+  assert.deepEqual(cells, ["done", "none", "done", "none", "none", "none", "none"]);
+  assert.equal(rolling[0], "2026-09-18");
+  assert.equal(rolling[6], THU);
+
+  // The rolling window is not the Monday-start week: they disagree on start.
+  const week = weekView(next, THU);
+  assert.deepEqual(week.days.slice(0, 3), [MON, TUE, WED]);
+  assert.deepEqual(rolling.slice(0, 3), ["2026-09-18", "2026-09-19", "2026-09-20"]);
+});
+
+test("historyCells agrees with weekView cell for cell", () => {
+  const daily = habit({ id: "daily", name: "Pillar floors", kind: "check" });
+  const weekday = habit({ id: "weekday", name: "One protocol", days: [1, 2, 3, 4, 5] });
+  const monSat = habit({ id: "monSat", name: "Quiz or review", days: [1, 2, 3, 4, 5, 6] });
+
+  let next = store([daily, weekday, monSat]);
+  next = setDayLog(next, "daily", MON, at("done"));
+  next = setDayLog(next, "daily", TUE, at("partial", 10));
+  next = setDayLog(next, "daily", WED, at("skipped"));
+  next = setDayLog(next, "weekday", MON, at("done"));
+  next = setDayLog(next, "monSat", SAT, at("done"));
+
+  const week = weekView(next, THU);
+  for (const row of week.rows) {
+    assert.deepEqual(
+      historyCells(next, row.habit.id, week.days),
+      row.cells,
+      `${row.habit.id} reads the same through either reader`,
+    );
+  }
+});
+
+test("historyCells handles empty input, an unknown id, and an inherited-key id", () => {
+  const protoHabit = habit({ id: "__proto__", name: "Odd id", kind: "check", days: [1] });
+
+  assert.deepEqual(historyCells(store(), "h1", []), [], "no keys, no cells");
+  assert.deepEqual(historyCells(store(), "missing", [MON, TUE]), ["none", "none"], "an unknown id is never off");
+
+  // No own key yet: a bare read would resolve Object.prototype as data.
+  assert.deepEqual(historyCells(store([protoHabit]), "__proto__", [MON]), ["none"]);
+
+  // A real own "__proto__" key survives and reads back like any other habit.
+  const written = setDayLog(store([protoHabit]), "__proto__", MON, at("done"));
+  assert.deepEqual(historyCells(written, "__proto__", [MON, SUN]), ["done", "off"]);
+});
+
+test("historyEntries returns the logged entry for a day, and undefined for an unlogged one", () => {
+  const daily = habit({ id: "daily", name: "Pillar floors", kind: "check" });
+  let next = store([daily]);
+  next = setDayLog(next, "daily", MON, at("done"));
+  next = setDayLog(next, "daily", WED, at("partial", 10));
+
+  const entries = historyEntries(next, "daily", [MON, TUE, WED]);
+  assert.equal(entries.length, 3, "one entry per key, in the caller's order");
+  assert.deepEqual(entries[0], at("done"), "a logged day reads back verbatim");
+  assert.equal(entries[1], undefined, "a scheduled day with no log has no entry");
+  assert.deepEqual(entries[2], at("partial", 10), "the measured value rides along with the status");
+
+  assert.deepEqual(historyEntries(next, "daily", []), [], "no keys, no entries");
+  assert.deepEqual(historyEntries(next, "missing", [MON, TUE]), [undefined, undefined]);
+});
+
+test("historyEntries returns undefined for a non-scheduled day with no log, and the entry when one was logged", () => {
+  const weekday = habit({ id: "weekday", name: "One protocol", days: [1, 2, 3, 4, 5] });
+  let next = store([weekday]);
+  next = setDayLog(next, "weekday", MON, at("done"));
+
+  // Unlike a cell, an entry never consults the schedule: Saturday reads as
+  // "nothing logged", not as a logged "off", so the caller can tell a real gap
+  // from a day that was never due.
+  const entries = historyEntries(next, "weekday", [MON, SAT]);
+  assert.deepEqual(entries[0], at("done"));
+  assert.equal(entries[1], undefined, "a non-scheduled day with no log has no entry");
+  assert.equal(historyCells(next, "weekday", [MON, SAT])[1], "off", "while the cell is still off");
+
+  // A stray log on an off day is a real log, and historyCells is what turns it
+  // back into "off" â€” the two readers never disagree about the schedule.
+  const stray = setDayLog(next, "weekday", SAT, at("done"));
+  assert.deepEqual(historyEntries(stray, "weekday", [SAT])[0], at("done"));
+  assert.equal(historyCells(stray, "weekday", [SAT])[0], "off");
+});
+
+test("historyEntries survives an inherited-key habit id without reading the prototype as data", () => {
+  const protoHabit = habit({
+    id: "__proto__",
+    name: "Odd id",
+    kind: "quantity",
+    unit: "min",
+    target: 8,
+    days: [1],
+  });
+
+  // No own bucket yet, so a bare read would resolve Object.prototype as a log.
+  assert.deepEqual(historyEntries(store([protoHabit]), "__proto__", [MON, SUN]), [undefined, undefined]);
+  assert.deepEqual(historyEntries(store([protoHabit]), "toString", [MON]), [undefined]);
+  assert.deepEqual(historyEntries(store(), "missing", [MON, TUE]), [undefined, undefined]);
+
+  // A real own key â€” including a restored "__proto__" bucket â€” reads back like
+  // any other habit, value and all, so the week table can show 5/8 for it.
+  const written = setDayLog(store([protoHabit]), "__proto__", MON, at("partial", 5));
+  const entries = historyEntries(written, "__proto__", [MON, SUN]);
+  assert.equal(entries[0].status, "partial");
+  assert.equal(entries[0].value, 5);
+  assert.equal(entries[1], undefined, "an off day with no log is still nothing");
+  assert.deepEqual(historyCells(written, "__proto__", [MON, SUN]), ["partial", "off"]);
+  assert.equal(Object.getPrototypeOf(written.log), Object.prototype, "the prototype is not hijacked");
+  assert.equal(Object.getPrototypeOf(written.log.__proto__), Object.prototype, "nor is the bucket's");
+});
+
+test("historyCells and historyEntries agree cell for cell across the same keys", () => {
+  const daily = habit({ id: "daily", name: "Pillar floors", kind: "check" });
+  const weekday = habit({ id: "weekday", name: "One protocol", days: [1, 2, 3, 4, 5] });
+  const measured = habit({ id: "q", name: "Deep focus block", kind: "quantity", unit: "min", target: 25 });
+
+  let next = store([daily, weekday, measured]);
+  next = setDayLog(next, "daily", MON, at("done"));
+  next = setDayLog(next, "daily", TUE, at("partial", 10));
+  next = setDayLog(next, "daily", WED, at("skipped"));
+  next = setDayLog(next, "weekday", MON, at("done"));
+  next = setDayLog(next, "weekday", SAT, at("done")); // a stray log on an off day
+  next = setDayLog(next, "q", MON, at("partial", 5));
+  next = setDayLog(next, "q", TUE, at("done", 25));
+
+  const week = weekView(next, THU);
+  for (const row of week.rows) {
+    const cells = historyCells(next, row.habit.id, week.days);
+    const entries = historyEntries(next, row.habit.id, week.days);
+
+    assert.deepEqual(cells, row.cells, `${row.habit.id} still reads identically through weekView`);
+    assert.equal(entries.length, cells.length, `${row.habit.id}: one entry and one cell per key`);
+
+    week.days.forEach((dateKey, index) => {
+      // An off cell is the schedule's answer and never consults the log.
+      if (cells[index] === "off") return;
+      const derived = entries[index] === undefined ? "none" : entries[index].status;
+      assert.equal(derived, cells[index], `${row.habit.id} ${dateKey}: the cell is the entry's status, or none`);
+    });
+  }
 });
 
 test("storage helpers are SSR-safe no-ops without a window", () => {

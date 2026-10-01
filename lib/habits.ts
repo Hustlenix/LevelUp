@@ -465,6 +465,56 @@ export function todayRoutine(store: HabitStore, todayKey: string): TodayRoutine 
   return { total: items.length, completed, items };
 }
 
+/**
+ * The logged entry for each of `dateKeys`, one per key, in the caller's order —
+ * the same keys `historyCells` renders, returned as data instead of as state.
+ *
+ * This is the only reader of a day's log for the week table, and it answers a
+ * question a cell cannot: what was actually recorded. `historyCells` reports
+ * "partly done", which is true but says nothing about 5 of 8; the week table
+ * needs the number behind it.
+ *
+ * Deliberately schedule-blind. A day the habit was not due returns `undefined`
+ * when nothing was logged and the entry itself when something was, so a caller
+ * can tell a real gap from a day that was never due. Callers gate on the cell
+ * first — that is where the schedule is applied.
+ */
+export function historyEntries(
+  store: HabitStore,
+  habitId: HabitId,
+  dateKeys: string[],
+): (HabitDayLog | undefined)[] {
+  // Hoisted so the own-key guard runs once per call, not once per day. `daysFor`
+  // is the single place a habit's bucket is resolved, so an id colliding with an
+  // inherited name can never come back as prototype data.
+  const days = daysFor(store.log, habitId);
+  return dateKeys.map((dateKey) => (Object.hasOwn(days, dateKey) ? days[dateKey] : undefined));
+}
+
+/**
+ * Per-day state for an arbitrary list of day keys — the one place the
+ * schedule/log/miss rule lives.
+ *
+ * `weekView` and the rolling mini-history want the same three outcomes in a
+ * different order: "off" when the weekday is not scheduled, otherwise whatever
+ * was logged, otherwise "none". Sharing this keeps a weekday-only habit from
+ * showing a false miss in one grid and an honest gap in the other.
+ *
+ * The keys are the caller's, in the caller's order, and may be any length — the
+ * rolling history is today plus the previous six days, which is not the
+ * Monday-start week `weekView` builds. An unknown habit id has no schedule and
+ * no log, so every key reads "none".
+ */
+export function historyCells(store: HabitStore, habitId: HabitId, dateKeys: string[]): HabitWeekCell[] {
+  const habit = findHabit(store, habitId);
+  if (!habit) return dateKeys.map(() => "none");
+  const entries = historyEntries(store, habitId, dateKeys);
+  return dateKeys.map((dateKey, index) => {
+    if (!isScheduledOn(habit, dateKey)) return "off";
+    return entries[index]?.status ?? "none";
+  });
+}
+
 export interface HabitWeekRow {
   habit: Habit;
   cells: HabitWeekCell[];
@@ -491,10 +541,7 @@ export function weekView(store: HabitStore, todayKey: string): HabitWeekView {
 
   for (const habit of store.habits) {
     if (habit.archived) continue;
-    const cells: HabitWeekCell[] = days.map((dateKey) => {
-      if (!isScheduledOn(habit, dateKey)) return "off";
-      return entryFor(store, habit.id, dateKey)?.status ?? "none";
-    });
+    const cells = historyCells(store, habit.id, days);
     rows.push({ habit, cells });
     days.forEach((_dateKey, index) => {
       const cell = cells[index];
