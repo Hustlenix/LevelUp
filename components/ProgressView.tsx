@@ -20,6 +20,9 @@ import { reloadActionToolsCaches } from "@/lib/actionTools";
 import { localToday } from "@/lib/dates";
 import { toBackupPayload, fromBackupPayload } from "@/lib/studentProfile";
 import { PillarTag } from "@/components/ui";
+import { useGamification } from "@/lib/useGamification";
+import { computeLifeosBadges, computeProgression } from "@/lib/progression";
+import { useClientToday } from "@/lib/clientToday";
 import GamificationPanel from "@/components/GamificationPanel";
 import { trackEvent, ANALYTICS_EVENTS } from "@/lib/analytics";
 import { getOSStateSnapshot, restoreOSState, useOSStore } from "@/lib/os/store";
@@ -28,13 +31,23 @@ import { deriveLocalPatterns } from "@/lib/os/patterns";
 import { MetricStrip, WorkspaceHeader } from "@/components/workspace";
 import { getNotificationStateSnapshot, restoreNotificationState } from "@/lib/notifications";
 import { getExperimentsSnapshot, restoreExperiments } from "@/lib/experiments";
+import { getHabitsBackupSnapshot, restoreHabits } from "@/lib/habitsStore";
+import { getSmallStepsBackup, reloadSmallSteps } from "@/lib/smallStepsStore";
+import { getPracticeDraftsBackup, reloadPracticeDrafts } from "@/lib/practiceDraftsStore";
+import { getLifeStateSnapshot, getNexusReplicaSnapshot, NEXUS_REPLICA_KEY, reloadLifeStateCache } from "@/lib/life";
 
 const THEME_KEY = "levelup-theme";
 const SCALE_KEY = "levelup-reader-scale";
 
-export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
+export default function ProgressView({ chapters, embedded = false }: { chapters: Chapter[]; embedded?: boolean }) {
   const map = useProgressStore();
   const osState = useOSStore();
+  const gamification = useGamification();
+  const date = useClientToday();
+  // computeProgression needs a real date (parseDay("") throws); useClientToday
+  // returns "" during static prerender, so derive once the client date snaps in.
+  const progression = date ? computeProgression(osState, gamification.state, date) : null;
+  const badges = progression ? computeLifeosBadges(progression) : null;
   const patterns = deriveLocalPatterns(osState, localToday());
   const stats = overallStats(map, chapters.length);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -66,7 +79,12 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
       streak: getStreakSnapshot(),
       studentProfile: toBackupPayload() ?? undefined,
       actionState,
+      habits: getHabitsBackupSnapshot(),
+      smallSteps: getSmallStepsBackup(),
+      practiceDrafts: getPracticeDraftsBackup(),
       osState: getOSStateSnapshot(),
+      lifeState: getLifeStateSnapshot(),
+      nexusReplica: getNexusReplicaSnapshot(),
        portfolio: getPortfolioSnapshot(),
        notifications: getNotificationStateSnapshot(),
        experiments: getExperimentsSnapshot(),
@@ -107,6 +125,11 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
         return;
       }
       restoreProgress(d.progress);
+      restoreHabits(d.habits);
+      reloadSmallSteps();
+      reloadPracticeDrafts();
+      if (d.nexusReplica === undefined && d.lifeState !== undefined) localStorage.removeItem(NEXUS_REPLICA_KEY);
+      if (d.lifeState !== undefined || d.nexusReplica !== undefined) reloadLifeStateCache();
       restoreBookmarks(d.bookmarks);
       restoreHighlights(d.highlights);
       restoreQuiz(d.quiz);
@@ -161,14 +184,18 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
     reader.readAsText(file);
   };
 
-  return (
-    <div className="mx-auto max-w-3xl px-5 py-12">
-      <WorkspaceHeader eyebrow="Progress" title="See the outcome, then the details" description="Reading, focus evidence, and mastery stay local to this browser. Start with the outcome and use the ledger below to choose the next useful action." />
+  const last7 = progression?.last7 ?? [];
+  const weekPeak = Math.max(1, ...last7.map((d) => d.xp));
 
-      <MetricStrip items={[{ label: "Reading", value: `${stats.pct}%`, detail: `${stats.done} of ${chapters.length} chapters complete` }, { label: "Mastery", value: Object.keys(osState.mastery.goals).length, detail: "goal records" }, { label: "Local only", value: "Yes", detail: "no sync or hosted backend" }]} />
+  return (
+    <div className="mx-auto max-w-4xl px-5 py-12">
+      {embedded ? <h2 className="font-display text-2xl">Reading and workspace record</h2> : <WorkspaceHeader eyebrow="Your record" title="Progress" description="Chapters read, time focused, and work completed. Based on your recorded activity—not estimates." />}
+
+      <MetricStrip items={[{ label: "Level", value: progression ? String(progression.level) : "—", detail: progression ? `${progression.xp} XP recorded` : "Loading your record" }, { label: "Streak", value: progression ? String(progression.streak.current) : "—", detail: progression ? `best ${progression.streak.best} days` : undefined }, { label: "Focus", value: progression ? `${Math.round(progression.totalMinutes)}m` : "—", detail: progression ? `${progression.totalSessions} completed sessions` : undefined }]} />
 
       <div className="mt-8 rounded-xl border border-line bg-card p-6">
-        <div className="flex items-baseline justify-between">
+        <h2 className="mb-4 font-display text-xl font-semibold text-ink">Reading progress</h2>
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
           <span className="font-display text-5xl font-bold text-ink">{stats.pct}%</span>
           <span className="text-sm text-ink-faint">
             {stats.done} of {chapters.length} chapters complete
@@ -179,7 +206,109 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
         </div>
       </div>
 
-      <GamificationPanel />
+      {progression ? (
+        <>
+          <section className="mt-8 rounded-xl border border-line bg-card p-6" aria-labelledby="progression-heading">
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h2 id="progression-heading" className="font-display text-2xl font-bold tracking-tight text-ink">
+                {progression.title}
+              </h2>
+              <p className="text-sm text-ink-soft">
+                {progression.xp} XP · {progression.totalSessions} sessions · {Math.round(progression.totalMinutes / 60)}h focused
+              </p>
+            </div>
+            <div className="mt-3 h-3 overflow-hidden rounded-full bg-line">
+              <div className="h-full rounded-full bg-gold transition-all" style={{ width: `${progression.bounds.pct}%` }} />
+            </div>
+            {progression.bounds.next !== null ? (
+              <p className="mt-2 text-xs text-ink-faint">
+                {progression.bounds.into} of {progression.bounds.next - progression.bounds.floor} XP into level{" "}
+                {progression.level + 1}
+              </p>
+            ) : (
+              <p className="mt-2 text-xs text-ink-faint">Maximum level reached.</p>
+            )}
+
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              <div>
+                <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">Skills</p>
+                <ul className="mt-3 space-y-3">
+                  {progression.skills.slice(0, 3).map((skill) => (
+                    <li key={skill.id}>
+                      <div className="flex items-baseline justify-between gap-2 text-sm">
+                        <span className="font-medium text-ink">{skill.label}</span>
+                        <span className="text-xs text-ink-faint">
+                          Lv {skill.level} · {skill.xp} XP
+                        </span>
+                      </div>
+                      <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-line">
+                        <div className="h-full rounded-full bg-gold/70" style={{ width: `${skill.pct}%` }} />
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">
+                  Last 7 days
+                </p>
+                <div className="mt-3 flex h-24 items-end gap-1.5" role="img" aria-label="XP earned per day over the last 7 days">
+                  {last7.map((day) => (
+                    <div key={day.date} className="flex flex-1 flex-col items-center gap-1">
+                      <div
+                        className={`w-full rounded-sm ${day.xp > 0 ? "bg-gold/80" : "bg-line"}`}
+                        style={{ height: `${Math.max(4, Math.round((day.xp / weekPeak) * 64))}px` }}
+                        title={`${day.date}: ${day.xp} XP`}
+                      />
+                      <span className="text-[0.5625rem] text-ink-faint">{day.date.slice(8)}</span>
+                    </div>
+                  ))}
+                </div>
+                {progression.weekSum.xp > 0 ? (
+                  <p className="mt-2 text-xs text-ink-soft">
+                    This week: {progression.weekSum.xp} XP · {progression.weekSum.sessions} sessions ·{" "}
+                    {progression.weekSum.minutes} minutes
+                  </p>
+                ) : null}
+              </div>
+            </div>
+          </section>
+
+          {badges ? (
+            <details className="mt-8 border-y border-line py-4">
+              <summary className="min-h-11 font-display text-xl font-semibold leading-[44px] text-ink">Milestones</summary>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {badges.map((b) => (
+                  <div
+                    key={b.id}
+                    className={`rounded-lg border p-3 transition-colors ${
+                      b.unlocked ? "border-gold/50 bg-paper-deep/60" : "border-line bg-paper opacity-60"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="font-display text-sm font-semibold text-ink">{b.name}</p>
+                      <span className={`text-[0.625rem] uppercase tracking-wider ${b.unlocked ? "text-gold" : "text-ink-faint"}`}>
+                        {b.unlocked ? "Earned" : "Locked"}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-xs text-ink-soft">{b.blurb}</p>
+                    <p className="mt-1 text-[0.625rem] text-ink-faint">{b.rule}</p>
+                  </div>
+                ))}
+              </div>
+            </details>
+          ) : null}
+        </>
+      ) : (
+        <div className="mt-8 rounded-xl border border-line bg-card p-6">
+          <p className="text-sm text-ink-faint" role="status">
+            Deriving your LifeOS progression…
+          </p>
+        </div>
+      )}
+
+      <details className="mt-4 border-b border-line pb-4"><summary className="min-h-11 font-display text-xl font-semibold leading-[44px] text-ink">Reading badges</summary><GamificationPanel /></details>
 
       <section className="mt-8 rounded-xl border border-line bg-card p-6">
         <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">Local patterns</p>
@@ -189,15 +318,17 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
         </div>
       </section>
 
-      <div className="mt-8 space-y-2">
+      <details className="mt-8 border-y border-line py-4">
+        <summary className="min-h-11 font-display text-xl font-semibold leading-[44px] text-ink">Chapter record <span className="ml-2 font-body text-xs font-normal text-ink-faint">{stats.done} / {chapters.length} read</span></summary>
+        <div className="mt-4 divide-y divide-line">
         {chapters.map((c) => {
           const entry = map[c.slug];
           const complete = entry?.complete ?? false;
           return (
             <div
               key={c.slug}
-              className={`flex items-center gap-4 rounded-xl border p-4 transition-colors ${
-                complete ? "border-gold/40 bg-gold/10" : "border-line bg-card"
+              className={`flex items-center gap-3 py-4 transition-colors ${
+                complete ? "bg-gold/5" : "bg-transparent"
               }`}
             >
               <span className="w-8 shrink-0 text-right font-display text-sm font-bold text-ink-faint">
@@ -222,7 +353,7 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
               </div>
               <button
                 onClick={() => markComplete(c.slug, !complete)}
-                className={`shrink-0 rounded-full border px-3 py-1 text-xs transition-colors ${
+                className={`min-h-11 shrink-0 rounded-lg border px-3 py-2 text-xs transition-colors ${
                   complete
                     ? "border-gold bg-gold text-paper hover:bg-gold-deep"
                     : "border-line bg-paper text-ink-soft hover:border-gold hover:text-gold"
@@ -233,7 +364,8 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
             </div>
           );
         })}
-      </div>
+        </div>
+      </details>
 
       <div className="mt-8 rounded-xl border border-line bg-card p-6">
         <h2 className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">

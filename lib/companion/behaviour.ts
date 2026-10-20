@@ -228,14 +228,6 @@ export function deriveTimeOfDay(now: Date): TimeOfDay {
   return "evening";
 }
 
-/** Local calendar date, YYYY-MM-DD — used for once-per-day events. */
-export function localDate(now: Date): string {
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
 export function applyTraitDeltas(traits: CompanionTraits, event: CompanionEvent): CompanionTraits {
   const deltas = TRAIT_DELTAS[event.kind];
   const next: CompanionTraits = { ...traits };

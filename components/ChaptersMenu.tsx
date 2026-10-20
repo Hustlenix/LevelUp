@@ -59,7 +59,7 @@ export default function ChaptersMenu({
         Chapters
         <span
           aria-hidden="true"
-          className={`text-[10px] transition-transform duration-200 ${
+          className={`text-[0.625rem] transition-transform duration-200 ${
             open ? "rotate-180" : ""
           }`}
         >
@@ -104,7 +104,7 @@ export default function ChaptersMenu({
                       </span>
                       <span
                         aria-hidden="true"
-                        className={`text-[10px] text-ink-faint transition-transform duration-200 ${
+                        className={`text-[0.625rem] text-ink-faint transition-transform duration-200 ${
                           isOpen ? "rotate-180" : ""
                         }`}
                       >

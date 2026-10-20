@@ -1,12 +1,23 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
+import { useState } from "react";
 import { ArrowRight, BookOpenCheck, CheckCircle2, Clock3, Flame, Sparkles, TrendingDown, TrendingUp } from "lucide-react";
 import type { Chapter } from "@/lib/types";
 import { overallStats, useProgressStore } from "@/lib/progress";
 import { useClientToday } from "@/lib/clientToday";
 import { LIFE_SKILLS, SKILL_META, skillLevel, strongestAndNeglected, useLifeStore, weeklySummary } from "@/lib/life";
 import { AppPageHeader, EmptyAppState, SkillBadge, XPMeter } from "./AppUI";
+
+const WorkspaceRecord = dynamic(() => import("@/components/ProgressView"));
+function ReadingRecord({ chapters }: { chapters: Chapter[] }) {
+  const [opened, setOpened] = useState(false);
+  return <details className="my-8 rounded-xl border border-line bg-card p-5" onToggle={event => setOpened(event.currentTarget.open)}>
+    <summary className="min-h-11 cursor-pointer font-display text-xl">Reading, focus, and workspace record</summary>
+    {opened && <WorkspaceRecord chapters={chapters} embedded />}
+  </details>;
+}
 
 function offsetDate(date: string, amount: number) {
   const value = new Date(`${date}T00:00:00Z`);
@@ -19,7 +30,7 @@ export default function LifeProgressView({ chapters }: { chapters: Chapter[] }) 
   const reading = useProgressStore();
   const today = useClientToday();
   const readingStats = overallStats(reading, chapters.length);
-  if (!state.profile) return <div className="app-page"><EmptyAppState title="Progress starts with one real action" body="Create your starter path, complete a mission, and this page will turn your activity into useful evidence." action={<Link href="/onboarding/" className="life-primary-button">Build my plan <ArrowRight aria-hidden="true" /></Link>} /></div>;
+  if (!state.profile) return <div className="app-page"><EmptyAppState title="Progress starts with one real action" body="Create your starter path, complete a mission, and this page will turn your activity into useful evidence." action={<Link href="/onboarding/" className="life-primary-button">Build my plan <ArrowRight aria-hidden="true" /></Link>} /><ReadingRecord chapters={chapters} /></div>;
   if (!today) return <div className="app-loading"><i /><i /><i /></div>;
 
   const current = weeklySummary(state, today);
@@ -47,6 +58,7 @@ export default function LifeProgressView({ chapters }: { chapters: Chapter[] }) 
       <section className="progress-panel personal-records"><header><div><p>Personal records</p><h2>Your strongest proof so far</h2></div><Sparkles aria-hidden="true" /></header><dl><div><dt>Most missions in one day</dt><dd>{Math.max(0, ...recordsByDate.values())}</dd></div><div><dt>Most trained skill</dt><dd>{SKILL_META[balance.strongest].label}</dd></div><div><dt>Manual progress</dt><dd>{readingStats.pct}%</dd></div><div><dt>Current streak</dt><dd>{state.progression.streak.current}d</dd></div></dl></section></div>
 
       <section className="reading-progress-bridge"><BookOpenCheck aria-hidden="true" /><div><p>Learning evidence</p><h2>{readingStats.done} of {chapters.length} manual chapters completed</h2><span>Your reading stays part of LevelUp, but it does not replace real-world missions.</span></div><div className="reading-progress-track"><i style={{ width: `${readingStats.pct}%` }} /></div><Link href="/chapters/">Continue learning <ArrowRight aria-hidden="true" /></Link></section>
+      <ReadingRecord chapters={chapters} />
     </div>
   );
 }

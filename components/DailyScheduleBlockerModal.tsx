@@ -168,7 +168,7 @@ export default function DailyScheduleBlockerModal({ onClose, defaultGoal = "" }:
                       {key === "balanced" && "Pomodoro (25m/5m)"}
                       {key === "deepwork" && "God-Mode (90m Block)"}
                     </span>
-                    <p className="mt-1 text-[11px] leading-relaxed text-ink-soft">
+                    <p className="mt-1 text-[0.6875rem] leading-relaxed text-ink-soft">
                       {p.bestFor}
                     </p>
                   </button>
@@ -179,7 +179,7 @@ export default function DailyScheduleBlockerModal({ onClose, defaultGoal = "" }:
 
           {/* Timeline preview */}
           <div className="rounded-xl border border-line bg-paper-deep/60 p-4">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-gold">
+            <span className="text-[0.6875rem] font-bold uppercase tracking-wider text-gold">
               Calendar Blocks Breakdown
             </span>
             <p className="mt-1 font-mono text-xs text-ink-soft leading-relaxed">

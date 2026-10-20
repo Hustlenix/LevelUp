@@ -1,8 +1,8 @@
 # LevelUp Nexus Protocol
 
-Status: implemented protocol v1  
-Schema: v1  
-Primary code: `lib/nexus/`  
+Status: implemented protocol v1
+Schema: v1
+Primary code: `lib/nexus/`
 Interactive inspector: `/sync-lab/`
 
 Nexus is the local-first replication layer behind LevelUp's profile, preferences, and real-world mission completions. It was built to solve a product problem: progress must remain usable offline and must not be double-counted when the same history is replayed, restored, or moved between devices.

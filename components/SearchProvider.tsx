@@ -143,7 +143,7 @@ function SearchModal({ go, close }: { go: (url: string) => void; close: () => vo
               >
                 <div className="flex items-baseline gap-2">
                   <span className="font-display text-sm font-semibold text-ink">{r.title}</span>
-                  <span className="ml-auto shrink-0 rounded-full border border-line px-2 py-0.5 text-[10px] uppercase tracking-wider text-ink-faint">
+                  <span className="ml-auto shrink-0 rounded-full border border-line px-2 py-0.5 text-[0.625rem] uppercase tracking-wider text-ink-faint">
                     {r.type}
                   </span>
                 </div>
@@ -153,7 +153,7 @@ function SearchModal({ go, close }: { go: (url: string) => void; close: () => vo
             ))
           )}
         </div>
-        <div className="border-t border-line px-5 py-2.5 text-[11px] text-ink-faint">
+        <div className="border-t border-line px-5 py-2.5 text-[0.6875rem] text-ink-faint">
           ↑↓ navigate · Enter open · ⌘K toggle
         </div>
       </div>

@@ -56,10 +56,10 @@ function ChapterRow({
             ★
           </span>
         )}
-        <span className="rounded-full border border-line/70 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-ink-faint">
+        <span className="rounded-full border border-line/70 px-2 py-0.5 text-[0.625rem] font-medium uppercase tracking-wider text-ink-faint">
           {PILLAR_META[chapter.pillar].label}
         </span>
-        <span className="text-[10px] uppercase tracking-wider text-ink-faint">
+        <span className="text-[0.625rem] uppercase tracking-wider text-ink-faint">
           ~{chapter.duration}
         </span>
       </span>
@@ -124,7 +124,7 @@ export default function ChapterList({ chapters }: { chapters: Chapter[] }) {
         ))}
       </div>
     ) : (
-      <div className="grid gap-4">
+      <div className="grid gap-4 xl:grid-cols-2">
         {list.map((c) => (
           <ChapterCard
             key={c.slug}
@@ -251,7 +251,7 @@ export default function ChapterList({ chapters }: { chapters: Chapter[] }) {
               <section key={g.name} aria-label={g.name}>
                 <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2 border-b border-line pb-2">
                   <h2 className="font-display text-xl font-bold text-ink">{g.name}</h2>
-                  <span className="text-[11px] uppercase tracking-wider text-ink-faint">
+                  <span className="text-[0.6875rem] uppercase tracking-wider text-ink-faint">
                     Chapters {g.start}–{g.end}
                   </span>
                 </div>
@@ -275,7 +275,7 @@ export default function ChapterList({ chapters }: { chapters: Chapter[] }) {
           ))}
         </div>
       ) : (
-        <div className="grid gap-4">
+        <div className="grid gap-4 xl:grid-cols-2">
           {shown.map((c) => (
             <ChapterCard
               key={c.slug}

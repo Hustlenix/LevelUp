@@ -8,5 +8,5 @@ export const metadata: Metadata = { title: "The Level Up Manual", description: S
 
 export default function ManualPage() {
   const data = getSiteData();
-  return <div className="mx-auto max-w-6xl px-5 py-7 sm:px-8 sm:py-12"><JsonLd data={{ "@context": "https://schema.org", "@type": "Book", name: SITE_NAME, abstract: BOOK_ONE_LINER, description: SITE_DESCRIPTION, inLanguage: "en", author: { "@type": "Organization", name: SITE_AUTHOR }, datePublished: PUBLISHED_DATE }} /><ReaderFrontDoor chapters={data.chapters} /></div>;
+  return <div><JsonLd data={{ "@context": "https://schema.org", "@type": "Book", name: SITE_NAME, abstract: BOOK_ONE_LINER, description: SITE_DESCRIPTION, inLanguage: "en", author: { "@type": "Organization", name: SITE_AUTHOR }, datePublished: PUBLISHED_DATE }} /><ReaderFrontDoor chapters={data.chapters} /></div>;
 }

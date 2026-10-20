@@ -8,7 +8,9 @@
     "build": "node scripts/build-data.mjs && next build",
     "start": "node scripts/serve-static.mjs out 3000",
     "lint": "eslint",
-    "test": "node scripts/build-data.mjs && node --test tests/data.test.mjs tests/features.test.mjs tests/gamification.test.mjs tests/studentProfile.test.mjs tests/ai.test.mjs tests/os.test.mjs tests/notifications.test.mjs tests/blueprint.test.mjs tests/paths.test.mjs tests/learning.test.mjs tests/calendarExport.test.mjs tests/companion.test.mjs tests/life.test.mjs tests/nexus.test.mjs tests/pwa.test.mjs"
+    "test:small-steps": "node --test tests/smallSteps.test.mjs tests/smallSteps-helper.test.mjs",
+    "small-steps:helper": "node --env-file=.env.small-steps scripts/small-steps-helper.mjs",
+    "test": "node scripts/build-data.mjs && node --test tests/data.test.mjs tests/features.test.mjs tests/gamification.test.mjs tests/studentProfile.test.mjs tests/ai.test.mjs tests/os.test.mjs tests/notifications.test.mjs tests/blueprint.test.mjs tests/paths.test.mjs tests/learning.test.mjs tests/calendarExport.test.mjs tests/companion.test.mjs tests/progression.test.mjs tests/mission.test.mjs tests/monetization.test.mjs tests/lifeos-context.test.mjs tests/habits.test.mjs tests/habit-integration.test.mjs tests/smallSteps.test.mjs tests/smallSteps-helper.test.mjs tests/life.test.mjs tests/nexus.test.mjs tests/pwa.test.mjs"
   },
   "dependencies": {
     "@mlc-ai/web-llm": "^0.2.85",

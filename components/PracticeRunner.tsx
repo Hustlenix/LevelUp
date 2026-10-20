@@ -5,14 +5,21 @@ import Link from "next/link";
 import type { PracticePlan } from "@/lib/practicePlans";
 import { logProtocolExecution, useProtocolLogsStore } from "@/lib/actionTools";
 import PracticeTimer from "@/components/PracticeTimer";
+import { SaveAction } from "@/components/SavedActions";
+import { EMPTY_PRACTICE_DRAFT, type PracticeDraft } from "@/lib/practiceDrafts";
+import { usePracticeDrafts, updatePracticeDraft, clearPracticeDraft } from "@/lib/practiceDraftsStore";
 
 export default function PracticeRunner({ plan, chapterSlug }: { plan: PracticePlan; chapterSlug?: string }) {
   const uid = useId();
-  const [notes, setNotes] = useState("");
-  const [checked, setChecked] = useState<number[]>([]);
-  const [kind, setKind] = useState("Plan prepared");
-  const [seconds, setSeconds] = useState(0);
   const [saved, setSaved] = useState(false);
+  const [recordedDraft, setRecordedDraft] = useState<PracticeDraft | null>(null);
+  const draftKey = `${plan.id}:${chapterSlug ?? "library"}`;
+  const drafts = usePracticeDrafts();
+  const { notes, checked, kind } = (saved && recordedDraft) || drafts.state.entries[draftKey] || EMPTY_PRACTICE_DRAFT;
+  const setNotes = (notes: string) => updatePracticeDraft(draftKey, { notes });
+  const setChecked = (checked: number[]) => updatePracticeDraft(draftKey, { checked });
+  const setKind = (kind: string) => updatePracticeDraft(draftKey, { kind });
+  const [seconds, setSeconds] = useState(0);
   const [message, setMessage] = useState("");
   const logId = useRef<string | undefined>(undefined);
   const logs = useProtocolLogsStore();
@@ -26,6 +33,7 @@ export default function PracticeRunner({ plan, chapterSlug }: { plan: PracticePl
       checkedSteps: JSON.stringify(checked.map((index) => plan.steps[index])),
     }, seconds, logId.current);
     setSaved(result.persisted);
+    if (result.persisted) { setRecordedDraft({ notes, checked, kind, updatedAt: Date.now() }); clearPracticeDraft(draftKey); }
     setMessage(result.persisted ? `${kind} saved on this device. Reading progress has not changed.` : "Your browser could not save this record. Copy your notes before leaving, or retry saving.");
   }
 
@@ -48,6 +56,8 @@ export default function PracticeRunner({ plan, chapterSlug }: { plan: PracticePl
         </div>
       </fieldset>
       <p className="rounded-lg border-l-2 border-gold bg-paper-deep/50 px-4 py-3 text-sm leading-relaxed"><strong>Make it smaller.</strong> {plan.smaller}</p>
+      <SaveAction task={plan.title} action={plan.steps[0]} source={chapterSlug ? `/chapters/${chapterSlug}/` : "/protocols/"} minutes={plan.id === "tiny-start" ? 2 : 5} />
+      {drafts.error ? <p role="alert" className="border-l-2 border-gold p-3 text-sm">{drafts.error}</p> : !saved && drafts.state.entries[draftKey] ? <p className="text-xs text-ink-soft">Draft saved on this device. You can leave and return.</p> : null}
       {plan.id === "pomodoro" && !saved && <PracticeTimer onTime={setSeconds} />}
       <div>
         <label htmlFor={`${uid}-notes`} className="block text-sm font-semibold">{plan.prompt}</label>
@@ -69,11 +79,11 @@ export default function PracticeRunner({ plan, chapterSlug }: { plan: PracticePl
         </label>
         <button type="button" disabled={!notes.trim() || saved} onClick={save} className="min-h-11 rounded-lg bg-ink px-4 py-2 text-sm font-semibold text-paper disabled:opacity-50">{saved ? "Saved on this device" : "Save practice record"}</button>
         {saved && <button type="button" className="min-h-11 rounded-lg border border-line px-4 text-sm" onClick={() => {
-          setSaved(false); setNotes(""); setChecked([]); setSeconds(0); setMessage(""); logId.current = undefined;
+          setSaved(false); clearPracticeDraft(draftKey); setSeconds(0); setMessage(""); logId.current = undefined;
         }}>New attempt</button>}
       </div>
       <p role="status" className="text-sm text-ink-soft">{message}</p>
-      <p className="text-xs leading-relaxed text-ink-soft">Check steps as you use them; you can save an unfinished plan. Notes stay in this browser’s protocol log and are included in <Link href="/backup/" className="underline underline-offset-4">data backups</Link>. Unsaved notes clear when you leave or switch plans.</p>
+      <p className="text-xs leading-relaxed text-ink-soft">Notes and checks save as a draft as you work. “Save practice record” adds an explicit record to your history. Both are included in <Link href="/backup/" className="underline underline-offset-4">data backups</Link>. Timers reset when you leave; drafts do not.</p>
       {previous && !saved && <details className="border-t border-line pt-3 text-sm">
         <summary className="min-h-11 cursor-pointer py-2 font-semibold">Last record · {previous.date}</summary>
         <p className="mt-2 text-ink-soft">{previous.inputs.recordType}</p>

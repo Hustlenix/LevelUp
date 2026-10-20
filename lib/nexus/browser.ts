@@ -59,4 +59,3 @@ export async function clearMirroredReplica(): Promise<void> {
     transaction.onerror = () => reject(transaction.error ?? new Error("Replica mirror could not be cleared."));
   }).finally(() => database.close());
 }
-

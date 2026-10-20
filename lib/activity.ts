@@ -5,15 +5,9 @@ import type { HighlightEntry } from "@/lib/highlights";
 import type { QuizScore } from "@/lib/types";
 import { advanceStreak, type StreakState } from "@/lib/gamification";
 import { emitCompanionEvent } from "@/lib/companion";
+import { formatLocalDate } from "@/lib/dates";
 
 export type { StreakState };
-
-function localDate(d: Date): string {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
-}
 
 const HIGHLIGHTS_KEY = "levelup-highlights-v1";
 const QUIZ_KEY = "levelup-quiz-v1";
@@ -152,7 +146,7 @@ export function useStreakStore(): StreakState {
 }
 
 export function recordActivity(now: Date = new Date()) {
-  const today = localDate(now);
+  const today = formatLocalDate(now);
   const previous = getStreakSnapshot();
   const next = advanceStreak(previous, today);
   streakCache = next;

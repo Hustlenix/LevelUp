@@ -9,13 +9,12 @@ export default function ServiceWorkerRegister() {
     if (
       typeof navigator === "undefined" ||
       !("serviceWorker" in navigator) ||
-      location.protocol !== "https:" ||
-      location.hostname === "localhost" ||
-      location.hostname === "127.0.0.1"
+      (location.protocol !== "https:" && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") ||
+      process.env.NODE_ENV !== "production"
     ) {
       return;
     }
-    navigator.serviceWorker.register(`${BASE}/sw.js?v=3`).catch(() => {
+    navigator.serviceWorker.register(`${BASE}/sw.js?v=4`).catch(() => {
       /* service worker failure is graceful - the site works without it */
     });
   }, []);

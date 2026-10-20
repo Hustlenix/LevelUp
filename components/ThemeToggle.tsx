@@ -5,8 +5,8 @@ import { useEffect, useRef, useState } from "react";
 const STORAGE_KEY = "levelup-theme";
 
 const THEMES = [
-  { id: "light", label: "Light", swatch: "#f7f2e7" },
-  { id: "dark", label: "Dark", swatch: "#161310" },
+  { id: "light", label: "Light", swatch: "#f6f3eb" },
+  { id: "dark", label: "Dark", swatch: "#181818" },
   { id: "deepwork", label: "Deep Work", swatch: "#f5efdf" },
   { id: "cyberpunk", label: "Cyberpunk", swatch: "#0a0a12" },
 ] as const;

@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { recordActivity } from "@/lib/activity";
+import { localToday } from "@/lib/dates";
 
 export interface DailyCalibration {
   date: string;
@@ -82,14 +83,6 @@ function emit() {
   for (const l of listeners) l();
 }
 
-function getTodayString(): string {
-  const d = new Date();
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
-}
-
 function readJson<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
   try {
@@ -132,7 +125,7 @@ export function useCalibrationStore(): Record<string, DailyCalibration> {
 }
 
 export function saveCalibration(data: Partial<DailyCalibration>) {
-  const today = getTodayString();
+  const today = localToday();
   const existing = getCalibrationsSnapshot()[today] || {
     date: today,
     primaryOutcome: "",
@@ -173,12 +166,20 @@ export function useFocusStore(): FocusBlockSession[] {
   );
 }
 
-export function logFocusSession(session: Omit<FocusBlockSession, "id" | "date" | "completedAt">) {
+export function logFocusSession(session: Omit<FocusBlockSession, "id" | "date" | "completedAt">, identity?: Pick<FocusBlockSession, "id" | "date" | "completedAt">) {
+  if (identity) {
+    // Check disk as well as the cache so replaying a saved attempt is idempotent.
+    const saved = readJson<FocusBlockSession[]>(FOCUS_KEY, []);
+    const existing = saved.find(entry => entry.id === identity.id);
+    if (existing) return existing;
+    focusCache = saved;
+  }
   const full: FocusBlockSession = {
     ...session,
     id: `focus_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
-    date: getTodayString(),
+    date: localToday(),
     completedAt: Date.now(),
+    ...identity,
   };
   const next = [full, ...getFocusSnapshot()];
   focusCache = next;
@@ -247,7 +248,7 @@ export function usePillarsStore(): Record<string, PillarFloorCheck> {
 }
 
 export function togglePillarFloor(pillar: "health" | "wealth" | "love" | "self") {
-  const today = getTodayString();
+  const today = localToday();
   const existing = getPillarsSnapshot()[today] || {
     date: today,
     health: { floor: DEFAULT_FLOORS.health, done: false },
@@ -271,7 +272,7 @@ export function togglePillarFloor(pillar: "health" | "wealth" | "love" | "self")
 }
 
 export function updatePillarFloorRule(pillar: "health" | "wealth" | "love" | "self", floorText: string) {
-  const today = getTodayString();
+  const today = localToday();
   const existing = getPillarsSnapshot()[today] || {
     date: today,
     health: { floor: DEFAULT_FLOORS.health, done: false },
@@ -316,7 +317,7 @@ export function logProtocolExecution(protocolNum: string, protocolTitle: string,
     id: id ?? `proto_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
     protocolNum,
     protocolTitle,
-    date: getTodayString(),
+    date: localToday(),
     inputs,
     durationSeconds,
     completedAt: Date.now(),

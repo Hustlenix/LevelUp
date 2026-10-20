@@ -248,7 +248,7 @@ export default function ConsistencyMatrix() {
           <div className="mt-1 font-display text-2xl font-bold text-ink">
             {streak.current} <span className="text-xs font-normal text-ink-faint">days</span>
           </div>
-          <span className="text-[11px] text-ink-soft">Non-zero daily momentum</span>
+          <span className="text-[0.6875rem] text-ink-soft">Non-zero daily momentum</span>
         </div>
 
         <div className="rounded-xl border border-line bg-paper p-4">
@@ -259,7 +259,7 @@ export default function ConsistencyMatrix() {
           <div className="mt-1 font-display text-2xl font-bold text-ink">
             {Math.round(totalFocusMinutes / 60 * 10) / 10} <span className="text-xs font-normal text-ink-faint">hrs</span>
           </div>
-          <span className="text-[11px] text-ink-soft">{focusSessions.length} total sprints</span>
+          <span className="text-[0.6875rem] text-ink-soft">{focusSessions.length} total sprints</span>
         </div>
 
         <div className="rounded-xl border border-line bg-paper p-4">
@@ -270,7 +270,7 @@ export default function ConsistencyMatrix() {
           <div className="mt-1 font-display text-2xl font-bold text-ink">
             {protocolLogs.length}
           </div>
-          <span className="text-[11px] text-ink-soft">13 protocols executed</span>
+          <span className="text-[0.6875rem] text-ink-soft">13 protocols executed</span>
         </div>
 
         <div className="rounded-xl border border-line bg-paper p-4">
@@ -281,7 +281,7 @@ export default function ConsistencyMatrix() {
           <div className="mt-1 font-display text-2xl font-bold text-ink">
             {totalUrgesResisted}
           </div>
-          <span className="text-[11px] text-ink-soft">10-sec delay victories</span>
+          <span className="text-[0.6875rem] text-ink-soft">10-sec delay victories</span>
         </div>
       </div>
 
@@ -291,7 +291,7 @@ export default function ConsistencyMatrix() {
           <span className="text-xs font-bold uppercase tracking-wider text-ink-faint">
             4-Week Activity Heatmap (Pillars & Focus Intensity)
           </span>
-          <div className="flex items-center gap-1.5 text-[10px] text-ink-faint">
+          <div className="flex items-center gap-1.5 text-[0.625rem] text-ink-faint">
             <span>Zero</span>
             <span className="h-2.5 w-2.5 rounded-xs bg-paper-deep border border-line" />
             <span className="h-2.5 w-2.5 rounded-xs bg-gold/30" />
@@ -322,8 +322,8 @@ export default function ConsistencyMatrix() {
                   isToday ? "ring-2 ring-ink ring-offset-1" : ""
                 }`}
               >
-                <span className="font-mono text-[10px] opacity-80">{day.dateStr.slice(8)}</span>
-                <span className="text-[11px] font-bold">
+                <span className="font-mono text-[0.625rem] opacity-80">{day.dateStr.slice(8)}</span>
+                <span className="text-[0.6875rem] font-bold">
                   {completedCount > 0 ? `${completedCount}/4` : day.focusMinutes > 0 ? `${day.focusMinutes}m` : "·"}
                 </span>
               </div>
@@ -355,7 +355,7 @@ export default function ConsistencyMatrix() {
                     style={{ width: `${Math.min(100, Math.max(5, p.pct))}%` }}
                   />
                 </div>
-                <p className="mt-2 text-[10px] text-ink-faint">
+                <p className="mt-2 text-[0.625rem] text-ink-faint">
                   {p.count} non-zero logged days
                 </p>
               </div>

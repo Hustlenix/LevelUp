@@ -138,4 +138,3 @@ export async function decryptEnvelope(value: unknown, passphrase: string): Promi
   if (checksum(parsed.workspaceId).slice(0, 12) !== value.roomId) throw new Error("Packet room identity does not match its encrypted payload.");
   return parsed;
 }
-

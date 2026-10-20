@@ -1,4 +1,6 @@
 import type { OSState } from "./os/types.ts";
+import { PRACTICE_DRAFTS_KEY, emptyPracticeDrafts, isPracticeDrafts, type PracticeDrafts } from "./practiceDrafts.ts";
+import { SMALL_STEPS_KEY, emptySmallSteps, isSmallSteps, restoreSmallSteps, type SmallStepsState } from "./smallSteps.ts";
 import { validateOSState } from "./os/migrations.ts";
 import { validateCompanionState } from "./companion/migrations.ts";
 import {
@@ -12,6 +14,7 @@ import { isPortfolioArtifact } from "./portfolio.ts";
 import type { NotificationState } from "./notifications.ts";
 import type { Experiment } from "./experiments.ts";
 import { isExperiment } from "./experiments.ts";
+import { emptyHabitStore, HABITS_STORAGE_KEY, isHabitStore, type HabitStore } from "./habits.ts";
 import type { LifeState } from "./life/types.ts";
 import { LIFE_SCHEMA_VERSION, LIFE_SKILLS } from "./life/types.ts";
 import { replicaIsValid, type NexusReplica } from "./nexus/index.ts";
@@ -65,6 +68,9 @@ export interface BackupState {
   portfolio?: PortfolioArtifact[];
   notifications?: NotificationState;
   experiments?: Experiment[];
+  habits?: HabitStore;
+  smallSteps?: SmallStepsState;
+  practiceDrafts?: PracticeDrafts;
   lifeState?: LifeState;
   nexusReplica?: NexusReplica;
 }
@@ -79,7 +85,7 @@ export interface BackupStorageLike {
 }
 export interface BackupJournal { schema: number; previous: Record<string, string | null>; }
 
-const READER_SCALES = ["0.85", "1", "1.15", "1.3"];
+const READER_SCALES = ["0.85", "1", "1.15", "1.3", "1.5"];
 const THEMES = ["light", "dark", "deepwork", "cyberpunk"];
 
 function isRecord(v: unknown): v is Record<string, unknown> {
@@ -176,6 +182,9 @@ export function buildBackup(state: BackupState): { schema: number; exportedAt: s
   if (state.experiments !== undefined) {
     result.experiments = state.experiments;
   }
+  if (state.habits !== undefined) result.habits = state.habits;
+  if (state.smallSteps !== undefined) result.smallSteps = restoreSmallSteps(state.smallSteps);
+  if (state.practiceDrafts !== undefined) result.practiceDrafts = state.practiceDrafts;
   if (state.lifeState !== undefined) {
     result.lifeState = state.lifeState;
   }
@@ -198,7 +207,7 @@ export function validateBackup(json: unknown): { ok: boolean; errors: string[]; 
     json.readerScale !== null &&
     (typeof json.readerScale !== "string" || !READER_SCALES.includes(json.readerScale))
   ) {
-    errors.push("readerScale must be one of 0.85, 1, 1.15, 1.3.");
+    errors.push("readerScale must be one of 0.85, 1, 1.15, 1.3, 1.5.");
   }
   if (!isRecord(json.progress)) {
     errors.push("progress must be an object.");
@@ -304,6 +313,8 @@ export function validateBackup(json: unknown): { ok: boolean; errors: string[]; 
     else nexusReplica = json.nexusReplica;
   }
 
+  if (json.smallSteps !== undefined && !isSmallSteps(json.smallSteps)) errors.push("smallSteps has an invalid shape.");
+  if (json.practiceDrafts !== undefined && !isPracticeDrafts(json.practiceDrafts)) errors.push("practiceDrafts has an invalid shape.");
   if (errors.length > 0) return { ok: false, errors };
   const outData: BackupState = {
     theme: json.theme as string | null,
@@ -339,6 +350,10 @@ export function validateBackup(json: unknown): { ok: boolean; errors: string[]; 
   if (experiments !== undefined) {
     outData.experiments = experiments;
   }
+  // Older backups remain usable; an untrusted optional habit block is omitted.
+  if (isHabitStore(json.habits)) outData.habits = json.habits;
+  if (isSmallSteps(json.smallSteps)) outData.smallSteps = restoreSmallSteps(json.smallSteps);
+  if (isPracticeDrafts(json.practiceDrafts)) outData.practiceDrafts = json.practiceDrafts;
   if (lifeState !== undefined) {
     outData.lifeState = lifeState;
   }
@@ -360,6 +375,9 @@ function remove(storage: BackupStorageLike, key: string) {
 
 function entriesForBackup(data: BackupState): Record<string, string> {
   const entries: Record<string, string> = {
+    [SMALL_STEPS_KEY]: JSON.stringify(restoreSmallSteps(data.smallSteps ?? emptySmallSteps())),
+    [PRACTICE_DRAFTS_KEY]: JSON.stringify(data.practiceDrafts ?? emptyPracticeDrafts()),
+    [HABITS_STORAGE_KEY]: JSON.stringify(isHabitStore(data.habits) ? data.habits : emptyHabitStore()),
     "levelup-progress-v1": JSON.stringify(data.progress),
     "levelup-bookmarks-v1": JSON.stringify(data.bookmarks),
     "levelup-highlights-v1": JSON.stringify(data.highlights),

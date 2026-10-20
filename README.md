@@ -1,214 +1,97 @@
-# Level Up
+# LevelUp
 
-[![Deploy](https://github.com/Hustlenix/LevelUp/actions/workflows/deploy.yml/badge.svg)](https://github.com/Hustlenix/LevelUp/actions/workflows/deploy.yml)
-[![Live Release Smoke](https://github.com/Hustlenix/LevelUp/actions/workflows/live-release-smoke.yml/badge.svg)](https://github.com/Hustlenix/LevelUp/actions/workflows/live-release-smoke.yml)
-[![PR CI](https://github.com/Hustlenix/LevelUp/actions/workflows/pull-request-ci.yml/badge.svg)](https://github.com/Hustlenix/LevelUp/actions/workflows/pull-request-ci.yml)
-![Last commit](https://img.shields.io/github/last-commit/Hustlenix/LevelUp)
-![Repo size](https://img.shields.io/github/repo-size/Hustlenix/LevelUp)
+A place to read something useful, pick one thing to try, and keep track of what happened.
 
-**LevelUp is a local-first self-improvement app with its own offline replication engine.** It turns a person's goals and available time into a small daily mission plan, then records the real work as XP, skill progress, streaks, journey nodes, and changes to a persistent companion called Milo. It also includes the original 28-chapter evidence-audited manual, focus tools, reviews, backups, and study features.
+[Open LevelUp](https://hustlenix.github.io/LevelUp/)
 
-**Live site:** https://hustlenix.github.io/LevelUp/
+The project started with a long self-development video and a question: what do you actually do after watching it? It grew into a 28-chapter manual, then a set of tools for turning those lessons into small actions. There are goals, habits, focus timers, reviews, and study tools. You can use one part without setting up the rest.
 
-**Milo demo:** https://hustlenix.github.io/LevelUp/today/?milo=demo
+![LevelUp practice library on desktop](docs/screenshots/practice-desktop.png)
 
-## What is in the project right now?
+<img src="docs/screenshots/practice-mobile.png" width="300" alt="LevelUp practice library on a phone" />
 
-The app now opens around five questions:
+## Where to start
 
-- **Today:** What should I do now?
-- **Journey:** Where am I going?
-- **Coach:** What should change when I get stuck?
-- **Progress:** Am I actually improving?
-- **Profile:** Who am I becoming?
+1. Open **Small Steps** and write one action, or save a step from a chapter.
+2. Try a short focus block. Two minutes counts. You can pause or make the action smaller.
+3. Write down what happened and leave yourself a next step.
 
-The first-run flow asks for up to three areas to improve, an honest daily time budget, pace, and current consistency. It creates a three-mission starter day without requiring an account. Completing a mission records private proof, awards XP only for the real action, advances the relevant skill, updates the streak, and feeds Milo's existing event engine.
+The **Quick tour** lets you try the flow with sample data before saving anything. Text-size controls go up to 150%, and Settings has instructions for installing the site on your phone or desktop.
 
-The older project is still inside the app rather than being thrown away.
+## What's in it
 
-**The Level Up Manual** contains 28 chapters split across Health, Wealth, Love, and Self. The manual also has quizzes, protocols, research notes, an evidence audit, quotes, a glossary, search, highlights, and progress tracking.
+- **Learn:** 28 chapters, evidence grades, research notes, quizzes, highlights, and search.
+- **Practice:** ready-to-use plans such as a Pomodoro starter and a two-minute restart, alongside the 13 original protocols.
+- **Today:** a daily mission plan, saved actions, habits, and a daily ritual. Goals and focus sessions are available through Tools.
+- **Journey and Profile:** skill paths, mission evidence, and achievements built from recorded work.
+- **Small Steps:** one current task, short timers, a place to park distractions, and a note for when you return.
+- **Review:** a record of your sessions, reading, and progress.
+- **Study Mode:** subjects, revision, and student planning tools.
 
-The existing goals, focus sessions, reviews, portfolio, experiments, roadmaps, backup system, and Study Mode remain available as deeper tools.
+The chapters are a starting point for trying ideas, not a promise that every claim is settled science. The audit and research pages show the evidence behind them.
 
-Milo sits across the app as a persistent local companion. Focus sessions, chapter activity, goals, milestones, and other Level Up events can change what Milo is doing and unlock parts of the room.
+## Milo
 
-The core experience does not require an account or application server. Mission progress is stored as an event-sourced operation log rather than scattered counter updates. The Nexus engine de-duplicates retries, resolves concurrent offline changes deterministically, reconciles open tabs, creates compacted checkpoints, and can move a workspace between devices in an authenticated encrypted packet.
+Milo is the little companion in the corner. Reading and focus events affect its behaviour, and milestones add objects to its room. That part runs locally with a deterministic event reducer. It doesn't need an AI service, and taking a break doesn't punish the companion.
 
-The **Nexus Sync Lab** makes that work inspectable. It shows the live replica and version vector, audits the hash chains, and includes a two-node sandbox where reviewers can partition replicas, write on both sides, reconnect them, and watch the state converge. See [`docs/NEXUS-PROTOCOL.md`](docs/NEXUS-PROTOCOL.md) for the data model, merge algorithm, security boundary, and failure behavior.
+You can turn Milo off, reduce its motion, or mute its dialogue and sound. There's also a disposable demo in Companion Space if you want to see the room change without editing your progress.
 
-## Current project data
+The **Talk** tab has preset offline guidance. Optional cloud chat has a separate Hack Club backend; it is disabled by default and still needs provider approval and a live quality check before public use. You choose which task or progress summary to attach, preview it, and approve any suggested action before it is saved. Chat doesn't award XP or unlock room objects.
 
-These numbers were read from the generated data and release checks on the current `main` branch.
+[Companion engine](docs/COMPANION-ENGINE.md) · [Milo backend setup and limits](docs/milo-release.md)
 
-| Data | Current count |
-| --- | ---: |
-| Chapters | 28 |
-| Audited claims | 30 |
-| Protocols | 13 |
-| Glossary entries | 65 |
-| Quotes | 46 |
-| Chapter quizzes | 28 |
-| Devlogs | 9 |
-| Public routes checked by the release smoke test | 60 |
+## Your data
 
-The content counts come from `public/data/site.json` and `public/data/devlog.json`. The route count comes from `verify-release.mjs`.
+Core features work without an account. Progress is stored in your browser, and there are no analytics or advertising trackers. Export a backup if you want to keep it safe or move devices; clearing browser storage can erase your record.
 
-## Screenshot
+Mission progress uses Nexus, a local operation log that reconciles open tabs and keeps an IndexedDB mirror. The [Sync Lab](https://hustlenix.github.io/LevelUp/sync-lab/) lets you inspect the log, try two offline replicas, and export an encrypted packet to move progress yourself. [Protocol notes](docs/NEXUS-PROTOCOL.md) explain what it can and cannot sync.
 
-![Level Up homepage](public/devlog/after-home.png)
+Previously visited pages can work offline after the production site's service worker has loaded. Optional cloud chat needs a connection and sends your message, recent conversation, and selected context to the provider. Its retention policies are separate from LevelUp's local storage.
 
-## Main features
+## Run locally
 
-- Read and search all 28 chapters.
-- Complete chapter quizzes and save reflections.
-- Save highlights and bookmarks locally.
-- Finish personalized daily missions sized to the time you actually have.
-- Build global XP, seven independent skill levels, meaningful streaks, milestones, and achievements.
-- Follow visible seven-node Journey paths without hiding useful content behind fake locks.
-- Use a contextual local Coach with practical quick actions instead of an empty chatbot.
-- Compare weekly consistency, time, skill balance, heatmaps, and personal records against your own past.
-- Create goals, roadmaps, milestones, tasks, and focus sessions in the deeper workspace.
-- Complete daily and weekly reviews.
-- Track progress, XP, streaks, and badges.
-- Use Study Mode with a personal plan, daily mission, XP, and optional local Ollama help.
-- Export and restore local data from the Backup page.
-- Inspect the real Nexus operation ledger, checkpoint it, and test offline convergence in the Sync Lab.
-- Move progress between devices with PBKDF2-derived AES-GCM encrypted packets.
-- Use Milo, the persistent companion linked to real activity inside the app.
-- Run without a login for the core experience.
-- Install/use the static site from GitHub Pages.
-
-## Tech stack
-
-The versions below match the current `package.json`.
-
-| Tool | Version |
-| --- | --- |
-| Next.js | 16.3.5 |
-| React | 19.2.8 |
-| TypeScript | 6.0.3 |
-| Tailwind CSS | 4.3.3 |
-| MiniSearch | 7.2.0 |
-| Motion | 13.2.0 |
-| Playwright | 1.63.0 |
-| Node used in CI | 24 |
-
-The production build is a **Next.js static export**. GitHub Pages serves the generated `out` directory with the `/LevelUp` base path.
-
-## Getting started
-
-### Requirements
-
-Install:
-
-- Node.js
-- npm
-- Git
-
-### Clone the project
+Use Node.js 24. The content build uses Node's built-in SQLite support.
 
 ```bash
 git clone https://github.com/Hustlenix/LevelUp.git
 cd LevelUp
-```
-
-### Install dependencies
-
-```bash
-npm install
-```
-
-### Run locally
-
-```bash
+npm ci
 npm run dev
 ```
 
-Then open:
+Open [localhost:3000](http://localhost:3000). No API key is needed for the core app.
 
-```text
-http://localhost:3000
-```
-
-### Build the static production version
+For a production preview:
 
 ```bash
 npm run build
 npm start
 ```
 
-## Validation
+The frontend is a Next.js static export deployed to GitHub Pages at `/LevelUp`. The optional Milo backend lives in `services/milo` and is deployed separately. Server secrets belong there, never in `NEXT_PUBLIC_` variables. See [.env.example](.env.example) for public frontend settings.
 
-The pull-request workflow runs lint, tests, and a production build.
+## Working on it
 
-You can run the same checks locally:
+The app uses Next.js 16, React 19, TypeScript, and Tailwind CSS v4. MiniSearch handles search. A Node/SQLite build script turns the content into JSON for the static site. Browser stores use versioned schemas, and backups are validated before restore.
 
 ```bash
 npm run lint
 npm test
 npm run build
+node --test services/milo/tests/chat.test.mjs
 ```
 
-The deployed site also has a Playwright release smoke test:
+For browser checks, install Chromium with `npx playwright install chromium`, serve the production export, then run:
 
 ```bash
-npx playwright install chromium
-PLAYWRIGHT_BASE_URL=https://hustlenix.github.io/LevelUp node verify-release.mjs
+node verify-small-steps.mjs http://localhost:3000
+node verify-connected-practice.mjs http://localhost:3000
+node verify-milo-release.mjs http://localhost:3000
+node verify-editorial.mjs http://localhost:3000
 ```
 
-The current smoke test checks every public route plus search, quiz persistence, practice records, the Goals → Today → Focus flow, mission XP, Nexus partition/convergence, encrypted packet export, backup/restore, the 13-plan protocol library, responsive layouts, and Milo's deterministic demo.
+[Small Steps notes](docs/small-steps.md) · [Practice flow](docs/connected-practice.md) · [Devlog](https://hustlenix.github.io/LevelUp/devlog/)
 
-## Local data and privacy
+This project has been built with AI assistance, including Codex. The devlogs document implementation details, tests, and remaining gaps. Local test results don't mean the optional cloud service has been deployed or tested live.
 
-Most personal state is stored on the device in browser storage. Core LifeOS progress uses an append-only Nexus log, a synchronous local write-ahead copy, and an IndexedDB durability mirror. Open tabs reconcile through `BroadcastChannel` and storage events.
-
-The app supports exporting and restoring that state from the Backup page.
-
-Google Analytics is optional. It only runs when a `NEXT_PUBLIC_GA_ID` is supplied at build time. The analytics module only accepts a small whitelist of non-content event fields and does not send notes, reflections, highlight text, search text, Milo state, or other browser-storage content.
-
-## Deployment
-
-Pushes to `main` run the GitHub Pages workflow:
-
-1. install dependencies
-2. lint
-3. test
-4. build the data pipeline and static site
-5. deploy `out` to GitHub Pages
-6. run the live Playwright smoke test against the deployed site
-
-The badges at the top of this README show the current workflow status directly from GitHub Actions.
-
-## Useful paths
-
-```text
-/                    App launch (continues to onboarding or Today)
-/onboarding/         Private first-run setup
-/today/              Daily missions and companion
-/journey/            Skill paths and checkpoints
-/coach/              Contextual local coaching
-/progress/           Mission, skill, streak and reading evidence
-/profile/            Identity, achievements and preferences
-/sync-lab/           Replica inspector, encrypted transfer and partition lab
-/manual/             Manual front door
-/chapters/           All chapters
-/goals/              Goals and roadmaps
-/focus/              Focus sessions
-/review/             Reviews
-/progress/           Progress
-/portfolio/          Portfolio
-/study/              Study Mode
-/backup/             Export / restore
-/audit/              Evidence audit
-/research/           Research notes
-/protocols/          Protocol library
-/devlog/             Devlogs
-```
-
-## License
-
-The written site content is licensed under the **Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0)**.
-
-See [LICENSE](LICENSE) for the full license text and repository-specific details.
-
-The source code is not included under that content license unless explicitly stated.
+See [LICENSE](LICENSE) for reuse terms.

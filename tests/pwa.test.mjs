@@ -11,7 +11,7 @@ test("PWA manifest opens the daily action loop in standalone mode", () => {
   const value = manifest();
   assert.equal(value.display, "standalone");
   assert.match(String(value.start_url), /\/today\/$/);
-  assert.equal(value.theme_color, "#17201d");
+  assert.equal(value.theme_color, "#f6f3eb");
   assert.ok(value.icons?.some((icon) => icon.sizes === "any"));
   assert.ok(value.shortcuts?.some((shortcut) => String(shortcut.url).endsWith("/focus/")));
 });
@@ -30,4 +30,3 @@ test("service-worker registration and cache generation advance together", () => 
   assert.ok(cacheVersion);
   assert.equal(registrationVersion, cacheVersion);
 });
-

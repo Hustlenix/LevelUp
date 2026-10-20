@@ -68,7 +68,7 @@ export default function AmbientAudioPlayer({ compact = false }: Props) {
       id: "brown",
       label: "Brown Noise",
       tag: "Deep Focus",
-      desc: "Sub-bass frequency that quiets mental chatter and ADHD distraction.",
+      desc: "A low, steady rumble. Try it if you prefer a deeper background sound.",
     },
     {
       id: "binaural40",
@@ -160,11 +160,11 @@ export default function AmbientAudioPlayer({ compact = false }: Props) {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-display text-[11px] font-bold uppercase tracking-wider text-gold">
+              <span className="font-display text-[0.6875rem] font-bold uppercase tracking-wider text-gold">
                 Offline Focus Audio
               </span>
               {isPlaying && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-health/15 px-2 py-0.5 text-[10px] font-bold text-health">
+                <span className="inline-flex items-center gap-1 rounded-full bg-health/15 px-2 py-0.5 text-[0.625rem] font-bold text-health">
                   <span className="h-1.5 w-1.5 rounded-full bg-health animate-ping" />
                   Playing {currentOption.label}
                 </span>
@@ -229,7 +229,7 @@ export default function AmbientAudioPlayer({ compact = false }: Props) {
                       {opt.label}
                     </span>
                     <span
-                      className={`rounded px-1.5 py-0.5 text-[9px] font-semibold ${
+                      className={`rounded px-1.5 py-0.5 text-[0.5625rem] font-semibold ${
                         active
                           ? "bg-gold text-paper"
                           : "bg-paper-deep text-ink-faint"
@@ -238,7 +238,7 @@ export default function AmbientAudioPlayer({ compact = false }: Props) {
                       {active ? "Active" : opt.tag}
                     </span>
                   </div>
-                  <p className="mt-1 text-[11px] leading-relaxed text-ink-soft">
+                  <p className="mt-1 text-[0.6875rem] leading-relaxed text-ink-soft">
                     {opt.desc}
                   </p>
                 </button>
@@ -263,7 +263,7 @@ export default function AmbientAudioPlayer({ compact = false }: Props) {
                 className="h-1.5 w-28 cursor-pointer accent-gold"
               />
             </div>
-            <p className="text-[11px] text-ink-faint">
+            <p className="text-[0.6875rem] text-ink-faint">
               Synthesized purely via Web Audio API — works 100% offline with zero network requests.
             </p>
           </div>

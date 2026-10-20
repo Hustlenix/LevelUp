@@ -543,7 +543,7 @@ function FocusSprintRunner({ protocol, onClose, onCompleted }: { protocol: Proto
           <label className="text-xs font-bold uppercase tracking-wider text-ink-faint">
             Distraction Dump (Park thoughts here, do not switch tabs)
           </label>
-          <span className="text-[11px] text-ink-faint">{distractions.length} parked</span>
+          <span className="text-[0.6875rem] text-ink-faint">{distractions.length} parked</span>
         </div>
         <form onSubmit={handleAddDistraction} className="mt-2 flex gap-2">
           <input

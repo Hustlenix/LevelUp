@@ -108,4 +108,3 @@ export interface NexusEncryptedPacket {
   ciphertext: string;
   createdAt: string;
 }
-

@@ -7,6 +7,7 @@ import { readFileSync } from "node:fs";
 const base = (process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000").replace(/\/$/, "");
 const site = JSON.parse(readFileSync(new URL("./public/data/site.json", import.meta.url), "utf8"));
 const routes = ["/", "/onboarding/", "/today/", "/journey/", "/coach/", "/progress/", "/profile/", "/sync-lab/", "/manual/", "/chapters/", "/protocols/", "/dashboard/", "/goals/", "/focus/", "/review/", "/portfolio/", "/roadmap/", "/action/", "/audit/", "/research/", "/glossary/", "/quotes/", "/search/", "/settings/", "/backup/", "/privacy/", "/experiments/", "/playbook/", "/devlog/", "/study/", "/study/onboarding/", "/study/settings/", ...site.chapters.map((chapter) => `/chapters/${chapter.slug}/`)];
+routes.push("/small-steps/", "/habits/");
 const browser = await chromium.launch();
 const errors = [];
 const context = await browser.newContext({ viewport: { width: 375, height: 900 }, reducedMotion: "reduce" });

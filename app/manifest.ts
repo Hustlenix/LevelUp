@@ -6,24 +6,30 @@ export const dynamic = "force-static";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "LevelUp LifeOS",
-    short_name: "Level Up",
+    name: "LevelUp — The Manual & Workspace",
+    short_name: "LevelUp",
     description:
-      "A private real-life progression system for daily missions, skills, focus, and meaningful self-improvement.",
+      "Evidence-audited lessons, practical tools, and a local record of your work.",
     start_url: `${BASE}/today/`,
     scope: `${BASE}/`,
+    id: `${BASE}/`,
     display: "standalone",
-    background_color: "#f7f2e7",
-    theme_color: "#17201d",
+    background_color: "#f6f3eb",
+    // Match the viewport theme-color and the surface the app opens on,
+    // so installed PWAs don't flash a mismatched chrome color.
+    theme_color: "#f6f3eb",
     lang: "en",
+    shortcuts: [
+      { name: "Today", url: `${BASE}/today/` },
+      { name: "Small Steps", url: `${BASE}/small-steps/` },
+      { name: "Focus room", url: `${BASE}/focus/` },
+    ],
     icons: [
+      { src: `${BASE}/pwa-192.png`, sizes: "192x192", type: "image/png", purpose: "any" },
+      { src: `${BASE}/pwa-512.png`, sizes: "512x512", type: "image/png", purpose: "any" },
+      { src: `${BASE}/pwa-maskable.png`, sizes: "512x512", type: "image/png", purpose: "maskable" },
       { src: `${BASE}/icon.svg`, sizes: "any", type: "image/svg+xml" },
       { src: `${BASE}/apple-icon.png`, sizes: "180x180", type: "image/png" },
-    ],
-    shortcuts: [
-      { name: "Today", short_name: "Today", url: `${BASE}/today/`, icons: [{ src: `${BASE}/icon.svg`, sizes: "any", type: "image/svg+xml" }] },
-      { name: "Journey", short_name: "Journey", url: `${BASE}/journey/`, icons: [{ src: `${BASE}/icon.svg`, sizes: "any", type: "image/svg+xml" }] },
-      { name: "Focus room", short_name: "Focus", url: `${BASE}/focus/`, icons: [{ src: `${BASE}/icon.svg`, sizes: "any", type: "image/svg+xml" }] },
     ],
   };
 }

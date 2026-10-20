@@ -17,9 +17,12 @@ import {
   Sparkles,
   SunMedium,
 } from "lucide-react";
-import type { Chapter } from "@/lib/types";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import SidebarNav from "@/components/SidebarNav";
+import MobileBottomNav from "@/components/workspace/MobileBottomNav";
+import WelcomeTour from "@/components/WelcomeTour";
+import TextSizeControl from "@/components/TextSizeControl";
 import ThemeToggle from "@/components/ThemeToggle";
 import BackupJournalNotice from "@/components/BackupJournalNotice";
 import { useSearch } from "@/components/SearchProvider";
@@ -33,6 +36,10 @@ const PRIMARY = [
 ] as const;
 
 const SECONDARY = [
+  { href: "/small-steps/", label: "Small Steps", icon: Crosshair },
+  { href: "/protocols/", label: "Practice plans", icon: Sparkles },
+  { href: "/habits/", label: "Habits & ritual", icon: SunMedium },
+  { href: "/goals/", label: "Goals", icon: Compass },
   { href: "/focus/", label: "Focus room", icon: Crosshair },
   { href: "/chapters/", label: "Manual", icon: BookOpen },
   { href: "/settings/", label: "Settings", icon: Settings },
@@ -106,6 +113,14 @@ function AppTopbar({ pathname }: { pathname: string }) {
         <p className="app-topbar-title">{pageTitle(pathname)}</p>
       </div>
       <div className="app-topbar-actions">
+        <div className="hidden sm:block"><TextSizeControl /></div>
+        <details className="relative">
+          <summary className="flex min-h-11 cursor-pointer items-center rounded-lg border border-line px-3 text-sm">Tools</summary>
+          <nav aria-label="Workspace tools" className="absolute right-0 top-full z-50 mt-2 max-h-[70dvh] w-[min(20rem,calc(100vw-2rem))] overflow-y-auto rounded-lg border border-line bg-card p-3 text-ink shadow-lg">
+            <div className="mb-2 sm:hidden"><TextSizeControl /></div>
+            {SECONDARY.map(item => <Link key={item.href} href={item.href} className="flex min-h-11 items-center rounded px-3 text-sm hover:bg-paper-deep" onClick={event => event.currentTarget.closest("details")?.removeAttribute("open")}>{item.label}</Link>)}
+          </nav>
+        </details>
         <button type="button" onClick={() => setOpen(true)} className="app-icon-button" aria-label="Search the manual"><Search aria-hidden="true" /></button>
         <ThemeToggle />
       </div>
@@ -125,12 +140,12 @@ function AppBottomNav({ pathname }: { pathname: string }) {
   );
 }
 
-export default function AppFrame({ chapters, children }: { chapters: Chapter[]; children: React.ReactNode }) {
+export default function AppFrame({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() ?? "/";
   const isApp = pathname === "/" || APP_PREFIXES.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
 
   if (!isApp) {
-    return <><Nav chapters={chapters} /><BackupJournalNotice /><main id="main" className="flex-1">{children}</main><Footer /></>;
+    return <><div className="flex flex-1"><SidebarNav /><div className="flex min-w-0 flex-1 flex-col"><Nav /><WelcomeTour /><BackupJournalNotice /><main id="main" className="flex-1">{children}</main><Footer /></div></div><MobileBottomNav /></>;
   }
 
   return (
@@ -138,6 +153,7 @@ export default function AppFrame({ chapters, children }: { chapters: Chapter[]; 
       <AppSidebar pathname={pathname} />
       <div className="app-main-column">
         <AppTopbar pathname={pathname} />
+        {!pathname.startsWith("/onboarding") && <WelcomeTour />}
         <BackupJournalNotice />
         <main id="main" className="app-main">{children}</main>
       </div>

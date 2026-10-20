@@ -48,9 +48,9 @@ export default function PracticeTimer({ onTime }: { onTime: (seconds: number) =>
     <div className="rounded-xl border border-line bg-paper p-4 sm:p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm font-semibold">{timer.phase === "focus" ? "Focus" : "Break"} · round {timer.round}</p>
-        <label className="flex items-center gap-2 text-sm">
+        <label className="flex min-w-0 max-w-full flex-wrap items-center gap-2 text-sm">
           Rhythm
-          <select className="min-h-11 rounded-lg border border-line bg-card px-2" value={timer.focusMinutes} onChange={(event) => reset(Number(event.target.value) as 10 | 25)}>
+          <select className="min-h-11 min-w-0 max-w-full rounded-lg border border-line bg-card px-2" value={timer.focusMinutes} onChange={(event) => reset(Number(event.target.value) as 10 | 25)}>
             <option value={25}>25 / 5 min</option>
             <option value={10}>10 / 2 min · gentle</option>
           </select>

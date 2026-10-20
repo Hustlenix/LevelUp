@@ -400,14 +400,14 @@ export default function DailyActionHub({ protocols }: DailyActionHubProps) {
                   className="rounded-xl border border-line bg-paper p-3 text-left transition-colors hover:border-gold"
                 >
                   <p className="font-display text-sm font-bold text-ink">25m Sprint</p>
-                  <p className="text-[11px] text-ink-faint">Standard block</p>
+                  <p className="text-[0.6875rem] text-ink-faint">Standard block</p>
                 </button>
                 <button
                   onClick={() => handleLaunchProtocol("2.9")}
                   className="rounded-xl border border-line bg-paper p-3 text-left transition-colors hover:border-gold"
                 >
                   <p className="font-display text-sm font-bold text-gold">90m God-Mode</p>
-                  <p className="text-[11px] text-ink-faint">Peak intensity</p>
+                  <p className="text-[0.6875rem] text-ink-faint">Peak intensity</p>
                 </button>
               </div>
 
@@ -421,7 +421,7 @@ export default function DailyActionHub({ protocols }: DailyActionHubProps) {
                       <li key={s.id} className="flex items-center gap-1.5">
                         <Check className="h-3 w-3 text-health shrink-0" />
                         <span className="font-medium text-ink">{s.taskName}</span>
-                        <span className="text-[10px] text-ink-faint">({Math.round(s.completedSeconds / 60)}m)</span>
+                        <span className="text-[0.625rem] text-ink-faint">({Math.round(s.completedSeconds / 60)}m)</span>
                       </li>
                     ))}
                   </ul>
@@ -500,7 +500,7 @@ export default function DailyActionHub({ protocols }: DailyActionHubProps) {
           <div className="grid gap-4 sm:grid-cols-2">
             {/* Trouble 1 */}
             <div className="rounded-xl border border-line bg-paper p-5 transition-all hover:border-gold">
-              <span className="rounded-full bg-love/15 px-2.5 py-0.5 text-[11px] font-bold text-love">
+              <span className="rounded-full bg-love/15 px-2.5 py-0.5 text-[0.6875rem] font-bold text-love">
                 Paralysis & Resistance
               </span>
               <h3 className="mt-2 font-display text-base font-bold text-ink">
@@ -522,7 +522,7 @@ export default function DailyActionHub({ protocols }: DailyActionHubProps) {
 
             {/* Trouble 2 */}
             <div className="rounded-xl border border-line bg-paper p-5 transition-all hover:border-gold">
-              <span className="rounded-full bg-gold/15 px-2.5 py-0.5 text-[11px] font-bold text-gold">
+              <span className="rounded-full bg-gold/15 px-2.5 py-0.5 text-[0.6875rem] font-bold text-gold">
                 Compulsive Distraction
               </span>
               <h3 className="mt-2 font-display text-base font-bold text-ink">
@@ -544,7 +544,7 @@ export default function DailyActionHub({ protocols }: DailyActionHubProps) {
 
             {/* Trouble 3 */}
             <div className="rounded-xl border border-line bg-paper p-5 transition-all hover:border-gold">
-              <span className="rounded-full bg-self/15 px-2.5 py-0.5 text-[11px] font-bold text-self">
+              <span className="rounded-full bg-self/15 px-2.5 py-0.5 text-[0.6875rem] font-bold text-self">
                 Goal Overwhelm
               </span>
               <h3 className="mt-2 font-display text-base font-bold text-ink">
@@ -566,7 +566,7 @@ export default function DailyActionHub({ protocols }: DailyActionHubProps) {
 
             {/* Trouble 4 */}
             <div className="rounded-xl border border-line bg-paper p-5 transition-all hover:border-gold">
-              <span className="rounded-full bg-health/15 px-2.5 py-0.5 text-[11px] font-bold text-health">
+              <span className="rounded-full bg-health/15 px-2.5 py-0.5 text-[0.6875rem] font-bold text-health">
                 Afternoon Slump
               </span>
               <h3 className="mt-2 font-display text-base font-bold text-ink">
@@ -613,11 +613,11 @@ export default function DailyActionHub({ protocols }: DailyActionHubProps) {
                       <span className="font-display text-xs font-bold text-gold">Protocol {p.num}</span>
                       <div className="flex items-center gap-2">
                         {runCount > 0 && (
-                          <span className="rounded-full bg-health/15 px-2 py-0.5 text-[10px] font-bold text-health">
+                          <span className="rounded-full bg-health/15 px-2 py-0.5 text-[0.625rem] font-bold text-health">
                             {runCount} {runCount === 1 ? "run" : "runs"}
                           </span>
                         )}
-                        <span className="text-[10px] uppercase tracking-wider text-ink-faint">{p.duration}</span>
+                        <span className="text-[0.625rem] uppercase tracking-wider text-ink-faint">{p.duration}</span>
                       </div>
                     </div>
                     <h3 className="mt-2 font-display text-base font-bold text-ink">{p.title}</h3>

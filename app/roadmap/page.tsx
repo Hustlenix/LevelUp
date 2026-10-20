@@ -40,7 +40,7 @@ export default function RoadmapPage() {
               <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
                 <h2 className="font-display text-2xl font-bold text-ink">{phase.title}</h2>
                 <span className="text-xs uppercase tracking-[0.2em] text-ink-faint">{phase.days}</span>
-                <span className="rounded-full bg-paper-deep px-3 py-1 text-[11px] uppercase tracking-wider text-ink-soft">
+                <span className="rounded-full bg-paper-deep px-3 py-1 text-[0.6875rem] uppercase tracking-wider text-ink-soft">
                   {phase.focus}
                 </span>
               </div>
@@ -49,7 +49,7 @@ export default function RoadmapPage() {
                   const protoMatch = item.match(/\((\d+\.\d+)\)/);
                   return (
                     <li key={j} className="flex gap-3 text-sm leading-relaxed text-ink-soft">
-                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gold/15 font-display text-[11px] font-bold text-gold">
+                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gold/15 font-display text-[0.6875rem] font-bold text-gold">
                         {j + 1}
                       </span>
                       <span>

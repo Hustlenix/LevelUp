@@ -2,7 +2,10 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { applyMissionCompletion, achievementsFor, companionStage, levelSummary, missionIsComplete, missionsForDay, skillLevel, weeklySummary } from "../lib/life/engine.ts";
 import { createEmptyLifeState, isLifeState } from "../lib/life/store.ts";
-import { buildBackup, validateBackup } from "../lib/backup.ts";
+import { buildBackup, validateBackup, restoreBackupAtomically } from "../lib/backup.ts";
+import { emptySmallSteps, transitionSmallSteps, SMALL_STEPS_KEY } from "../lib/smallSteps.ts";
+import { emptyHabitStore, seedStarterStore, HABITS_STORAGE_KEY } from "../lib/habits.ts";
+import { emptyPracticeDrafts, editPracticeDraft, PRACTICE_DRAFTS_KEY } from "../lib/practiceDrafts.ts";
 import { hasEntitlement } from "../lib/entitlements.ts";
 import { appendOperation, createReplica } from "../lib/nexus/index.ts";
 
@@ -85,4 +88,26 @@ test("free entitlement boundary keeps the improvement loop complete", () => {
   assert.equal(hasEntitlement("free", "core_progress"), true);
   assert.equal(hasEntitlement("free", "advanced_coach"), false);
   assert.equal(hasEntitlement("premium", "advanced_coach"), true);
+});
+
+test("combined backup restores Nexus, habits, Small Steps, drafts, and 150 percent text together", () => {
+  let n = 0;
+  const habits = seedStarterStore(emptyHabitStore(), () => `combined-${++n}`);
+  const smallSteps = transitionSmallSteps(emptySmallSteps(), { type: "edit", patch: { task: "My saved task", actions: ["Open notes"] } });
+  const practiceDrafts = editPracticeDraft(emptyPracticeDrafts(), "pomodoro:library", { notes: "Keep this draft" }, 1000);
+  const lifeState = { ...createEmptyLifeState(), profile };
+  const nexusReplica = appendOperation(createReplica("combined-replica", "combined-workspace"), { kind: "profile.set", entityId: "profile", payload: { profile } }, profile.updatedAt).replica;
+  const checked = validateBackup(buildBackup({ theme: "deepwork", readerScale: "1.5", progress: {}, bookmarks: [], highlights: [], quiz: {}, reflections: {}, streak: null, lifeState, nexusReplica, habits, smallSteps, practiceDrafts }));
+  assert.equal(checked.ok, true, checked.errors.join(" "));
+  const values = new Map();
+  const storage = { getItem: k => values.get(k) ?? null, setItem: (k, v) => values.set(k, v), removeItem: k => values.delete(k) };
+  assert.equal(restoreBackupAtomically(checked.data, storage).ok, true);
+  for (const [key, expected] of [["levelup-life-state-v1", lifeState], ["levelup-nexus-replica-v1", nexusReplica], [HABITS_STORAGE_KEY, habits], [SMALL_STEPS_KEY, smallSteps], [PRACTICE_DRAFTS_KEY, practiceDrafts]]) assert.deepEqual(JSON.parse(values.get(key)), expected, key);
+  assert.equal(values.get("levelup-reader-scale"), "1.5");
+  const previous = new Map(values);
+  let failed = false;
+  storage.setItem = (key, value) => { if (key === "levelup-nexus-replica-v1" && !failed) { failed = true; throw new Error("quota"); } values.set(key, value); };
+  const replacement = { ...checked.data, smallSteps: emptySmallSteps(), habits: emptyHabitStore(), practiceDrafts: emptyPracticeDrafts() };
+  assert.equal(restoreBackupAtomically(replacement, storage).ok, false);
+  assert.deepEqual(values, previous, "a late Nexus write failure rolls back all earlier stores");
 });

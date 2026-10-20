@@ -1,252 +1,52 @@
 import Link from "next/link";
-import {
-  ArrowRight,
-  BookOpen,
-  Brain,
-  ChevronRight,
-  Coins,
-  Heart,
-  LayoutDashboard,
-  ShieldCheck,
-  Zap,
-} from "lucide-react";
-import type { LucideIcon } from "lucide-react";
-import type { Chapter, Pillar } from "@/lib/types";
-import { SITE_NAME } from "@/lib/site";
+import { ArrowRight, ArrowUpRight, BookOpen, Check, Circle, Fingerprint, Heart, Lightbulb, MoveUpRight, ShieldCheck, Timer, TrendingUp, Users } from "lucide-react";
+import type { Chapter } from "@/lib/types";
+import { PRACTICE_PLANS } from "@/lib/practicePlans";
 
-export const BOOK_ONE_LINER =
-  "An offline-first self-improvement system with 28 evidence-audited chapters, a daily execution workspace, and a living companion that grows from real progress.";
-
-const PILLAR_ORDER: Pillar[] = ["health", "wealth", "love", "self"];
-
-const PILLAR_META: Record<Pillar, { icon: LucideIcon; color: string }> = {
-  health: { icon: Heart, color: "text-health" },
-  wealth: { icon: Coins, color: "text-wealth" },
-  love: { icon: Zap, color: "text-love" },
-  self: { icon: Brain, color: "text-self" },
-};
-
-interface PillarEntry {
-  ch: Chapter;
-  meta: { icon: LucideIcon; color: string };
-}
-
+export const BOOK_ONE_LINER = "Evidence-informed lessons and practical tools for a more intentional life.";
+const areas = [
+  { pillar: "self", label: "Belief & identity", description: "Mental models, expectations, and self-awareness.", icon: Lightbulb, className: "area-self" },
+  { pillar: "wealth", label: "Focus & achievement", description: "Attention, deliberate work, and career progress.", icon: TrendingUp, className: "area-wealth" },
+  { pillar: "health", label: "Energy & discipline", description: "Physical capacity, consistent habits, and recovery.", icon: Heart, className: "area-health" },
+  { pillar: "love", label: "Relationships & balance", description: "Connection, communication, and commitments.", icon: Users, className: "area-love" },
+];
 export default function ReaderFrontDoor({ chapters }: { chapters: Chapter[] }) {
-  const sorted = [...chapters].sort((a, b) => a.number - b.number);
-  const start = sorted[0];
-
-  const lowestByPillar = (pillar: Pillar): Chapter | undefined =>
-    chapters
-      .filter((c) => c.pillar === pillar)
-      .sort((a, b) => a.number - b.number)[0];
-
-  const entries: PillarEntry[] = PILLAR_ORDER.flatMap((p) => {
-    const ch = lowestByPillar(p);
-    return ch ? [{ ch, meta: PILLAR_META[p] }] : [];
-  });
-
-  return (
-    <div className="interface-font space-y-10 sm:space-y-12">
-      {/* Book hero */}
-      <section className="editorial-hero panel-shadow overflow-hidden rounded-2xl border border-line">
-        <div className="grid lg:grid-cols-[1.65fr_1fr]">
-        <div className="p-6 sm:p-10 lg:py-14">
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/40 bg-gold/10 px-3 py-1 text-[11px] font-semibold text-gold">
-          <ShieldCheck className="h-3.5 w-3.5" />
-          Evidence-Audited
-        </span>
-        <h1 className="mt-6 max-w-xl font-display text-[2.6rem] font-semibold leading-[1.08] tracking-[-0.04em] text-ink sm:text-6xl">
-          {SITE_NAME}
-        </h1>
-        <p className="mt-5 max-w-lg text-sm leading-7 text-ink-soft sm:text-base">
-          {BOOK_ONE_LINER}
-        </p>
-        <div className="mt-8 flex flex-wrap items-center gap-4">
-          <Link
-            href={`/chapters/${start.slug}/`}
-            className="inline-flex min-h-12 items-center gap-2 rounded-lg bg-gold px-5 py-3 text-sm font-semibold text-paper shadow-xs transition-colors cta-hover"
-          >
-            <BookOpen className="h-4 w-4" />
-            Start reading
-          </Link>
-          <Link href="/today/" className="inline-flex min-h-12 items-center gap-2 px-1 text-sm font-semibold text-ink-soft hover:text-gold">Open Today <ArrowRight className="h-4 w-4" /></Link>
-          <Link href="/today/?milo=demo" className="inline-flex min-h-12 items-center gap-2 px-1 text-sm font-semibold text-gold hover:text-gold-deep">Meet Milo <ArrowRight className="h-4 w-4" /></Link>
-        </div>
-        <p className="mt-5 text-xs leading-relaxed text-ink-faint">Begin with Chapter {start.number} · {start.duration} read</p>
-        </div>
-        <aside className="border-t border-line bg-paper-deep/35 p-6 sm:p-10 lg:flex lg:flex-col lg:justify-center lg:border-t-0 lg:border-l" aria-label="About the manual">
-          <p className="hidden text-[10px] font-semibold uppercase tracking-[0.22em] text-gold lg:block">A field guide to getting better</p>
-          <p className="mt-5 hidden font-display text-2xl leading-snug tracking-tight text-ink sm:text-3xl lg:block">Read with curiosity.<br />Act with intention.</p>
-          <div className="grid grid-cols-3 gap-3 lg:mt-7 lg:border-y lg:border-line lg:py-5">
-            {[[String(chapters.length), "Chapters"], ["4", "Life pillars"], ["A–D", "Evidence grades"]].map(([value, label]) => <div key={label}><p className="font-display text-2xl font-semibold text-ink">{value}</p><p className="mt-1 text-[10px] leading-relaxed text-ink-faint">{label}</p></div>)}
-          </div>
-          <Link href="/audit/" className="mt-5 hidden min-h-11 items-center gap-2 text-xs font-semibold text-gold lg:inline-flex">See how the evidence is graded <ArrowRight className="h-3.5 w-3.5" /></Link>
-        </aside>
-        </div>
-      </section>
-
-      {/* The product beyond the manual */}
-      <section className="rounded-2xl border border-line bg-card p-6 shadow-xs sm:p-8">
-        <div className="max-w-3xl">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">
-            From reading to doing
-          </span>
-          <h2 className="mt-2 font-display text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
-            The manual is only layer one.
-          </h2>
-          <p className="mt-3 text-sm leading-7 text-ink-soft">
-            Level Up turns ideas into goals, bounded focus sessions, completion events, reviews, and a tiny world that changes from the work you actually do. The core experience is local-first and works without an account or cloud AI.
-          </p>
-        </div>
-
-        <div className="mt-6 grid gap-4 md:grid-cols-3">
-          <Link
-            href="/today/"
-            className="group rounded-xl border border-line bg-paper p-5 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-1 hover:border-gold/60 hover:shadow-md motion-reduce:hover:translate-y-0"
-          >
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gold/10 text-gold">
-              <LayoutDashboard className="h-4 w-4" />
-            </span>
-            <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-gold">Today workspace</p>
-            <h3 className="mt-1 font-display text-lg font-semibold text-ink">Protect one outcome.</h3>
-            <p className="mt-2 text-sm leading-6 text-ink-soft">
-              Goals become tasks and sessions. Finishing the work creates durable progress instead of another disposable checklist.
-            </p>
-            <span className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-gold">
-              Open Today <ChevronRight className="h-3 w-3" />
-            </span>
-          </Link>
-
-          <Link
-            href="/focus/"
-            className="group rounded-xl border border-line bg-paper p-5 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-1 hover:border-gold/60 hover:shadow-md motion-reduce:hover:translate-y-0"
-          >
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gold/10 text-gold">
-              <Zap className="h-4 w-4" />
-            </span>
-            <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-gold">Focus engine</p>
-            <h3 className="mt-1 font-display text-lg font-semibold text-ink">Do the next real block.</h3>
-            <p className="mt-2 text-sm leading-6 text-ink-soft">
-              Run bounded focus sessions, record interruptions, and keep evidence of completed work so tomorrow can adapt.
-            </p>
-            <span className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-gold">
-              Start a focus block <ChevronRight className="h-3 w-3" />
-            </span>
-          </Link>
-
-          <Link
-            href="/today/?milo=demo"
-            className="group rounded-xl border border-gold/35 bg-gold/5 p-5 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-1 hover:border-gold hover:shadow-md motion-reduce:hover:translate-y-0"
-          >
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gold text-paper">
-              <Brain className="h-4 w-4" />
-            </span>
-            <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-gold">Living companion</p>
-            <h3 className="mt-1 font-display text-lg font-semibold text-ink">Meet Milo.</h3>
-            <p className="mt-2 text-sm leading-6 text-ink-soft">
-              Milo reads the same local event journal as the app. Real focus, reading, goals, and milestones change behaviour and unlock the room.
-            </p>
-            <span className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-gold">
-              Run the reviewer demo <ChevronRight className="h-3 w-3" />
-            </span>
-          </Link>
-        </div>
-
-        <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-4 text-[11px] text-ink-faint">
-          <span>Local-first core</span>
-          <span>No account required</span>
-          <span>Deterministic companion engine</span>
-          <span>Backup / restore included</span>
-        </div>
-      </section>
-
-      {/* Guided entry point: one card per pillar */}
-      <section>
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-          <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">
-            Begin Wherever You Are
-          </span>
-          <h2 className="mt-2 font-display text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
-            Pick a pillar
-          </h2>
-          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-soft">
-            Start with the part of life you want to give more attention.
-          </p>
-          </div>
-          <Link href="/chapters/" className="inline-flex min-h-11 items-center gap-2 text-xs font-semibold text-gold">Browse all chapters <ArrowRight className="h-3.5 w-3.5" /></Link>
-        </div>
-
-        <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {entries.map(({ ch, meta }) => {
-            const Icon = meta.icon;
-            return (
-              <Link
-                key={ch.slug}
-                href={`/chapters/${ch.slug}/`}
-                className="group flex flex-col justify-between rounded-xl border border-line bg-card p-5 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-1 hover:border-gold/60 hover:shadow-md motion-reduce:hover:translate-y-0 sm:min-h-72 sm:p-6"
-              >
-                <div>
-                  <div className="flex items-center justify-between text-xs text-ink-faint">
-                    <span className="inline-flex items-center gap-2 font-medium capitalize">
-                      <span className={`flex h-8 w-8 items-center justify-center rounded-lg bg-paper-deep/70 ${meta.color}`}><Icon className="h-4 w-4" /></span>
-                      {ch.pillar}
-                    </span>
-                    <span className="text-[10px] tabular-nums text-ink-faint">{String(ch.number).padStart(2, "0")}</span>
-                  </div>
-                  <h3 className="mt-5 font-display text-xl font-semibold leading-snug tracking-tight text-ink transition-colors group-hover:text-gold">
-                    {ch.title}
-                  </h3>
-                  <p className="mt-3 line-clamp-3 text-sm leading-6 text-ink-soft">
-                    {ch.teaser}
-                  </p>
-                </div>
-
-                <div className="mt-4 flex items-center justify-between border-t border-line pt-3 text-[11px] text-ink-faint">
-                  <span>{ch.duration} read</span>
-                  <span className="inline-flex items-center gap-1 font-semibold text-gold">
-                    Explore <ChevronRight className="h-3 w-3" />
-                  </span>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Trust strip */}
-      <section className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-line/80 bg-card px-5 py-5 text-xs leading-relaxed text-ink-soft">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <span className="font-display font-bold text-ink">{chapters.length} chapters</span>
-          <span className="hidden text-ink-faint sm:inline">·</span>
-          <span>Every notable claim graded A–D against published research.</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <Link
-            href="/audit/"
-            className="inline-flex items-center gap-1 font-semibold text-gold hover:underline"
-          >
-            Verification Audit <ArrowRight className="h-3 w-3" />
-          </Link>
-          <Link
-            href="/research/"
-            className="inline-flex items-center gap-1 font-semibold text-gold hover:underline"
-          >
-            Research Notes <ArrowRight className="h-3 w-3" />
-          </Link>
-        </div>
-      </section>
-
-      {/* Quiet dashboard entry */}
-      <div className="flex justify-end border-t border-line pt-5">
-        <Link
-          href="/dashboard/"
-          className="inline-flex items-center gap-1.5 py-1 text-xs font-semibold text-ink-soft transition-colors hover:text-gold"
-        >
-          <LayoutDashboard className="h-3.5 w-3.5" />
-          Open your dashboard
-        </Link>
+  return <div className="landing">
+    <section className="landing-hero" aria-labelledby="home-title">
+      <div className="hero-copy">
+        <p className="eyebrow">READ. TEST. APPLY.</p>
+        <h1 id="home-title">The Level Up<br /><span>Manual.</span></h1>
+        <p className="hero-description">{chapters.length} evidence-audited chapters on belief, identity, focus, and the practical work of getting better. Read the ideas. Put them to work.</p>
+        <div className="mt-8 flex flex-wrap items-center gap-3"><Link href="/chapters/" className="button-solid">Read the manual <ArrowRight size={17} /></Link><Link href="/today/" className="button-outline">Open Today</Link></div>
+        <p className="mt-5 flex items-center gap-2 text-xs text-ink-faint"><Fingerprint size={15} className="shrink-0" />No account needed. Your progress stays on this device.</p>
       </div>
-    </div>
-  );
+      <div className="hero-product">
+        <div className="flex items-center justify-between text-xs font-semibold tracking-wider text-ink-soft"><span>FROM LESSON TO ACTION</span><MoveUpRight size={17} /></div>
+        <div className="day-preview">
+          <div className="flex items-center justify-between border-b border-line pb-5"><span className="text-sm font-semibold text-ink">Daily workspace</span><span className="border border-line px-2.5 py-1 text-[0.625rem] font-medium text-ink-soft">Example day</span></div>
+          <p className="mt-6 text-xs uppercase tracking-wider text-gold">Today’s outcome</p><h2 className="mt-2 font-display text-2xl font-semibold leading-tight text-ink">Finish one chapter.<br />Apply one idea.</h2>
+          <div className="preview-task mt-6"><span className="preview-check"><Check size={13} /></span><div><p className="text-sm font-medium text-ink">Choose a specific outcome</p><p className="mt-1 text-xs text-ink-soft">Write down what finished looks like.</p></div></div>
+          <div className="preview-focus"><Timer size={20} className="shrink-0" /><div className="min-w-0 flex-1"><p className="text-sm font-semibold">Pomodoro focus block</p><p className="mt-1 text-xs text-ink-soft">One task. Distractions out of reach.</p></div><span className="text-xl font-semibold tabular-nums">25<span className="ml-1 text-xs font-normal">min</span></span></div>
+          <div className="preview-task"><Circle size={17} className="shrink-0 text-ink-faint" /><div><p className="text-sm font-medium text-ink">Record the result</p><p className="mt-1 text-xs text-ink-soft">What worked? What changes next time?</p></div></div>
+          <Link href="/protocols/#ready-plans" className="mt-6 flex min-h-11 items-center justify-between border-t border-line pt-4 text-xs font-semibold text-gold">Open ready-to-use plans <ArrowRight size={15} /></Link>
+        </div>
+        <p className="mt-5 text-xs text-ink-soft">Goal → Session → Review. Your own record, stored locally.</p>
+      </div>
+    </section>
+    <div className="landing-proof" aria-label="What's inside"><span><BookOpen size={17} /><strong>{chapters.length}</strong> chapters</span><span><Timer size={17} /><strong>{PRACTICE_PLANS.length}</strong> ready-to-use plans</span><span><ShieldCheck size={17} />Claim-by-claim evidence grades</span><span><Fingerprint size={17} />No account or cloud sync</span></div>
+    <section id="how-it-works" className="landing-section scroll-mt-28">
+      <div className="section-intro"><div><p className="eyebrow">THE WORKFLOW</p><h2>Read. Practice. Review.</h2></div><p>Each chapter has a plain-language guide. Each practice has steps you can follow. Your workspace keeps the results.</p></div>
+      <div className="rhythm-grid">{[
+        { number: "01", title: "Understand the lesson", description: "Read the guide, examine the examples, and check the research behind its claims.", href: "/chapters/", cta: "Browse chapters", icon: BookOpen },
+        { number: "02", title: "Run a practice", description: "Use a Pomodoro, a morning plan, or a two-minute reset. Follow the steps and record what you did.", href: "/protocols/#ready-plans", cta: "Browse practices", icon: Timer },
+        { number: "03", title: "Review the result", description: "Compare your intended outcome with the actual result. Decide what to repeat or change.", href: "/review/", cta: "Open Review", icon: TrendingUp }
+      ].map(step => <article key={step.number} className="rhythm-item"><div className="flex items-center justify-between"><step.icon size={22} strokeWidth={1.5} /><span className="text-xs tabular-nums text-ink-faint">{step.number}</span></div><h3>{step.title}</h3><p>{step.description}</p><Link href={step.href}>{step.cta}<ArrowUpRight size={15} /></Link></article>)}</div>
+    </section>
+    <section className="landing-section" aria-labelledby="areas-title">
+      <div className="section-intro"><div><p className="eyebrow">FOUR PILLARS</p><h2 id="areas-title">Choose a subject.</h2></div><Link href="/chapters/" className="text-link">Browse all lessons <ArrowRight size={16} /></Link></div>
+      <div className="area-grid">{areas.map(area => <Link key={area.pillar} href={`/chapters/?pillar=${area.pillar}`} className={`area-card ${area.className}`}><span className="area-icon"><area.icon size={27} strokeWidth={1.4} /></span><span className="area-content"><span className="mb-2 block text-[0.6875rem] font-medium uppercase tracking-widest opacity-65">{area.pillar}</span><h3>{area.label}</h3><p>{area.description}</p></span><ArrowUpRight size={19} className="shrink-0 self-end" /></Link>)}</div>
+    </section>
+    <section className="evidence-panel"><div className="evidence-grades" aria-label="Evidence grades A through D">{["A", "B", "C", "D"].map((grade, index) => <span key={grade} style={{ opacity: 1 - index * .16 }}>{grade}</span>)}<span className="mt-4 block text-xs text-ink-faint">Confidence, not certainty.</span></div><div><p className="eyebrow">CURIOUS, NOT CREDULOUS</p><h2>Good ideas should<br />stand up to questions.</h2><p>Self-development has plenty of big claims. Here, the research and its limitations stay visible. Evidence grades describe the claims—not a promise that an exercise will work for everyone.</p><Link href="/audit/" className="text-link">See how we check the evidence <ArrowRight size={16} /></Link></div></section>
+    <section className="landing-close"><div><p className="eyebrow">YOUR WORKSPACE</p><h2>Put the manual to work.</h2></div><div><Link href="/today/" className="button-solid">Open Today <ArrowRight size={17} /></Link><p className="mt-4 text-xs text-ink-faint">Goals, focus sessions, habits, and a record of what happened.</p></div></section>
+  </div>;
 }

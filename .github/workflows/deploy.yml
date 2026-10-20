@@ -36,11 +36,14 @@ jobs:
       - name: Test
         run: npm test
 
+      - name: Test Milo backend boundaries
+        run: node --test services/milo/tests/chat.test.mjs
+
       - name: Build (data pipeline + static export)
         run: npm run build
         env:
           NEXT_PUBLIC_BASE_PATH: /LevelUp
-          NEXT_PUBLIC_GA_ID: ${{ vars.NEXT_PUBLIC_GA_ID }}
+          NEXT_PUBLIC_MILO_API_URL: ${{ vars.NEXT_PUBLIC_MILO_API_URL }}
 
       - name: Configure Pages
         uses: actions/configure-pages@v6

@@ -41,7 +41,7 @@ export default function ProgressTiles({
     <section aria-label="Your progress" className="grid grid-cols-2 gap-3 sm:grid-cols-4">
       {tiles.map((t) => (
         <div key={t.label} className="rounded-2xl border border-line bg-card p-4">
-          <p className={`text-[11px] font-medium uppercase tracking-wider ${tier === "child" ? "text-ink-faint text-xs" : "text-ink-faint"}`}>
+          <p className={`text-[0.6875rem] font-medium uppercase tracking-wider ${tier === "child" ? "text-ink-faint text-xs" : "text-ink-faint"}`}>
             {t.label}
           </p>
           <p className="mt-1 font-display text-xl font-bold text-ink">{t.value}</p>

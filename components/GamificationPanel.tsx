@@ -4,6 +4,7 @@ import { useEffect, useMemo } from "react";
 import { useProgressStore } from "@/lib/progress";
 import { useHighlightsStore, useQuizStore, useReflectionsStore, useStreakStore } from "@/lib/activity";
 import { badgesFor, computeXp, levelFor, type GamificationState } from "@/lib/gamification";
+import { localToday } from "@/lib/dates";
 
 const BADGES_KEY = "levelup-badges-v1";
 
@@ -14,13 +15,6 @@ function readBadges(): Record<string, string> {
   } catch {
     return {};
   }
-}
-
-function localToday(): string {
-  const d = new Date();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${d.getFullYear()}-${m}-${day}`;
 }
 
 export default function GamificationPanel() {
@@ -100,13 +94,13 @@ export default function GamificationPanel() {
             <div className="flex items-center justify-between gap-2">
               <p className="font-display text-sm font-semibold text-ink">{b.name}</p>
               {b.unlocked ? (
-                <span className="text-[10px] uppercase tracking-wider text-gold">Earned</span>
+                <span className="text-[0.625rem] uppercase tracking-wider text-gold">Earned</span>
               ) : (
-                <span className="text-[10px] uppercase tracking-wider text-ink-faint">Locked</span>
+                <span className="text-[0.625rem] uppercase tracking-wider text-ink-faint">Locked</span>
               )}
             </div>
             <p className="mt-1 text-xs text-ink-soft">{b.blurb}</p>
-            <p className="mt-1 text-[10px] text-ink-faint">
+            <p className="mt-1 text-[0.625rem] text-ink-faint">
               {b.unlocked && b.unlockDate ? `${b.unlockDate} · ` : ""}
               {b.rule}
             </p>

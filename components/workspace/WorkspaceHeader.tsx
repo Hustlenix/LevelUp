@@ -4,7 +4,7 @@ export function WorkspaceHeader({ eyebrow, title, description, actions }: { eyeb
   return (
     <header className="mb-7 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gold">{eyebrow}</p>
+        <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.2em] text-gold">{eyebrow}</p>
         <h1 className="mt-2 max-w-3xl font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">{title}</h1>
         {description ? <p className="mt-3 max-w-2xl text-base leading-relaxed text-ink-soft">{description}</p> : null}
       </div>

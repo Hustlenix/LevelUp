@@ -18,6 +18,16 @@ import { useOSStore } from "@/lib/os/store";
 import { emitCompanionEvent } from "@/lib/companion";
 import { ANALYTICS_EVENTS, trackEvent } from "@/lib/analytics";
 import { AppPageHeader, CompanionCard, SkillBadge, StreakPill, XPMeter } from "./AppUI";
+import RitualPanel from "@/components/RitualPanel";
+import { SavedActions } from "@/components/SavedActions";
+
+function PracticeBridge() {
+  return <section className="app-page space-y-6" aria-label="Your practice tools">
+    <div className="flex flex-wrap gap-3 text-sm"><Link className="life-secondary-button" href="/small-steps/">Start one small step</Link><Link className="life-secondary-button" href="/protocols/">Browse practice plans</Link><Link className="life-secondary-button" href="/habits/">Manage habits</Link></div>
+    <SavedActions compact />
+    <RitualPanel />
+  </section>;
+}
 
 function FirstRunToday() {
   return (
@@ -77,7 +87,7 @@ export default function LifeToday() {
   const missions = useMemo(() => profile && today ? missionsForDay(profile, today) : [], [profile, today]);
   const week = useMemo(() => today ? weeklySummary(state, today) : { completed: 0, minutes: 0, xp: 0, activeDays: 0 }, [state, today]);
 
-  if (!profile) return <FirstRunToday />;
+  if (!profile) return <><FirstRunToday /><PracticeBridge /></>;
   if (!today || !missions.length) return <div className="app-loading" aria-label="Preparing today's plan"><i /><i /><i /></div>;
 
   const completedToday = missions.filter((mission) => missionIsComplete(state, mission.id)).length;
@@ -107,6 +117,7 @@ export default function LifeToday() {
       <section className="weekly-quest"><div><p>Weekly quest</p><h2>Show up on five different days</h2><span>Consistency is the reward. The counter never punishes a restart.</span></div><div className="weekly-quest-days" aria-label={`${week.activeDays} of 5 active days`}>{Array.from({ length: 5 }, (_, index) => <i key={index} className={index < week.activeDays ? "is-filled" : ""}>{index < week.activeDays ? <Check aria-hidden="true" /> : index + 1}</i>)}</div><strong>{Math.min(week.activeDays, 5)}/5</strong></section>
 
       <section className="today-tools"><div><p>Need a different kind of help?</p><div><Link href="/coach/">Ask the Coach <ArrowRight aria-hidden="true" /></Link><Link href="/journey/">See your Journey <ArrowRight aria-hidden="true" /></Link><Link href="/focus/">Open Focus room <ArrowRight aria-hidden="true" /></Link></div></div>{legacySessions ? <span>{legacySessions} planned legacy session{legacySessions === 1 ? "" : "s"} ready in Focus.</span> : <span>Your older goals and manual progress are still available.</span>}</section>
+      <PracticeBridge />
       {activeMission ? <MissionRunner mission={activeMission} onClose={() => setActiveMission(null)} onComplete={(proof) => complete(activeMission, proof)} /> : null}
     </div>
   );

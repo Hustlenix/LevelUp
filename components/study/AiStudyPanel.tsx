@@ -38,7 +38,7 @@ const buttonClass = "inline-flex min-h-11 items-center justify-center gap-2 roun
 const secondaryButtonClass = "inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-line bg-paper-deep px-3 py-2 text-sm font-medium text-ink-soft transition-colors hover:border-gold hover:text-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold disabled:cursor-not-allowed disabled:opacity-50";
 
 function TypePill({ type }: { type: string }) {
-  return <span className="rounded-full border border-line bg-paper-deep px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-ink-faint">{type}</span>;
+  return <span className="rounded-full border border-line bg-paper-deep px-2.5 py-1 text-[0.625rem] font-semibold uppercase tracking-wider text-ink-faint">{type}</span>;
 }
 
 function ResultSource({ source, note, fallbackReason }: { source: AiSource; note?: string; fallbackReason?: string }) {
@@ -81,7 +81,7 @@ function OllamaStatusCard({ status, checking, onCheck }: { status: OllamaStatus;
           {checking ? "Checking…" : "Check again"}
         </button>
       </div>
-      <p className="mt-3 text-[11px] leading-relaxed text-ink-faint">
+      <p className="mt-3 text-[0.6875rem] leading-relaxed text-ink-faint">
         Public visitors cannot use this computer&apos;s Ollama. Anyone who wants model-powered help must install Ollama and run this locked model on their own device; the deterministic Coach, Planner, and Tutor work without it.
       </p>
     </div>
@@ -108,7 +108,7 @@ function WebGpuCard({ provision }: { provision: WebGpuProvisionState }) {
         <div className="min-w-0">
           <div className="flex items-center gap-2">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold">In-browser AI engine</p>
-            <span className="rounded-full border border-line bg-paper-deep px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-ink-faint">webgpu engine</span>
+            <span className="rounded-full border border-line bg-paper-deep px-2.5 py-1 text-[0.625rem] font-semibold uppercase tracking-wider text-ink-faint">webgpu engine</span>
           </div>
           {isIdle ? (
             <>
@@ -284,7 +284,7 @@ export default function AiStudyPanel({ context, documents, chapters }: AiStudyPa
             Plans, answers, and explanations use the progress already on this device. Ollama is optional and runs only on the computer using this page; if it is unavailable, the deterministic fallback still works.
           </p>
         </div>
-        <span className="rounded-full border border-line bg-paper-deep px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-ink-faint">
+        <span className="rounded-full border border-line bg-paper-deep px-3 py-1 text-[0.6875rem] font-semibold uppercase tracking-wider text-ink-faint">
           Local-only AI
         </span>
       </div>
@@ -394,7 +394,7 @@ export default function AiStudyPanel({ context, documents, chapters }: AiStudyPa
                 {busy === "coach" ? "Thinking…" : "Ask Coach"}
               </button>
             </form>
-            {coach ? <div className="mt-4 border-t border-line pt-4"><p className="text-sm leading-relaxed text-ink">{coach.answer}</p><ul className="mt-3 space-y-1.5 text-xs text-ink-soft">{coach.nextActions.map((action) => <li key={action} className="flex gap-2"><span className="text-gold">→</span><span>{action}</span></li>)}</ul><p className="mt-3 text-[11px] text-ink-faint">Basis: {coach.basis.join(" · ")}</p>{coachMeta ? <ResultSource source={coachMeta.source} note={coachMeta.note} fallbackReason={coachMeta.fallbackReason} /> : null}</div> : null}
+            {coach ? <div className="mt-4 border-t border-line pt-4"><p className="text-sm leading-relaxed text-ink">{coach.answer}</p><ul className="mt-3 space-y-1.5 text-xs text-ink-soft">{coach.nextActions.map((action) => <li key={action} className="flex gap-2"><span className="text-gold">→</span><span>{action}</span></li>)}</ul><p className="mt-3 text-[0.6875rem] text-ink-faint">Basis: {coach.basis.join(" · ")}</p>{coachMeta ? <ResultSource source={coachMeta.source} note={coachMeta.note} fallbackReason={coachMeta.fallbackReason} /> : null}</div> : null}
           </div>
 
           <div className="rounded-xl border border-line bg-paper p-5">
@@ -416,7 +416,7 @@ export default function AiStudyPanel({ context, documents, chapters }: AiStudyPa
               <label className="block"><span className="text-xs font-medium text-ink-soft">Level</span><select value={tutorLevel} onChange={(event) => setTutorLevel(event.target.value as typeof tutorLevel)} className="mt-1 w-full rounded-lg border border-line bg-card px-3 py-2 text-sm text-ink focus:border-gold focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"><option value="beginner">Beginner</option><option value="normal">Normal</option><option value="advanced">Advanced</option></select></label>
               <div className="flex items-end"><button type="button" onClick={runTutor} disabled={busy !== null || chapters.length === 0} className={`w-full ${buttonClass}`}>{busy === "tutor" ? "Preparing…" : "Start Tutor"}</button></div>
             </div>
-            {tutor ? <div className="mt-4 border-t border-line pt-4"><p className="text-sm leading-relaxed text-ink">{tutor.answer}</p><div className="mt-3 grid gap-3 sm:grid-cols-2"><div><p className="text-xs font-semibold uppercase tracking-wider text-ink-faint">Takeaways</p><ul className="mt-2 space-y-1 text-xs text-ink-soft">{tutor.takeaways.map((item) => <li key={item}>• {item}</li>)}</ul></div><div><p className="text-xs font-semibold uppercase tracking-wider text-ink-faint">Try this</p><ul className="mt-2 space-y-1 text-xs text-ink-soft">{tutor.practicePrompts.map((item) => <li key={item}>• {item}</li>)}</ul></div></div><p className="mt-3 text-[11px] text-ink-faint">{tutor.evidenceNote}</p>{tutorMeta ? <ResultSource source={tutorMeta.source} note={tutorMeta.note} fallbackReason={tutorMeta.fallbackReason} /> : null}<Link href={`/chapters/${tutor.chapterSlug}/`} className="mt-3 inline-flex min-h-9 items-center gap-1 text-xs font-semibold text-gold hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold">Read the full chapter →</Link></div> : null}
+            {tutor ? <div className="mt-4 border-t border-line pt-4"><p className="text-sm leading-relaxed text-ink">{tutor.answer}</p><div className="mt-3 grid gap-3 sm:grid-cols-2"><div><p className="text-xs font-semibold uppercase tracking-wider text-ink-faint">Takeaways</p><ul className="mt-2 space-y-1 text-xs text-ink-soft">{tutor.takeaways.map((item) => <li key={item}>• {item}</li>)}</ul></div><div><p className="text-xs font-semibold uppercase tracking-wider text-ink-faint">Try this</p><ul className="mt-2 space-y-1 text-xs text-ink-soft">{tutor.practicePrompts.map((item) => <li key={item}>• {item}</li>)}</ul></div></div><p className="mt-3 text-[0.6875rem] text-ink-faint">{tutor.evidenceNote}</p>{tutorMeta ? <ResultSource source={tutorMeta.source} note={tutorMeta.note} fallbackReason={tutorMeta.fallbackReason} /> : null}<Link href={`/chapters/${tutor.chapterSlug}/`} className="mt-3 inline-flex min-h-9 items-center gap-1 text-xs font-semibold text-gold hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold">Read the full chapter →</Link></div> : null}
           </div>
         </div>
       </div>

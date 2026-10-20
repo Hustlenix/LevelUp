@@ -1,4 +1,4 @@
-const CACHE_NAME = "levelup-v3";
+const CACHE_NAME = "levelup-v4";
 const BASE = self.registration.scope.replace(/\/$/, "");
 
 const PRECACHE = [
@@ -8,6 +8,7 @@ const PRECACHE = [
   `${BASE}/journey/`,
   `${BASE}/coach/`,
   `${BASE}/progress/`,
+  `${BASE}/small-steps/`,
   `${BASE}/profile/`,
   `${BASE}/sync-lab/`,
   `${BASE}/icon.svg`,
@@ -29,7 +30,7 @@ self.addEventListener("activate", (event) => {
       .keys()
       .then((keys) =>
         Promise.all(
-          keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k))
+          keys.filter((k) => k.startsWith("levelup-") && k !== CACHE_NAME).map((k) => caches.delete(k))
         )
       )
       .then(() => self.clients.claim())
