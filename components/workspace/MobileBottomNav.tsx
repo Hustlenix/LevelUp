@@ -19,7 +19,7 @@ export default function MobileBottomNav() {
         {ITEMS.map((item) => {
           const isActive = active(pathname, item.href);
           const Icon = item.icon;
-          return <Link key={item.href} href={item.href} aria-current={isActive ? "page" : undefined} className={`flex min-h-14 flex-col items-center justify-center rounded-xl px-2 text-[11px] font-semibold transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold ${isActive ? "bg-gold/10 text-gold" : "text-ink-faint hover:bg-paper-deep hover:text-gold"}`}><Icon aria-hidden="true" className="h-5 w-5" strokeWidth={isActive ? 2 : 1.6} /><span className="mt-1.5">{item.label}</span></Link>;
+          return <Link key={item.href} href={item.href} aria-current={isActive ? "page" : undefined} className={`flex min-h-14 flex-col items-center justify-center rounded-xl px-2 text-[0.6875rem] font-semibold transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold ${isActive ? "bg-gold/10 text-gold" : "text-ink-faint hover:bg-paper-deep hover:text-gold"}`}><Icon aria-hidden="true" className="h-5 w-5" strokeWidth={isActive ? 2 : 1.6} /><span className="mt-1.5">{item.label}</span></Link>;
         })}
       </div>
     </nav>

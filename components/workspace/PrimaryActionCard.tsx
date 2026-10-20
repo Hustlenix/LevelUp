@@ -8,7 +8,7 @@ export function PrimaryActionCard({ eyebrow = "Next action", title, description,
       <div className="absolute inset-y-0 left-0 w-1 bg-gold" aria-hidden="true" />
       <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <div className="max-w-2xl">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-gold">{eyebrow}</p>
+          <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-gold">{eyebrow}</p>
           <h2 className="mt-3 max-w-xl font-display text-3xl font-semibold leading-tight tracking-tight text-ink sm:text-4xl">{title}</h2>
           <p className="mt-4 max-w-lg text-sm leading-7 text-ink-soft">{description}</p>
           {children ? <div className="mt-4">{children}</div> : null}

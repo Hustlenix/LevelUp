@@ -5,7 +5,8 @@ import { useStudentProfile, resetProfile } from "@/lib/studentProfile";
 import { PageShell } from "@/components/ui";
 import Link from "next/link";
 
-export default function SettingsPanel() {
+export default function SettingsPanel({ embedded = false }: { embedded?: boolean }) {
+  const Heading = embedded ? "h2" : "h1";
   const profile = useStudentProfile();
   const [confirmReset, setConfirmReset] = useState(false);
 
@@ -13,7 +14,7 @@ export default function SettingsPanel() {
     <PageShell>
       <div className="max-w-xl">
         <p className="font-display text-xs font-semibold uppercase tracking-[0.25em] text-gold">Study Mode</p>
-        <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-ink">Study settings</h1>
+        <Heading className="mt-2 font-display text-3xl font-bold tracking-tight text-ink">Study settings</Heading>
         <p className="mt-2 text-sm text-ink-soft">Everything is stored privately on this device.</p>
 
         <section className="mt-8 space-y-4">

@@ -43,7 +43,7 @@ export function ReadingProgress({ slug }: { slug: string }) {
 
   return (
     <div className="no-print" aria-live="polite">
-      <div className="flex items-center justify-between text-[11px] uppercase tracking-wider text-ink-faint">
+      <div className="flex items-center justify-between text-[0.6875rem] uppercase tracking-wider text-ink-faint">
         <span>{complete ? "Completed — marked in your progress" : "Reading progress"}</span>
         <span>{entry?.maxScroll ?? 0}%</span>
       </div>

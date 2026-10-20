@@ -40,7 +40,7 @@ export default function AuditPage() {
             <GradeBadge grade={g} />
             <div>
               <p className="font-display text-xl font-bold leading-none text-ink">{byGrade[g] ?? 0}</p>
-              <p className="mt-1 text-[10px] uppercase tracking-wider text-ink-faint">claims</p>
+              <p className="mt-1 text-[0.625rem] uppercase tracking-wider text-ink-faint">claims</p>
             </div>
           </div>
         ))}
@@ -76,7 +76,7 @@ export default function AuditPage() {
                   <GradeBadge grade={a.grade} />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-[11px] uppercase tracking-wider text-ink-faint">
+                  <span className="block text-[0.6875rem] uppercase tracking-wider text-ink-faint">
                     Claim {a.id} · {a.category}
                   </span>
                   <span className="mt-0.5 block font-display text-base font-semibold text-ink">

@@ -28,7 +28,7 @@ function ChapterListFallback({ chapters }: { chapters: Chapter[] }) {
             <section key={g.name} aria-label={g.name}>
               <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2 border-b border-line pb-2">
                 <h2 className="font-display text-xl font-bold text-ink">{g.name}</h2>
-                <span className="text-[11px] uppercase tracking-wider text-ink-faint">
+                <span className="text-[0.6875rem] uppercase tracking-wider text-ink-faint">
                   Chapters {g.start}–{g.end}
                 </span>
               </div>

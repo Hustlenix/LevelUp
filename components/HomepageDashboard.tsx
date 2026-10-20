@@ -287,7 +287,7 @@ export default function HomepageDashboard({ protocols, chapters }: Props) {
                       </p>
                     </div>
 
-                    <div className="mt-4 pt-2 border-t border-line/60 text-[11px]">
+                    <div className="mt-4 pt-2 border-t border-line/60 text-[0.6875rem]">
                       <span className={p.done ? "font-semibold text-gold" : "text-ink-faint"}>
                         {p.done ? "Completed Today" : "Click to mark done"}
                       </span>
@@ -315,7 +315,7 @@ export default function HomepageDashboard({ protocols, chapters }: Props) {
                   <h3 className="font-display text-xs font-bold text-ink flex items-center gap-1">
                     Morning Calibration <ChevronRight className="h-3 w-3 text-ink-faint" />
                   </h3>
-                  <p className="mt-0.5 text-[11px] text-ink-soft">
+                  <p className="mt-0.5 text-[0.6875rem] text-ink-soft">
                     Lock 1 primary outcome & run 2-min box breathing.
                   </p>
                 </div>
@@ -332,7 +332,7 @@ export default function HomepageDashboard({ protocols, chapters }: Props) {
                   <h3 className="font-display text-xs font-bold text-ink flex items-center gap-1">
                     Focus Sprint Studio <ChevronRight className="h-3 w-3 text-ink-faint" />
                   </h3>
-                  <p className="mt-0.5 text-[11px] text-ink-soft">
+                  <p className="mt-0.5 text-[0.6875rem] text-ink-soft">
                     25m, 50m, or 90m block with distraction log & chime.
                   </p>
                 </div>
@@ -349,7 +349,7 @@ export default function HomepageDashboard({ protocols, chapters }: Props) {
                   <h3 className="font-display text-xs font-bold text-ink flex items-center gap-1">
                     10-Second Urge Delay <ChevronRight className="h-3 w-3 text-ink-faint" />
                   </h3>
-                  <p className="mt-0.5 text-[11px] text-ink-soft">
+                  <p className="mt-0.5 text-[0.6875rem] text-ink-soft">
                     Pause phone or distraction impulses to reset dopamine.
                   </p>
                 </div>
@@ -434,7 +434,7 @@ export default function HomepageDashboard({ protocols, chapters }: Props) {
                 <div>
                   <div className="flex items-center justify-between text-xs text-ink-faint">
                     <span className="font-mono text-gold font-bold">Ch. {ch.number}</span>
-                    <span className="rounded bg-paper-deep px-1.5 py-0.5 text-[10px] font-semibold text-ink-soft capitalize">
+                    <span className="rounded bg-paper-deep px-1.5 py-0.5 text-[0.625rem] font-semibold text-ink-soft capitalize">
                       {ch.pillar}
                     </span>
                   </div>
@@ -446,7 +446,7 @@ export default function HomepageDashboard({ protocols, chapters }: Props) {
                   </p>
                 </div>
 
-                <div className="mt-4 flex items-center justify-between border-t border-line pt-3 text-[11px] text-ink-faint">
+                <div className="mt-4 flex items-center justify-between border-t border-line pt-3 text-[0.6875rem] text-ink-faint">
                   <span>{ch.duration}</span>
                   <span className="inline-flex items-center gap-1 font-semibold text-gold">
                     Read & Audit <ChevronRight className="h-3 w-3" />

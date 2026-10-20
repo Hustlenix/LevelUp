@@ -10,7 +10,7 @@ export default function SidebarNav() {
   if (pathname === "/") return null;
   return <aside className="workspace-sidebar sticky top-0 hidden h-dvh w-56 shrink-0 flex-col border-r border-line bg-card px-4 py-7 md:flex no-print">
     <div className="px-2"><Brand /></div>
-    <p className="mb-3 mt-10 px-3 text-[11px] font-medium text-ink-faint">YOUR WORKSPACE</p>
+    <p className="mb-3 mt-10 px-3 text-[0.6875rem] font-medium text-ink-faint">YOUR WORKSPACE</p>
     <nav aria-label="Sidebar navigation" className="min-h-0 flex-1 overflow-y-auto">
       <ul className="space-y-1">{[...WORKSPACE_LINKS, COACH_LINK].map(({ href, label, icon: Icon }) => <li key={href}><Link href={href} aria-current={isNavActive(pathname, href) ? "page" : undefined} className="sidebar-link"><Icon size={18} strokeWidth={1.7} aria-hidden="true" />{label}</Link></li>)}</ul>
       <div className="mt-7 border-t border-line pt-4">{RESOURCE_GROUPS.map(group => <details key={`${group.label}-${pathname}`} open={group.items.some(item => isNavActive(pathname, item.href))} className="group mb-2">
@@ -21,7 +21,7 @@ export default function SidebarNav() {
     <div className="mt-4 border-t border-line pt-3">
       <Link href="/profile/" aria-current={isNavActive(pathname, "/profile/") ? "page" : undefined} className="sidebar-link"><UserRound size={17} />Your profile</Link>
       <Link href="/settings/" aria-current={isNavActive(pathname, "/settings/") ? "page" : undefined} className="sidebar-link"><Settings2 size={17} />Settings</Link>
-      <Link href="/privacy/" className="mt-4 flex items-center gap-2 px-3 text-[11px] text-ink-faint"><ShieldCheck size={13} />Local-first. Yours to keep.</Link>
+      <Link href="/privacy/" className="mt-4 flex items-center gap-2 px-3 text-[0.6875rem] text-ink-faint"><ShieldCheck size={13} />Local-first. Yours to keep.</Link>
     </div>
   </aside>;
 }

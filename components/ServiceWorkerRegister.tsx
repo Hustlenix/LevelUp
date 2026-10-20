@@ -9,9 +9,8 @@ export default function ServiceWorkerRegister() {
     if (
       typeof navigator === "undefined" ||
       !("serviceWorker" in navigator) ||
-      location.protocol !== "https:" ||
-      location.hostname === "localhost" ||
-      location.hostname === "127.0.0.1"
+      (location.protocol !== "https:" && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") ||
+      process.env.NODE_ENV !== "production"
     ) {
       return;
     }

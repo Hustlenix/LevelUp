@@ -37,6 +37,7 @@ import {
   type HabitWeekCell,
 } from "@/lib/habits";
 import { formatLocalDate } from "@/lib/dates";
+import HabitSaveNotice from "@/components/HabitSaveNotice";
 import { useClientToday } from "@/lib/clientToday";
 import {
   ActionButton,
@@ -327,6 +328,7 @@ export default function HabitsView() {
 
       {/* 1 — nothing defined yet */}
       <div className="mb-5"><ActionLink href="/today/#daily-ritual" variant="quiet">Log today’s ritual →</ActionLink></div>
+      <HabitSaveNotice />
       {!anyHabits && (
         <div className="mb-8">
           <EmptyState
@@ -398,7 +400,7 @@ export default function HabitsView() {
                       {cells.map((cell, index) => (
                         <span
                           key={historyKeys[index]}
-                          className={`inline-flex h-6 w-6 items-center justify-center rounded border text-[10px] font-semibold ${CELL_STYLES[cell]}`}
+                          className={`inline-flex h-6 w-6 items-center justify-center rounded border text-[0.625rem] font-semibold ${CELL_STYLES[cell]}`}
                         >
                           <span aria-hidden="true">{CELL_GLYPH[cell]}</span>
                           <span className="sr-only">
@@ -489,7 +491,7 @@ export default function HabitsView() {
                         return (
                           <td key={week.days[index]} className="px-1 py-2.5 text-center">
                             <span
-                              className={`inline-flex h-7 min-w-7 items-center justify-center rounded px-1 text-[11px] font-semibold tabular-nums ${CELL_STYLES[cell]}`}
+                              className={`inline-flex h-7 min-w-7 items-center justify-center rounded px-1 text-[0.6875rem] font-semibold tabular-nums ${CELL_STYLES[cell]}`}
                             >
                               {reading ? (
                                 <>

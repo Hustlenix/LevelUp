@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
+import MiloTalk from "@/components/MiloTalk";
 import { MessageCircle } from "lucide-react";
 import type { ChapterMeta, Pillar } from "@/lib/types";
 import { useOSStore } from "@/lib/os/store";
@@ -29,7 +30,7 @@ import {
 } from "@/lib/companion";
 
 type ChapterContext = Pick<ChapterMeta, "slug" | "title" | "pillar">;
-type PanelView = "room" | "engine" | "settings";
+type PanelView = "room" | "talk" | "engine" | "settings";
 
 const DEMO_NOW = "2026-09-24T12:00:00.000Z";
 
@@ -162,7 +163,7 @@ function CompanionRoom({
 function Meter({ label, value }: { label: string; value: number }) {
   return (
     <div>
-      <div className="flex items-center justify-between gap-3 text-[11px]">
+      <div className="flex items-center justify-between gap-3 text-[0.6875rem]">
         <span className="text-ink-soft">{label}</span>
         <span className="font-mono text-ink-faint">{value}</span>
       </div>
@@ -214,10 +215,10 @@ function DemoControls({
     <div className="rounded-xl border border-gold/35 bg-gold/5 p-3">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-gold">Reviewer demo</p>
+          <p className="text-[0.625rem] font-semibold uppercase tracking-[0.18em] text-gold">Reviewer demo</p>
           <p className="mt-1 text-xs leading-relaxed text-ink-soft">Runs the real reducer against a disposable fixture. Your saved companion is untouched.</p>
         </div>
-        <span className="font-mono text-[10px] text-ink-faint">{Math.min(step + 1, 5)}/5</span>
+        <span className="font-mono text-[0.625rem] text-ink-faint">{Math.min(step + 1, 5)}/5</span>
       </div>
       <button
         type="button"
@@ -402,7 +403,7 @@ export default function CompanionLayer({ chapters }: { chapters: ChapterContext[
   }
 
   // Keep the public introduction quiet; the companion remains in the workspace.
-  if (pathname === "/") return null;
+  if (pathname === "/" || pathname?.startsWith("/small-steps")) return null;
 
   if (!settings.enabled && !expanded) {
     return (
@@ -424,7 +425,7 @@ export default function CompanionLayer({ chapters }: { chapters: ChapterContext[
         <section className="companion-panel" aria-label="Milo companion space">
           <header className="flex items-start justify-between gap-4 border-b border-line px-4 py-3">
             <div className="min-w-0">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">Living companion</p>
+              <p className="text-[0.625rem] font-semibold uppercase tracking-[0.2em] text-gold">Living companion</p>
               <h2 className="mt-0.5 font-display text-lg font-semibold text-ink">Milo · {activityLabel(behaviour)}</h2>
             </div>
             <button type="button" onClick={() => setExpanded(false)} className="min-h-9 rounded-lg border border-line px-3 text-xs font-semibold text-ink-soft hover:border-gold hover:text-ink" aria-label="Minimize companion">Minimize</button>
@@ -439,8 +440,8 @@ export default function CompanionLayer({ chapters }: { chapters: ChapterContext[
             )}
           </div>
 
-          <nav className="mx-4 mt-4 grid grid-cols-3 rounded-xl border border-line bg-paper p-1" aria-label="Companion space sections">
-            {(["room", "engine", "settings"] as PanelView[]).map((item) => (
+          <nav className="mx-4 mt-4 grid grid-cols-4 rounded-xl border border-line bg-paper p-1" aria-label="Companion space sections">
+            {(["room", "talk", "engine", "settings"] as PanelView[]).map((item) => (
               <button
                 type="button"
                 key={item}
@@ -457,8 +458,8 @@ export default function CompanionLayer({ chapters }: { chapters: ChapterContext[
             {view === "room" ? (
               <div className="space-y-3">
                 <div className="grid grid-cols-2 gap-2">
-                  <div className="rounded-xl border border-line bg-paper p-3"><p className="text-[10px] uppercase tracking-wider text-ink-faint">World</p><p className="mt-1 text-sm font-semibold capitalize text-ink">{state.room.variant}</p></div>
-                  <div className="rounded-xl border border-line bg-paper p-3"><p className="text-[10px] uppercase tracking-wider text-ink-faint">Unlocked</p><p className="mt-1 text-sm font-semibold text-ink">{state.room.items.length} objects</p></div>
+                  <div className="rounded-xl border border-line bg-paper p-3"><p className="text-[0.625rem] uppercase tracking-wider text-ink-faint">World</p><p className="mt-1 text-sm font-semibold capitalize text-ink">{state.room.variant}</p></div>
+                  <div className="rounded-xl border border-line bg-paper p-3"><p className="text-[0.625rem] uppercase tracking-wider text-ink-faint">Unlocked</p><p className="mt-1 text-sm font-semibold text-ink">{state.room.items.length} objects</p></div>
                 </div>
                 <p className="text-xs leading-relaxed text-ink-soft">The room is another view of the same progress data. Objects appear only when real Level Up milestones qualify.</p>
                 {settings.interaction ? (
@@ -471,6 +472,8 @@ export default function CompanionLayer({ chapters }: { chapters: ChapterContext[
                 )}
               </div>
             ) : null}
+
+            {view === "talk" ? <MiloTalk onPose={setTransientPose} /> : null}
 
             {view === "engine" ? (
               <div className="space-y-4">
@@ -489,10 +492,10 @@ export default function CompanionLayer({ chapters }: { chapters: ChapterContext[
                   </dl>
                 </div>
                 <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-gold">Recent event journal</p>
+                  <p className="text-[0.625rem] font-semibold uppercase tracking-[0.18em] text-gold">Recent event journal</p>
                   <ol className="mt-2 space-y-1.5">
                     {[...state.journal].slice(-8).reverse().map((event) => (
-                      <li key={event.id} className="flex items-center justify-between gap-3 rounded-lg border border-line bg-paper px-2.5 py-2 text-[11px]">
+                      <li key={event.id} className="flex items-center justify-between gap-3 rounded-lg border border-line bg-paper px-2.5 py-2 text-[0.6875rem]">
                         <span className="truncate font-mono text-ink">{event.kind.toUpperCase()}</span>
                         <span className="shrink-0 text-ink-faint">{event.occurredAt.slice(11, 19)}</span>
                       </li>
@@ -511,7 +514,7 @@ export default function CompanionLayer({ chapters }: { chapters: ChapterContext[
                   <div className="mt-2 grid grid-cols-3 gap-2">
                     {(["full", "reduced", "off"] as const).map((motion) => <button key={motion} type="button" onClick={() => saveSettings({ ...settings, motion })} className={"min-h-9 rounded-lg border px-2 text-xs capitalize " + (settings.motion === motion ? "border-gold bg-gold/10 text-ink" : "border-line text-ink-soft")}>{motion}</button>)}
                   </div>
-                  {systemReducedMotion ? <p className="mt-2 text-[11px] leading-relaxed text-ink-faint">Your system requests reduced motion, so Full is rendered as Reduced.</p> : null}
+                  {systemReducedMotion ? <p className="mt-2 text-[0.6875rem] leading-relaxed text-ink-faint">Your system requests reduced motion, so Full is rendered as Reduced.</p> : null}
                 </fieldset>
                 <fieldset>
                   <legend className="text-xs font-semibold text-ink">Dialogue</legend>

@@ -148,7 +148,7 @@ class AmbientAudioEngine {
     this.gainNode = masterGain;
 
     if (type === "brown") {
-      // Brown noise (1/f^2) - deep rumble, ideal for ADHD focus and mental silencing
+      // Brown noise (1/f^2) - a deep background rumble.
       const bufferSize = ctx.sampleRate * 2;
       const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
       const data = buffer.getChannelData(0);

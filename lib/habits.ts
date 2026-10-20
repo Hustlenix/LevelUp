@@ -571,11 +571,13 @@ export function loadHabitStore(): HabitStore {
   }
 }
 
-export function saveHabitStore(store: HabitStore): void {
-  if (typeof window === "undefined") return;
+export function saveHabitStore(store: HabitStore): boolean {
+  if (typeof window === "undefined") return false;
   try {
     window.localStorage.setItem(HABITS_STORAGE_KEY, JSON.stringify(store));
+    return true;
   } catch {
     /* private browsing / quota — the in-memory store stays authoritative */
+    return false;
   }
 }

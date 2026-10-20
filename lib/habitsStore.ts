@@ -9,6 +9,7 @@ import {
   addHabit,
   archiveHabit,
   emptyHabitStore,
+  HABITS_STORAGE_KEY,
   isHabitStore,
   loadHabitStore,
   removeHabit,
@@ -40,19 +41,49 @@ function emit() {
 const EMPTY_SNAPSHOT: HabitStore = Object.freeze(emptyHabitStore());
 
 let cache: HabitStore | null = null;
+let saveFailed = false;
+const getSaveFailed = () => saveFailed;
+const getServerSaveFailed = () => false;
+
+function onStorage(event: StorageEvent) {
+  if (event.key !== HABITS_STORAGE_KEY && event.key !== null) return;
+  try {
+    const next: unknown = event.newValue === null ? emptyHabitStore() : JSON.parse(event.newValue);
+    if (!isHabitStore(next)) return;
+    cache = next;
+    saveFailed = false;
+    emit();
+  } catch { /* Never replace a valid live snapshot with a malformed cross-tab value. */ }
+}
 
 export function getHabitsSnapshot(): HabitStore {
   if (!cache) cache = loadHabitStore();
   return cache;
 }
 
+/** Export the latest persisted tab state, or preserve unsaved work after a quota failure. */
+export function getHabitsBackupSnapshot(): HabitStore {
+  return saveFailed ? getHabitsSnapshot() : loadHabitStore();
+}
+
 export function subscribeHabits(cb: () => void): () => void {
+  if (listeners.size === 0 && typeof window !== "undefined") {
+    if (!saveFailed) cache = loadHabitStore();
+    window.addEventListener("storage", onStorage);
+  }
   listeners.add(cb);
-  return () => listeners.delete(cb);
+  return () => {
+    listeners.delete(cb);
+    if (listeners.size === 0 && typeof window !== "undefined") window.removeEventListener("storage", onStorage);
+  };
 }
 
 export function useHabitsStore(): HabitStore {
   return useSyncExternalStore(subscribeHabits, getHabitsSnapshot, () => EMPTY_SNAPSHOT);
+}
+
+export function useHabitSaveFailed(): boolean {
+  return useSyncExternalStore(subscribeHabits, getSaveFailed, getServerSaveFailed);
 }
 
 // The domain core hands back the SAME store for a genuine no-op — an unknown id,
@@ -62,7 +93,7 @@ export function useHabitsStore(): HabitStore {
 function commit(next: HabitStore): void {
   if (next === getHabitsSnapshot()) return;
   cache = next;
-  saveHabitStore(next);
+  saveFailed = !saveHabitStore(next);
   emit();
 }
 
@@ -114,6 +145,6 @@ export function restoreHabits(store: HabitStore | undefined) {
   if (store !== undefined && !isHabitStore(store)) return;
   const next = store ?? emptyHabitStore();
   cache = next;
-  saveHabitStore(next);
+  saveFailed = !saveHabitStore(next);
   emit();
 }

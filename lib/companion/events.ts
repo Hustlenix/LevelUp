@@ -1,6 +1,7 @@
 import { readOSState } from "../os/store.ts";
 import type { OSState } from "../os/types.ts";
-import { deriveTimeOfDay, localDate } from "./behaviour.ts";
+import { deriveTimeOfDay } from "./behaviour.ts";
+import { formatLocalDate } from "../dates.ts";
 import { stepCompanion } from "./reducer.ts";
 import { readCompanionSettings } from "./settings.ts";
 import { browserStorage, readCompanionState, updateCompanionState } from "./store.ts";
@@ -140,7 +141,7 @@ export function pumpCompanion(options: PumpOptions = {}): PumpResult {
   const events: CompanionEvent[] = [];
 
   // App open / reunion (once per local day).
-  const today = localDate(now);
+  const today = formatLocalDate(now);
   if (state.adapter.lastAppOpenDate !== today) {
     const lastSeenMs = Date.parse(state.lastSeenAt);
     const gapHours = (now.getTime() - lastSeenMs) / (60 * 60 * 1000);

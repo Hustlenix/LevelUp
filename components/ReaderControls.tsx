@@ -7,7 +7,7 @@ const LH_KEY = "levelup-reader-lh";
 const FONT_KEY = "levelup-reader-font";
 const CONTRAST_KEY = "levelup-reader-contrast";
 
-const SCALES = [0.85, 1, 1.15, 1.3];
+const SCALES = [0.85, 1, 1.15, 1.3, 1.5];
 const LH_PRESETS = ["tight", "normal", "airy"] as const;
 const FONT_FAMILIES = ["source", "serif"] as const;
 
@@ -126,7 +126,7 @@ export default function ReaderControls() {
         >
           A−
         </button>
-        <span className="reader-scale-label min-w-10 text-center font-display text-[11px] font-semibold text-ink-faint" />
+        <span className="reader-scale-label min-w-10 text-center font-display text-[0.6875rem] font-semibold text-ink-faint" />
         <button
           type="button"
           onClick={() => step(1)}
@@ -167,7 +167,7 @@ export default function ReaderControls() {
           aria-label="Reader settings"
           className="absolute right-0 top-11 z-50 w-60 rounded-xl border border-line bg-card p-2 shadow-lg"
         >
-          <div className="px-2 pb-1 pt-1 text-[11px] font-semibold uppercase tracking-wide text-ink-faint">
+          <div className="px-2 pb-1 pt-1 text-[0.6875rem] font-semibold uppercase tracking-wide text-ink-faint">
             Line height
           </div>
           <div className="flex gap-1 rounded-lg bg-paper-deep p-1">
@@ -186,7 +186,7 @@ export default function ReaderControls() {
             ))}
           </div>
 
-          <div className="px-2 pb-1 pt-3 text-[11px] font-semibold uppercase tracking-wide text-ink-faint">
+          <div className="px-2 pb-1 pt-3 text-[0.6875rem] font-semibold uppercase tracking-wide text-ink-faint">
             Font
           </div>
           <div className="flex gap-1 rounded-lg bg-paper-deep p-1">

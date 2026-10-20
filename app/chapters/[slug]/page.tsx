@@ -70,7 +70,7 @@ function PrevNext({ chapter }: { chapter: Chapter }) {
           href={`/chapters/${prev.slug}/`}
           className="group rounded-xl border border-line bg-card p-5 transition-colors hover:border-gold"
         >
-          <p className="text-[11px] uppercase tracking-[0.2em] text-ink-faint">Previous — {prev.number}</p>
+          <p className="text-[0.6875rem] uppercase tracking-[0.2em] text-ink-faint">Previous — {prev.number}</p>
           <p className="mt-1 font-display font-semibold text-ink group-hover:text-gold">{prev.title}</p>
         </Link>
       ) : (
@@ -81,7 +81,7 @@ function PrevNext({ chapter }: { chapter: Chapter }) {
           href={`/chapters/${next.slug}/`}
           className="group rounded-xl border border-line bg-card p-5 text-right transition-colors hover:border-gold sm:col-start-2"
         >
-          <p className="text-[11px] uppercase tracking-[0.2em] text-ink-faint">Next — {next.number}</p>
+          <p className="text-[0.6875rem] uppercase tracking-[0.2em] text-ink-faint">Next — {next.number}</p>
           <p className="mt-1 font-display font-semibold text-ink group-hover:text-gold">{next.title}</p>
         </Link>
       )}
@@ -183,7 +183,7 @@ export default async function ChapterPage({
 
       <div className="mx-auto grid max-w-5xl gap-10 px-5 py-12 lg:grid-cols-[1fr_280px]">
         <div className="min-w-0">
-          {guide && <ChapterCompanion guide={guide} />}
+          {guide && <ChapterCompanion guide={guide} title={chapter.title} />}
           <details className="mb-6 rounded-xl border border-line bg-card p-4 font-sans lg:hidden no-print">
             <summary className="min-h-11 cursor-pointer py-2 text-sm font-semibold">Jump to a section</summary>
             <ChapterToc chapter={chapter} />

@@ -1,6 +1,7 @@
 import type { LearningGuide } from "@/lib/learningGuides";
+import { SaveAction } from "@/components/SavedActions";
 
-export default function ChapterCompanion({ guide }: { guide: LearningGuide }) {
+export default function ChapterCompanion({ guide, title }: { guide: LearningGuide; title: string }) {
   return (
     <section id="chapter-guide" aria-labelledby="chapter-guide-heading" className="mb-8 scroll-mt-28 rounded-2xl border border-gold/30 bg-card p-5 font-sans sm:p-6">
       <p className="text-xs font-semibold uppercase tracking-widest text-gold">Understand → Try → Reflect</p>
@@ -9,6 +10,7 @@ export default function ChapterCompanion({ guide }: { guide: LearningGuide }) {
       <div className="mt-4 rounded-lg bg-paper-deep/60 p-4">
         <h3 className="text-sm font-semibold">Your smallest first step</h3>
         <p className="mt-1 text-sm leading-relaxed text-ink-soft">{guide.tinyAction}</p>
+        <SaveAction task={title} action={guide.tinyAction} source={`/chapters/${guide.slug}/`} minutes={2} />
       </div>
       <details className="mt-3 border-b border-line pb-2">
         <summary className="min-h-11 cursor-pointer py-3 text-sm font-semibold">Unpack the idea · example & limits</summary>

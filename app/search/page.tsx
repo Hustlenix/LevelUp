@@ -74,7 +74,7 @@ export default function SearchPage() {
           >
             <div className="flex items-baseline gap-2">
               <span className="font-display font-semibold text-ink">{r.title}</span>
-              <span className="ml-auto shrink-0 rounded-full border border-line px-2 py-0.5 text-[10px] uppercase tracking-wider text-ink-faint">
+              <span className="ml-auto shrink-0 rounded-full border border-line px-2 py-0.5 text-[0.625rem] uppercase tracking-wider text-ink-faint">
                 {r.type}
               </span>
             </div>

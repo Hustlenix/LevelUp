@@ -136,7 +136,7 @@ export default function CoachView({ documents }: CoachViewProps) {
               streaks, and progress. Nothing is sent to a remote AI service.
             </p>
           </div>
-          <span className="rounded-full border border-line bg-paper-deep px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-ink-faint">
+          <span className="rounded-full border border-line bg-paper-deep px-3 py-1 text-[0.6875rem] font-semibold uppercase tracking-wider text-ink-faint">
             Local-only AI
           </span>
         </div>
@@ -199,7 +199,7 @@ export default function CoachView({ documents }: CoachViewProps) {
                   </li>
                 ))}
               </ul>
-              <p className="mt-3 text-[11px] text-ink-faint">Basis: {coach.basis.join(" · ")}</p>
+              <p className="mt-3 text-[0.6875rem] text-ink-faint">Basis: {coach.basis.join(" · ")}</p>
               {coach.suggestedChapterSlug ? (
                 <Link
                   href={`/chapters/${coach.suggestedChapterSlug}/`}

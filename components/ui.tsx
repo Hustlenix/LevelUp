@@ -11,7 +11,7 @@ const PILLAR_STYLES: Record<Pillar, string> = {
 export function PillarTag({ pillar, label }: { pillar: Pillar; label?: string }) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-medium uppercase tracking-wider ${PILLAR_STYLES[pillar]}`}
+      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[0.6875rem] font-medium uppercase tracking-wider ${PILLAR_STYLES[pillar]}`}
     >
       <span className={`h-1.5 w-1.5 rounded-full ${PILLAR_STYLES[pillar].split(" ").pop()}`} />
       {label ?? pillar}

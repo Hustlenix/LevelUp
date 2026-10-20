@@ -1,8 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { DM_Sans, Source_Serif_4 } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import Nav from "@/components/Nav";
+import WelcomeTour from "@/components/WelcomeTour";
+import { InstallPromptCapture } from "@/components/InstallApp";
 import SidebarNav from "@/components/SidebarNav";
 import Footer from "@/components/Footer";
 import SearchProvider from "@/components/SearchProvider";
@@ -62,6 +64,15 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  // Required for the safe-area-inset-* padding the mobile nav and FAB rely on —
+  // without it, notched iPhones render the bottom chrome under the home indicator.
+  viewportFit: "cover",
+  themeColor: "#f6f3eb",
+};
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   const siteData = getSiteData();
   const companionChapters = siteData.chapters.map(({ slug, title, pillar }) => ({ slug, title, pillar }));
@@ -69,7 +80,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={`${sans.variable} ${source.variable}`} suppressHydrationWarning>
       <head>
         <Script id="theme-init" strategy="beforeInteractive">
-          {`(function(){try{var t=window.localStorage.getItem("levelup-theme");if(t==="dark"||t==="light"||t==="deepwork"||t==="cyberpunk"){document.documentElement.setAttribute("data-theme",t);}else if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches){document.documentElement.setAttribute("data-theme","dark");}else{document.documentElement.setAttribute("data-theme","light");}var s=window.localStorage.getItem("levelup-reader-scale");if(s==="0.85"||s==="1"||s==="1.15"||s==="1.3"){document.documentElement.setAttribute("data-reader-scale",s);}else{document.documentElement.setAttribute("data-reader-scale","1");}}catch(e){document.documentElement.setAttribute("data-theme","light");document.documentElement.setAttribute("data-reader-scale","1");}})();`}
+          {`(function(){try{var t=window.localStorage.getItem("levelup-theme");if(t==="dark"||t==="light"||t==="deepwork"||t==="cyberpunk"){document.documentElement.setAttribute("data-theme",t);}else if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches){document.documentElement.setAttribute("data-theme","dark");}else{document.documentElement.setAttribute("data-theme","light");}var s=window.localStorage.getItem("levelup-reader-scale");if(s==="0.85"||s==="1"||s==="1.15"||s==="1.3"||s==="1.5"){document.documentElement.setAttribute("data-reader-scale",s);}else{document.documentElement.setAttribute("data-reader-scale","1");}}catch(e){document.documentElement.setAttribute("data-theme","light");document.documentElement.setAttribute("data-reader-scale","1");}})();`}
         </Script>
       </head>
       <body className="min-h-dvh flex flex-col">
@@ -102,6 +113,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <SidebarNav />
             <div className="flex min-w-0 flex-1 flex-col">
               <Nav />
+              <WelcomeTour />
               <BackupJournalNotice />
               <main id="main" className="flex-1">{children}</main>
               <Footer />
@@ -111,6 +123,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </SearchProvider>
         <BackToTop />
         <ServiceWorkerRegister />
+        <InstallPromptCapture />
         <AnalyticsProvider />
         <CompanionLayer chapters={companionChapters} />
       </body>
