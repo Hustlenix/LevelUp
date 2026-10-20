@@ -81,6 +81,7 @@ try {
   await page.screenshot({ path: ".next/connected-practice-qa/library-mobile.png", fullPage: true });
   for (const [route, name] of [["backup", "Export full backup"], ["progress", "Export backup"]]) {
     await page.goto(`${base}/${route}/`);
+    if (route === "progress") await page.locator("summary").filter({ hasText: "Reading, focus, and workspace record" }).click();
     const downloading = page.waitForEvent("download");
     await page.getByRole("button", { name, exact: true }).click();
     const stream = await (await downloading).createReadStream();

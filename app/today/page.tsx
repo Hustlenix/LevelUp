@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import LevelUpOSWorkspace from "@/components/LevelUpOSWorkspace";
+import LifeToday from "@/components/app/LifeToday";
 
 export const metadata: Metadata = {
   title: "Today",
@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function TodayPage() {
-  return <LevelUpOSWorkspace mode="today" />;
+  return <LifeToday />;
 }

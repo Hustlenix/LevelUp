@@ -8,7 +8,7 @@ const output = process.argv[3];
 if (output) await mkdir(output, { recursive: true });
 const browser = await chromium.launch();
 const errors = [];
-const routes = ["/", "/progress/", "/today/", "/chapters/", "/habits/", "/settings/"];
+const routes = ["/manual/", "/progress/", "/today/", "/chapters/", "/habits/", "/settings/"];
 let checks = 0;
 function luminance(hex) {
   const channels = hex.replace("#", "").match(/../g).map(value => {
@@ -45,10 +45,11 @@ try {
         if (theme === "light") assert.equal(style.accent, "#795b1e");
         if (theme === "dark") assert.equal(style.paper, "#181818");
         if (path === "/progress/") {
-          const milestones = page.locator("details").filter({ has: page.getByText("Milestones", { exact: true }) });
+          await page.locator("summary").filter({ hasText: "Reading, focus, and workspace record" }).click();
+          const milestones = page.locator("details").filter({ has: page.locator(":scope > summary").filter({ hasText: /^Milestones$/ }) });
           assert.equal(await milestones.getAttribute("open"), null);
           await milestones.locator("summary").click();
-          const ledger = page.locator("details").filter({ has: page.locator("summary").filter({ hasText: "Chapter record" }) });
+          const ledger = page.locator("details").filter({ has: page.locator(":scope > summary").filter({ hasText: "Chapter record" }) });
           await ledger.locator("summary").click();
           assert.equal(await ledger.getByRole("button", { name: "Mark read", exact: true }).count(), 28);
           await ledger.getByRole("button", { name: "Mark read", exact: true }).first().click();

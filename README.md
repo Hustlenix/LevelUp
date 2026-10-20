@@ -22,7 +22,8 @@ The **Quick tour** lets you try the flow with sample data before saving anything
 
 - **Learn:** 28 chapters, evidence grades, research notes, quizzes, highlights, and search.
 - **Practice:** ready-to-use plans such as a Pomodoro starter and a two-minute restart, alongside the 13 original protocols.
-- **Today:** goals, focus sessions, habits, and a daily ritual.
+- **Today:** a daily mission plan, saved actions, habits, and a daily ritual. Goals and focus sessions are available through Tools.
+- **Journey and Profile:** skill paths, mission evidence, and achievements built from recorded work.
 - **Small Steps:** one current task, short timers, a place to park distractions, and a note for when you return.
 - **Review:** a record of your sessions, reading, and progress.
 - **Study Mode:** subjects, revision, and student planning tools.
@@ -42,6 +43,8 @@ The **Talk** tab has preset offline guidance. Optional cloud chat has a separate
 ## Your data
 
 Core features work without an account. Progress is stored in your browser, and there are no analytics or advertising trackers. Export a backup if you want to keep it safe or move devices; clearing browser storage can erase your record.
+
+Mission progress uses Nexus, a local operation log that reconciles open tabs and keeps an IndexedDB mirror. The [Sync Lab](https://hustlenix.github.io/LevelUp/sync-lab/) lets you inspect the log, try two offline replicas, and export an encrypted packet to move progress yourself. [Protocol notes](docs/NEXUS-PROTOCOL.md) explain what it can and cannot sync.
 
 Previously visited pages can work offline after the production site's service worker has loaded. Optional cloud chat needs a connection and sends your message, recent conversation, and selected context to the provider. Its retention policies are separate from LevelUp's local storage.
 

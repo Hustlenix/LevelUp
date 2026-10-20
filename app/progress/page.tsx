@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 import { getSiteData } from "@/lib/content";
-import ProgressView from "@/components/ProgressView";
+import LifeProgressView from "@/components/app/LifeProgressView";
 import { canonical } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Reading Progress",
-  description: "Your reading progress across the 28 chapters, stored locally.",
+  title: "Progress",
+  description: "Your private LevelUp mission, skill, streak, and learning progress.",
   alternates: { canonical: canonical("/progress/") },
   robots: { index: false, follow: false },
 };
 
 export default function ProgressPage() {
   const { chapters } = getSiteData();
-  return <ProgressView chapters={chapters} />;
+  return <LifeProgressView chapters={chapters} />;
 }

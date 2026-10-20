@@ -36,6 +36,9 @@ jobs:
       - name: Test
         run: npm test
 
+      - name: Test Milo backend boundaries
+        run: node --test services/milo/tests/chat.test.mjs
+
       - name: Build (data pipeline + static export)
         run: npm run build
         env:

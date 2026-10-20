@@ -10,7 +10,7 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "LevelUp",
     description:
       "Evidence-audited lessons, practical tools, and a local record of your work.",
-    start_url: `${BASE}/`,
+    start_url: `${BASE}/today/`,
     scope: `${BASE}/`,
     id: `${BASE}/`,
     display: "standalone",
@@ -19,6 +19,11 @@ export default function manifest(): MetadataRoute.Manifest {
     // so installed PWAs don't flash a mismatched chrome color.
     theme_color: "#f6f3eb",
     lang: "en",
+    shortcuts: [
+      { name: "Today", url: `${BASE}/today/` },
+      { name: "Small Steps", url: `${BASE}/small-steps/` },
+      { name: "Focus room", url: `${BASE}/focus/` },
+    ],
     icons: [
       { src: `${BASE}/pwa-192.png`, sizes: "192x192", type: "image/png", purpose: "any" },
       { src: `${BASE}/pwa-512.png`, sizes: "512x512", type: "image/png", purpose: "any" },

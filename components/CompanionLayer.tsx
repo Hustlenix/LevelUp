@@ -234,6 +234,7 @@ function DemoControls({
 
 export default function CompanionLayer({ chapters }: { chapters: ChapterContext[] }) {
   const pathname = usePathname();
+  const isOnboarding = pathname.split("/").filter(Boolean).at(-1) === "onboarding";
   const osState = useOSStore();
   const progress = useProgressStore();
   const savedState = useCompanionStore();
@@ -343,6 +344,26 @@ export default function CompanionLayer({ chapters }: { chapters: ChapterContext[
   }, []);
 
   useEffect(() => {
+    const mode = new URLSearchParams(window.location.search).get("milo");
+    if (mode !== "open" && mode !== "demo") return;
+
+    const launch = window.setTimeout(() => {
+      setExpanded(true);
+      if (mode === "demo") {
+        const fixture = createEmptyCompanionState(DEMO_NOW, 4242);
+        fixture.stats.sessionsCompleted = 4;
+        fixture.flags.firstMeetDelivered = true;
+        setDemoState(fixture);
+        setDialogue("Reviewer demo loaded. This fixture is disposable and your saved companion stays untouched.");
+        setTransientPose("wave");
+        setView("engine");
+      }
+    }, 0);
+
+    return () => window.clearTimeout(launch);
+  }, [pathname]);
+
+  useEffect(() => {
     const interval = window.setInterval(() => setIdleTick((tick) => tick + 1), effectiveMotion === "full" ? 12_000 : 24_000);
     return () => window.clearInterval(interval);
   }, [effectiveMotion]);
@@ -402,8 +423,8 @@ export default function CompanionLayer({ chapters }: { chapters: ChapterContext[
     setView("engine");
   }
 
-  // Keep the public introduction quiet; the companion remains in the workspace.
-  if (pathname === "/" || pathname?.startsWith("/small-steps")) return null;
+  // Keep focused setup and Small Steps free of floating controls.
+  if (pathname === "/" || pathname?.startsWith("/small-steps") || isOnboarding) return null;
 
   if (!settings.enabled && !expanded) {
     return (

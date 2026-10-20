@@ -34,11 +34,12 @@ import { getExperimentsSnapshot, restoreExperiments } from "@/lib/experiments";
 import { getHabitsBackupSnapshot, restoreHabits } from "@/lib/habitsStore";
 import { getSmallStepsBackup, reloadSmallSteps } from "@/lib/smallStepsStore";
 import { getPracticeDraftsBackup, reloadPracticeDrafts } from "@/lib/practiceDraftsStore";
+import { getLifeStateSnapshot, getNexusReplicaSnapshot, NEXUS_REPLICA_KEY, reloadLifeStateCache } from "@/lib/life";
 
 const THEME_KEY = "levelup-theme";
 const SCALE_KEY = "levelup-reader-scale";
 
-export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
+export default function ProgressView({ chapters, embedded = false }: { chapters: Chapter[]; embedded?: boolean }) {
   const map = useProgressStore();
   const osState = useOSStore();
   const gamification = useGamification();
@@ -82,6 +83,8 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
       smallSteps: getSmallStepsBackup(),
       practiceDrafts: getPracticeDraftsBackup(),
       osState: getOSStateSnapshot(),
+      lifeState: getLifeStateSnapshot(),
+      nexusReplica: getNexusReplicaSnapshot(),
        portfolio: getPortfolioSnapshot(),
        notifications: getNotificationStateSnapshot(),
        experiments: getExperimentsSnapshot(),
@@ -125,6 +128,8 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
       restoreHabits(d.habits);
       reloadSmallSteps();
       reloadPracticeDrafts();
+      if (d.nexusReplica === undefined && d.lifeState !== undefined) localStorage.removeItem(NEXUS_REPLICA_KEY);
+      if (d.lifeState !== undefined || d.nexusReplica !== undefined) reloadLifeStateCache();
       restoreBookmarks(d.bookmarks);
       restoreHighlights(d.highlights);
       restoreQuiz(d.quiz);
@@ -184,7 +189,7 @@ export default function ProgressView({ chapters }: { chapters: Chapter[] }) {
 
   return (
     <div className="mx-auto max-w-4xl px-5 py-12">
-      <WorkspaceHeader eyebrow="Your record" title="Progress" description="Chapters read, time focused, and work completed. Based on your recorded activity—not estimates." />
+      {embedded ? <h2 className="font-display text-2xl">Reading and workspace record</h2> : <WorkspaceHeader eyebrow="Your record" title="Progress" description="Chapters read, time focused, and work completed. Based on your recorded activity—not estimates." />}
 
       <MetricStrip items={[{ label: "Level", value: progression ? String(progression.level) : "—", detail: progression ? `${progression.xp} XP recorded` : "Loading your record" }, { label: "Streak", value: progression ? String(progression.streak.current) : "—", detail: progression ? `best ${progression.streak.best} days` : undefined }, { label: "Focus", value: progression ? `${Math.round(progression.totalMinutes)}m` : "—", detail: progression ? `${progression.totalSessions} completed sessions` : undefined }]} />
 

@@ -16,6 +16,7 @@ import { getPortfolioSnapshot, restorePortfolioArtifacts } from "@/lib/portfolio
 import { getNotificationStateSnapshot, restoreNotificationState } from "@/lib/notifications";
 import { getExperimentsSnapshot, restoreExperiments } from "@/lib/experiments";
 import { getHabitsBackupSnapshot, restoreHabits } from "@/lib/habitsStore";
+import { getLifeStateSnapshot, getNexusReplicaSnapshot, NEXUS_REPLICA_KEY, reloadLifeStateCache } from "@/lib/life";
 
 const THEME_KEY = "levelup-theme";
 const SCALE_KEY = "levelup-reader-scale";
@@ -46,6 +47,8 @@ export default function BackupPanel() {
     state.habits = getHabitsBackupSnapshot();
     state.smallSteps = getSmallStepsBackup();
     state.practiceDrafts = getPracticeDraftsBackup();
+    state.lifeState = getLifeStateSnapshot();
+    state.nexusReplica = getNexusReplicaSnapshot();
     const blob = new Blob([JSON.stringify(buildBackup(state), null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
@@ -59,6 +62,7 @@ export default function BackupPanel() {
   function onImportFile(file: File) {
     setImportError(null);
     setImported(false);
+    if (file.size > 20_000_000) { setImportError("That backup is larger than the 20 MB safety limit."); return; }
     const reader = new FileReader();
     reader.onload = () => {
       let parsed: unknown;
@@ -82,6 +86,8 @@ export default function BackupPanel() {
       if (data.portfolio !== undefined) restorePortfolioArtifacts(data.portfolio);
       if (data.notifications !== undefined) restoreNotificationState(data.notifications);
       if (data.experiments !== undefined) restoreExperiments(data.experiments);
+      if (data.nexusReplica === undefined && data.lifeState !== undefined) localStorage.removeItem(NEXUS_REPLICA_KEY);
+      if (data.lifeState !== undefined || data.nexusReplica !== undefined) reloadLifeStateCache();
       if (data.actionState) reloadActionToolsCaches();
       if (data.theme) { document.documentElement.setAttribute("data-theme", data.theme); localStorage.setItem(THEME_KEY, data.theme); }
       if (data.readerScale) { document.documentElement.setAttribute("data-reader-scale", data.readerScale); localStorage.setItem(SCALE_KEY, data.readerScale); }
@@ -93,6 +99,6 @@ export default function BackupPanel() {
 
   return <div className="space-y-4">
     {journalPresent ? <section className="rounded-2xl border border-amber-300 bg-amber-50 p-5" role="alert"><p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-amber-800">Recovery notice</p><h2 className="mt-1 font-display text-xl font-semibold text-ink">An earlier restore did not finish</h2><p className="mt-2 text-sm leading-relaxed text-ink-soft">LevelUp found a rollback journal from an interrupted backup restore. Your previous values are still available. Choose recover to restore them, dismiss to leave the journal untouched, or clear only after confirming you no longer need it.</p><div className="mt-4 flex flex-wrap gap-2"><button type="button" className="inline-flex min-h-11 items-center justify-center rounded-lg bg-amber-800 px-4 py-2 text-sm font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-800" onClick={() => { recoverBackupTransaction(window.localStorage); window.location.reload(); }}>Recover previous state</button><button type="button" className="inline-flex min-h-11 items-center justify-center rounded-lg border border-amber-400 px-4 py-2 text-sm font-semibold text-amber-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-800" onClick={() => setJournalDismissed(true)}>Dismiss</button><button type="button" className="text-sm font-semibold text-amber-900 underline" onClick={() => { if (window.confirm("Clear the incomplete restore journal? Valid local data will not be deleted.")) { clearBackupTransaction(window.localStorage); setJournalDismissed(true); } }}>Clear journal</button></div></section> : null}
-    <section className="rounded-2xl border border-line bg-card p-6 sm:p-8"><div className="flex flex-wrap items-start justify-between gap-4"><div><p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">Local backup</p><h2 className="mt-1 font-display text-2xl font-semibold text-ink">Move your system safely</h2><p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-soft">Exports include reading progress, study profile, action logs, experiments, and the Goal → Session operating state. Nothing is uploaded.</p></div><span className="rounded-full border border-line bg-paper-deep px-3 py-1 text-[0.6875rem] uppercase tracking-wider text-ink-faint">JSON · local only</span></div><div className="mt-5 flex flex-wrap gap-3"><button type="button" onClick={onExport} className="inline-flex min-h-11 items-center justify-center rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-paper transition-colors hover:bg-gold-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold">Export full backup</button><button type="button" onClick={() => fileRef.current?.click()} className="inline-flex min-h-11 items-center justify-center rounded-lg border border-line bg-paper px-4 py-2 text-sm font-semibold text-ink-soft transition-colors hover:border-gold hover:text-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold">Import backup</button><input ref={fileRef} type="file" accept="application/json,.json" className="sr-only" onChange={(event) => { const file = event.target.files?.[0]; if (file) onImportFile(file); event.target.value = ""; }} /></div>{importError ? <p className="mt-4 text-sm text-rose-700" role="alert">{importError}</p> : null}{imported ? <p className="mt-4 text-sm text-gold" role="status">Backup imported safely. Refresh the page to see every surface update.</p> : null}<p className="mt-5 text-xs leading-relaxed text-ink-faint">The restore validates the complete file first and uses a rollback journal for the older multi-key stores. The new OS state remains a single atomic record.</p></section>
+    <section className="rounded-2xl border border-line bg-card p-6 sm:p-8"><div className="flex flex-wrap items-start justify-between gap-4"><div><p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-gold">Local backup</p><h2 className="mt-1 font-display text-2xl font-semibold text-ink">Move your system safely</h2><p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-soft">Exports include daily missions, XP, skills, streaks, reading progress, study profile, action logs, experiments, and the Goal → Session operating state. Nothing is uploaded.</p></div><span className="rounded-full border border-line bg-paper-deep px-3 py-1 text-[0.6875rem] uppercase tracking-wider text-ink-faint">JSON · local only</span></div><div className="mt-5 flex flex-wrap gap-3"><button type="button" onClick={onExport} className="inline-flex min-h-11 items-center justify-center rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-paper transition-colors hover:bg-gold-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold">Export full backup</button><button type="button" onClick={() => fileRef.current?.click()} className="inline-flex min-h-11 items-center justify-center rounded-lg border border-line bg-paper px-4 py-2 text-sm font-semibold text-ink-soft transition-colors hover:border-gold hover:text-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold">Import backup</button><input ref={fileRef} type="file" accept="application/json,.json" className="sr-only" onChange={(event) => { const file = event.target.files?.[0]; if (file) onImportFile(file); event.target.value = ""; }} /></div>{importError ? <p className="mt-4 text-sm text-rose-700" role="alert">{importError}</p> : null}{imported ? <p className="mt-4 text-sm text-gold" role="status">Backup imported safely. Refresh the page to see every surface update.</p> : null}<p className="mt-5 text-xs leading-relaxed text-ink-faint">The restore validates the complete file first and uses a rollback journal for older multi-key stores before replacing your local data.</p></section>
   </div>;
 }

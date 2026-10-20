@@ -1,25 +1,20 @@
-import type { Metadata, Viewport } from "next";
-import { DM_Sans, Source_Serif_4 } from "next/font/google";
+import type { Metadata } from "next";
+import { Fraunces, Source_Serif_4 } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
-import Nav from "@/components/Nav";
-import WelcomeTour from "@/components/WelcomeTour";
-import { InstallPromptCapture } from "@/components/InstallApp";
-import SidebarNav from "@/components/SidebarNav";
-import Footer from "@/components/Footer";
 import SearchProvider from "@/components/SearchProvider";
 import BackToTop from "@/components/BackToTop";
 import JsonLd from "@/components/JsonLd";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
-import BackupJournalNotice from "@/components/BackupJournalNotice";
-import MobileBottomNav from "@/components/workspace/MobileBottomNav";
 import CompanionLayer from "@/components/CompanionLayer";
+import AppFrame from "@/components/app/AppFrame";
+import { InstallPromptCapture } from "@/components/InstallApp";
 import { getSiteData } from "@/lib/content";
-import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_AUTHOR } from "@/lib/site";
+import { SITE_URL, SITE_AUTHOR } from "@/lib/site";
 
-const sans = DM_Sans({
-  variable: "--font-interface",
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
   subsets: ["latin"],
   style: ["normal", "italic"],
 });
@@ -33,18 +28,18 @@ const source = Source_Serif_4({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME} — Belief, Identity & the Science of Getting Better`,
-    template: `%s — ${SITE_NAME}`,
+    default: "LevelUp LifeOS — Real-life progress, one mission at a time",
+    template: "%s — LevelUp",
   },
-  description: SITE_DESCRIPTION,
+  description: "A private, local-first self-improvement app for daily missions, skills, focus, progress, and a companion that grows from real work.",
   alternates: {
     canonical: "/",
   },
   openGraph: {
     type: "website",
-    siteName: SITE_NAME,
-    title: `${SITE_NAME} — Belief, Identity & the Science of Getting Better`,
-    description: SITE_DESCRIPTION,
+    siteName: "LevelUp LifeOS",
+    title: "LevelUp LifeOS — Real-life progress, one mission at a time",
+    description: "A private self-improvement app for daily missions, skills, focus, and meaningful progress.",
     url: SITE_URL,
     locale: "en_US",
     images: [
@@ -52,32 +47,23 @@ export const metadata: Metadata = {
         url: `${SITE_URL}/og-image.png`,
         width: 1200,
         height: 630,
-        alt: `${SITE_NAME} — 28 verified chapters`,
+        alt: "LevelUp LifeOS",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE_NAME} — Belief, Identity & the Science of Getting Better`,
-    description: SITE_DESCRIPTION,
+    title: "LevelUp LifeOS — Real-life progress, one mission at a time",
+    description: "A private self-improvement app for daily missions, skills, focus, and meaningful progress.",
     images: [`${SITE_URL}/og-image.png`],
   },
-};
-
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
-  // Required for the safe-area-inset-* padding the mobile nav and FAB rely on —
-  // without it, notched iPhones render the bottom chrome under the home indicator.
-  viewportFit: "cover",
-  themeColor: "#f6f3eb",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   const siteData = getSiteData();
   const companionChapters = siteData.chapters.map(({ slug, title, pillar }) => ({ slug, title, pillar }));
   return (
-    <html lang="en" className={`${sans.variable} ${source.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${fraunces.variable} ${source.variable}`} suppressHydrationWarning>
       <head>
         <Script id="theme-init" strategy="beforeInteractive">
           {`(function(){try{var t=window.localStorage.getItem("levelup-theme");if(t==="dark"||t==="light"||t==="deepwork"||t==="cyberpunk"){document.documentElement.setAttribute("data-theme",t);}else if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches){document.documentElement.setAttribute("data-theme","dark");}else{document.documentElement.setAttribute("data-theme","light");}var s=window.localStorage.getItem("levelup-reader-scale");if(s==="0.85"||s==="1"||s==="1.15"||s==="1.3"||s==="1.5"){document.documentElement.setAttribute("data-reader-scale",s);}else{document.documentElement.setAttribute("data-reader-scale","1");}}catch(e){document.documentElement.setAttribute("data-theme","light");document.documentElement.setAttribute("data-reader-scale","1");}})();`}
@@ -89,9 +75,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             {
               "@context": "https://schema.org",
               "@type": "WebSite",
-              name: SITE_NAME,
+              name: "LevelUp LifeOS",
               url: SITE_URL,
-              description: SITE_DESCRIPTION,
+              description: "A private, local-first self-improvement app for meaningful daily progress.",
               inLanguage: "en",
             },
             {
@@ -109,17 +95,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to content
         </a>
         <SearchProvider>
-          <div className="flex flex-1">
-            <SidebarNav />
-            <div className="flex min-w-0 flex-1 flex-col">
-              <Nav />
-              <WelcomeTour />
-              <BackupJournalNotice />
-              <main id="main" className="flex-1">{children}</main>
-              <Footer />
-            </div>
-          </div>
-          <MobileBottomNav />
+          <AppFrame>{children}</AppFrame>
         </SearchProvider>
         <BackToTop />
         <ServiceWorkerRegister />

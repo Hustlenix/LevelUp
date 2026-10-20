@@ -1,13 +1,6 @@
 import type { Metadata } from "next";
-import LifeOSOnboarding from "@/components/LifeOSOnboarding";
+import OnboardingFlow from "@/components/app/OnboardingFlow";
 
-export const metadata: Metadata = {
-  title: "Set up your study OS",
-  description: "A few quick questions to personalize your study plan. Everything stays on this device.",
-  alternates: { canonical: "/onboarding/" },
-  robots: { index: false, follow: false },
-};
+export const metadata: Metadata = { title: "Set your direction", description: "Create a private, personalized LevelUp starter path.", robots: { index: false, follow: false } };
 
-export default function OnboardingPage() {
-  return <LifeOSOnboarding />;
-}
+export default function OnboardingPage() { return <OnboardingFlow />; }

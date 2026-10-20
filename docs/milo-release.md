@@ -43,3 +43,11 @@ Live cloud quality, real Redis deployment, browser-native installation acceptanc
 - Editorial browser rerun: all 96 route/theme/width checks passed after those corrections.
 
 This implementation was AI-assisted with Codex. The architecture and verification notes describe the code and observed tests, not a fabricated personal development narrative.
+
+## Integration with LifeOS and Nexus
+
+The integrated app keeps mission onboarding, XP, skill paths, and Nexus replication. Today also shows saved lesson actions and the daily ritual. Tools links connect Small Steps, habits, practice plans, the manual, and Nexus. The detailed reading/focus record remains available under Progress and loads when expanded.
+
+Both backup surfaces export and restore the Nexus replica and materialized mission state alongside habits, Small Steps, and practice drafts. The combined backup test covers all five stores, 150% text preferences, and rollback after a late Nexus write fails. Existing storage keys remain unchanged. App surfaces use the shared theme tokens and rem-based text. The service worker cache is v4 and includes both sets of routes.
+
+Integration checks: `node verify-integration.mjs http://localhost:3116` covers saved lesson actions appearing on Today, the ritual, a combined browser backup round trip, and nine routes at 150% across four themes and three widths. `verify-release.mjs` also checks the mission loop, Nexus partition convergence, encrypted export, and restored progress.

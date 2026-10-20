@@ -15,6 +15,9 @@ import type { NotificationState } from "./notifications.ts";
 import type { Experiment } from "./experiments.ts";
 import { isExperiment } from "./experiments.ts";
 import { emptyHabitStore, HABITS_STORAGE_KEY, isHabitStore, type HabitStore } from "./habits.ts";
+import type { LifeState } from "./life/types.ts";
+import { LIFE_SCHEMA_VERSION, LIFE_SKILLS } from "./life/types.ts";
+import { replicaIsValid, type NexusReplica } from "./nexus/index.ts";
 
 export interface BackupProgressEntry {
   complete: boolean;
@@ -68,6 +71,8 @@ export interface BackupState {
   habits?: HabitStore;
   smallSteps?: SmallStepsState;
   practiceDrafts?: PracticeDrafts;
+  lifeState?: LifeState;
+  nexusReplica?: NexusReplica;
 }
 
 export const BACKUP_SCHEMA = 1;
@@ -131,6 +136,15 @@ function isNotificationState(v: unknown): v is NotificationState {
   return typeof v.enabled === "boolean" && validTime(v.quietStart) && validTime(v.quietEnd) && Array.isArray(v.dismissedIds) && v.dismissedIds.every((id) => typeof id === "string") && Array.isArray(v.readIds) && v.readIds.every((id) => typeof id === "string");
 }
 
+function isLifeState(v: unknown): v is LifeState {
+  if (!isRecord(v) || v.schemaVersion !== LIFE_SCHEMA_VERSION || !isRecord(v.progression) || !isRecord(v.preferences)) return false;
+  const progression = v.progression;
+  if (typeof progression.totalXp !== "number" || !Array.isArray(progression.completions) || !isRecord(progression.skillXp)) return false;
+  const skillXp = progression.skillXp;
+  if (!LIFE_SKILLS.every((skill) => typeof skillXp[skill] === "number")) return false;
+  return v.profile === null || (isRecord(v.profile) && typeof v.profile.name === "string" && Array.isArray(v.profile.goals));
+}
+
 export function buildBackup(state: BackupState): { schema: number; exportedAt: string; [k: string]: unknown } {
   const result: { schema: number; exportedAt: string; [k: string]: unknown } = {
     schema: BACKUP_SCHEMA,
@@ -171,6 +185,12 @@ export function buildBackup(state: BackupState): { schema: number; exportedAt: s
   if (state.habits !== undefined) result.habits = state.habits;
   if (state.smallSteps !== undefined) result.smallSteps = restoreSmallSteps(state.smallSteps);
   if (state.practiceDrafts !== undefined) result.practiceDrafts = state.practiceDrafts;
+  if (state.lifeState !== undefined) {
+    result.lifeState = state.lifeState;
+  }
+  if (state.nexusReplica !== undefined) {
+    result.nexusReplica = state.nexusReplica;
+  }
   return result;
 }
 
@@ -282,6 +302,16 @@ export function validateBackup(json: unknown): { ok: boolean; errors: string[]; 
     if (!Array.isArray(json.experiments) || !json.experiments.every(isExperiment)) errors.push("experiments has an invalid shape.");
     else experiments = json.experiments;
   }
+  let lifeState: LifeState | undefined;
+  if (json.lifeState !== undefined) {
+    if (!isLifeState(json.lifeState)) errors.push("lifeState has an invalid shape.");
+    else lifeState = json.lifeState;
+  }
+  let nexusReplica: NexusReplica | undefined;
+  if (json.nexusReplica !== undefined) {
+    if (!replicaIsValid(json.nexusReplica)) errors.push("nexusReplica failed its schema, checksum, or hash-chain validation.");
+    else nexusReplica = json.nexusReplica;
+  }
 
   if (json.smallSteps !== undefined && !isSmallSteps(json.smallSteps)) errors.push("smallSteps has an invalid shape.");
   if (json.practiceDrafts !== undefined && !isPracticeDrafts(json.practiceDrafts)) errors.push("practiceDrafts has an invalid shape.");
@@ -324,6 +354,12 @@ export function validateBackup(json: unknown): { ok: boolean; errors: string[]; 
   if (isHabitStore(json.habits)) outData.habits = json.habits;
   if (isSmallSteps(json.smallSteps)) outData.smallSteps = restoreSmallSteps(json.smallSteps);
   if (isPracticeDrafts(json.practiceDrafts)) outData.practiceDrafts = json.practiceDrafts;
+  if (lifeState !== undefined) {
+    outData.lifeState = lifeState;
+  }
+  if (nexusReplica !== undefined) {
+    outData.nexusReplica = nexusReplica;
+  }
 
   return {
     ok: true,
@@ -355,6 +391,8 @@ function entriesForBackup(data: BackupState): Record<string, string> {
   if (data.portfolio !== undefined) entries["levelup-portfolio-v1"] = JSON.stringify(data.portfolio);
   if (data.notifications !== undefined) entries["levelup-notifications-v1"] = JSON.stringify(data.notifications);
   if (data.experiments !== undefined) entries["levelup-experiments-v1"] = JSON.stringify(data.experiments);
+  if (data.lifeState !== undefined) entries["levelup-life-state-v1"] = JSON.stringify(data.lifeState);
+  if (data.nexusReplica !== undefined) entries["levelup-nexus-replica-v1"] = JSON.stringify(data.nexusReplica);
   if (data.actionState?.pillarsHistory) entries["levelup-pillar-floors-v1"] = JSON.stringify(data.actionState.pillarsHistory);
   if (data.actionState?.focusSessions) entries["levelup-focus-sessions-v1"] = JSON.stringify(data.actionState.focusSessions);
   if (data.actionState?.protocolLogs) entries["levelup-protocol-logs-v1"] = JSON.stringify(data.actionState.protocolLogs);

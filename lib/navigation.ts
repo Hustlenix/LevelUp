@@ -10,6 +10,8 @@ export const WORKSPACE_LINKS = [
 export const COACH_LINK = { href: "/coach/", label: "Coach", icon: Sparkles };
 export const RESOURCE_GROUPS = [
   { label: "Planning & reflection", items: [
+    { href: "/habits/", label: "Habits & ritual" },
+    { href: "/sync-lab/", label: "Nexus sync" },
     { href: "/small-steps/", label: "Small Steps" },
     { href: "/goals/", label: "Goals" }, { href: "/focus/", label: "Focus" },
     { href: "/review/", label: "Review" }, { href: "/roadmap/", label: "Roadmap" },
